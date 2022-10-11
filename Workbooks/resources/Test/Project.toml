@@ -2,3 +2,6 @@ name = "Test"
 uuid = "58cf205f-539a-4e9d-856d-221131505388"
 authors = ["Nicholas Gale <nick.gale1993@gmail.com>"]
 version = "0.1.0"
+
+[deps]
+GLM = "38e38edf-8417-5370-95a0-9cbb8c7f171a"
