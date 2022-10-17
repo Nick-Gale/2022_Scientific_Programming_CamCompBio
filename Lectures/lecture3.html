@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<script src="lecture2_files/libs/clipboard/clipboard.min.js"></script>
-<script src="lecture2_files/libs/quarto-html/tabby.min.js"></script>
-<script src="lecture2_files/libs/quarto-html/popper.min.js"></script>
-<script src="lecture2_files/libs/quarto-html/tippy.umd.min.js"></script>
-<link href="lecture2_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="lecture2_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
-<link href="lecture2_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<script src="lecture3_files/libs/clipboard/clipboard.min.js"></script>
+<script src="lecture3_files/libs/quarto-html/tabby.min.js"></script>
+<script src="lecture3_files/libs/quarto-html/popper.min.js"></script>
+<script src="lecture3_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="lecture3_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="lecture3_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="lecture3_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.1.251">
 
-  <meta name="author" content="Nicholas Gale &amp; Stephen Eglen">
+  <meta name="author" content="Nicholas Gale and Stephen Eglen">
   <title>Scientific Programming in Julia</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="lecture2_files/libs/revealjs/dist/reset.css">
-  <link rel="stylesheet" href="lecture2_files/libs/revealjs/dist/reveal.css">
+  <link rel="stylesheet" href="lecture3_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="lecture3_files/libs/revealjs/dist/reveal.css">
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -93,13 +93,13 @@
     code span.vs { color: #20794d; } /* VerbatimString */
     code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
-  <link rel="stylesheet" href="lecture2_files/libs/revealjs/dist/theme/quarto.css" id="theme">
-  <link href="lecture2_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-  <link href="lecture2_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-  <link href="lecture2_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-  <link href="lecture2_files/libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
-  <link href="lecture2_files/libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
-  <link href="lecture2_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <link rel="stylesheet" href="lecture3_files/libs/revealjs/dist/theme/quarto.css" id="theme">
+  <link href="lecture3_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="lecture3_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="lecture3_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="lecture3_files/libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="lecture3_files/libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="lecture3_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
 
   .callout {
@@ -391,417 +391,369 @@
 
 <section id="title-slide" class="center">
   <h1 class="title">Scientific Programming in Julia</h1>
-  <p class="subtitle">Package Management, Advanced Concepts, and Worflows</p>
-  <p class="author">Nicholas Gale &amp; Stephen Eglen</p>
+  <p class="subtitle">Statistics, Functional Programming, and Performance Computing</p>
+  <p class="author">Nicholas Gale and Stephen Eglen</p>
 </section>
 
-<section id="types-and-hierarchy" class="slide level2">
-<h2>Types and Hierarchy</h2>
+<section id="dataframes" class="slide level2">
+<h2>DataFrames</h2>
 <ul>
-<li class="fragment"><p>Julia has a hierarchy of types e.g.&nbsp;Int &lt;: Real &lt;: Number.</p></li>
-<li class="fragment"><p>Function definitions can apply to all subtypes.</p></li>
-<li class="fragment"><p>Sub/super type can be checked with <code>&lt;:</code>.</p></li>
+<li class="fragment"><p>Dataframes are tabular data with named columns (or factors in R).</p></li>
+<li class="fragment"><p>They are supported using the <code>DataFrames</code> package.</p></li>
+<li class="fragment"><p>The names are given in symbols.</p></li>
+</ul>
+</section>
+<section id="using-dataframes" class="slide level2">
+<h2>Using DataFrames</h2>
+<ul>
+<li class="fragment"><p>They can be initialised, loaded, or constructed.</p></li>
+<li class="fragment"><p>To initalise a data frame use the <code>dataframe(colname1=data1, colname2=data2)</code></p></li>
+<li class="fragment"><p>Any empty data frame can be initialised by empty typed data vectors.</p></li>
 </ul>
 <div class="fragment">
-<div class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">println</span>(<span class="dt">Int64</span> <span class="op">&lt;:</span><span class="dt"> Real</span>)</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">println</span>(<span class="dt">Float64</span> <span class="op">&lt;:</span><span class="dt"> Real</span>)</span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">println</span>(<span class="dt">Int64</span> <span class="op">&lt;:</span><span class="dt"> Float64</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-output-location="fragment" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">using</span> <span class="bu">DataFrames</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a>df1 <span class="op">=</span> <span class="fu">DataFrame</span>(x<span class="op">=</span><span class="fu">rand</span>(<span class="fl">5</span>), y<span class="op">=</span><span class="fu">rand</span>(<span class="fl">5</span>));</span>
+<span id="cb1-3"><a href="#cb1-3"></a>df2 <span class="op">=</span> <span class="fu">DataFrame</span>(x<span class="op">=</span><span class="dt">Float64</span>[], st<span class="op">=</span><span class="dt">String</span>[]);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</section>
+<section id="accessing-dataframes" class="slide level2">
+<h2>Accessing DataFrames</h2>
+<ul>
+<li class="fragment"><p>Data indexed as a matrix, by a rows and symbols.</p></li>
+<li class="fragment"><p>Entire rows can be indexed as normal with <code>:</code> or by <code>!</code>.</p></li>
+</ul>
+<div class="fragment">
+<div class="cell" data-output-location="fragment" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1"></a>df <span class="op">=</span> <span class="fu">DataFrame</span>(A<span class="op">=</span><span class="fu">rand</span>(<span class="fl">4</span>), B<span class="op">=</span><span class="ch">'a'</span><span class="op">:</span><span class="ch">'d'</span>, C<span class="op">=</span><span class="fu">collect</span>(<span class="fl">1</span><span class="op">:</span><span class="fl">4</span>))</span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="fu">println</span>(df[!, <span class="op">:</span>A])</span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="fu">println</span>(df[<span class="fl">2</span>,<span class="fl">3</span>])</span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="fu">println</span>(df[<span class="op">:</span>, [<span class="op">:</span>C, <span class="op">:</span>A]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>true
-true
-false</code></pre>
+<pre><code>[0.3139303885607482, 0.0013681164504059096, 0.7494303736397796, 0.34403954432429473]
+2
+4×2 DataFrame
+ Row │ C      A          
+     │ Int64  Float64    
+─────┼───────────────────
+   1 │     1  0.31393
+   2 │     2  0.00136812
+   3 │     3  0.74943
+   4 │     4  0.34404</code></pre>
 </div>
 </div>
 </div>
 </section>
-<section id="custom-types" class="slide level2">
-<h2>Custom Types</h2>
-<ul>
-<li class="fragment"><p>Julia supports custom types which can be inserted into a hierarchy.</p></li>
-<li class="fragment"><p>Custom types are defined with the <code>struct</code> keyword and have named fields.</p></li>
-<li class="fragment"><p>An object is called using the name of the <code>struct</code></p></li>
-</ul>
-<div class="fragment">
-<div class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">struct</span> Stats</span>
-<span id="cb3-2"><a href="#cb3-2"></a>    xbar<span class="op">::</span><span class="dt">Real</span></span>
-<span id="cb3-3"><a href="#cb3-3"></a>    xsig<span class="op">::</span><span class="dt">Real</span></span>
-<span id="cb3-4"><a href="#cb3-4"></a>    xkur<span class="op">::</span><span class="dt">Real</span></span>
-<span id="cb3-5"><a href="#cb3-5"></a><span class="kw">end</span></span>
-<span id="cb3-6"><a href="#cb3-6"></a><span class="fu">Stats</span>(<span class="fl">4</span>,<span class="fl">0.4</span>,<span class="fl">0.1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="130">
-<pre><code>Stats(4, 0.4, 0.1)</code></pre>
-</div>
-</div>
-</div>
-</section>
-<section id="type-constructors" class="slide level2">
-<h2>Type Constructors</h2>
+<section id="modifying-dataframes" class="slide level2">
+<h2>Modifying DataFrames</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <ul>
-<li class="fragment"><p>An object is created by calling the struct name with fields.</p></li>
-<li class="fragment"><p>A type constructor may also be defined in the <code>struct</code> definition and the <code>new</code> method.</p></li>
-<li class="fragment"><p>Objects can now be created with a function constructor.</p></li>
+<li class="fragment"><p>The <code>push!</code> function is used to add more data. The function accepts an ordered tuple.</p></li>
+<li class="fragment"><p>The <code>promote=true</code> can be used when the symbols datatype does not match the data.</p></li>
 </ul>
 </div><div class="column" style="width:50%;">
 <div class="fragment">
-<div class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1"></a><span class="im">using</span> <span class="bu">StatsBase</span>, <span class="bu">Random</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="kw">struct</span> StatsGenerator</span>
-<span id="cb5-3"><a href="#cb5-3"></a>    xmean<span class="op">::</span><span class="dt">Real</span></span>
-<span id="cb5-4"><a href="#cb5-4"></a>    xvar<span class="op">::</span><span class="dt">Real</span></span>
-<span id="cb5-5"><a href="#cb5-5"></a>    xkur<span class="op">::</span><span class="dt">Real</span></span>
-<span id="cb5-6"><a href="#cb5-6"></a>    <span class="kw">function</span> <span class="fu">StatsGenerator</span>(n<span class="op">::</span><span class="dt">Int</span>)</span>
-<span id="cb5-7"><a href="#cb5-7"></a>        <span class="co"># take a sample of n draws</span></span>
-<span id="cb5-8"><a href="#cb5-8"></a>        sample <span class="op">=</span> <span class="fu">randexp</span>(n)</span>
-<span id="cb5-9"><a href="#cb5-9"></a>        av <span class="op">=</span> <span class="fu">round</span>(<span class="fu">mean</span>(sample), digits<span class="op">=</span><span class="fl">3</span>)</span>
-<span id="cb5-10"><a href="#cb5-10"></a>        v <span class="op">=</span> <span class="fu">round</span>(<span class="fu">var</span>(sample), digits<span class="op">=</span><span class="fl">3</span>)</span>
-<span id="cb5-11"><a href="#cb5-11"></a>        k <span class="op">=</span> <span class="fu">round</span>(<span class="fu">kurtosis</span>(sample), digits<span class="op">=</span><span class="fl">3</span>)</span>
-<span id="cb5-12"><a href="#cb5-12"></a>        <span class="fu">new</span>(av, v, k)</span>
-<span id="cb5-13"><a href="#cb5-13"></a>    <span class="kw">end</span></span>
-<span id="cb5-14"><a href="#cb5-14"></a><span class="kw">end</span></span>
-<span id="cb5-15"><a href="#cb5-15"></a></span>
-<span id="cb5-16"><a href="#cb5-16"></a><span class="fu">println</span>([<span class="fu">StatsGenerator</span>(<span class="fl">100</span>), <span class="fu">StatsGenerator</span>(<span class="fl">100</span>), <span class="fu">StatsGenerator</span>(<span class="fl">1000</span>)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-output-location="fragment" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1"></a>df <span class="op">=</span> <span class="fu">DataFrame</span>(S<span class="op">=</span><span class="dt">String</span>[], N<span class="op">=</span><span class="dt">Float64</span>[])</span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="fu">println</span>(<span class="fu">push!</span>(df, (<span class="st">"A string"</span>, <span class="fl">4.4</span>)))</span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="co"># println(push!(df, ('C', 4.4)))</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="fu">println</span>(<span class="fu">push!</span>(df, (<span class="ch">'C'</span>, <span class="fl">4.4</span>), promote<span class="op">=</span><span class="cn">true</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>StatsGenerator[StatsGenerator(0.909, 0.789, 2.788), StatsGenerator(1.009, 0.884, 0.326), StatsGenerator(1.016, 1.044, 5.942)]</code></pre>
+<pre><code>1×2 DataFrame
+ Row │ S         N       
+     │ String    Float64 
+─────┼───────────────────
+   1 │ A string      4.4
+2×2 DataFrame
+ Row │ S         N       
+     │ Any       Float64 
+─────┼───────────────────
+   1 │ A string      4.4
+   2 │ C             4.4</code></pre>
 </div>
 </div>
 </div>
 </div>
 </div>
 </section>
-<section id="changing-objects" class="slide level2">
-<h2>Changing Objects</h2>
+<section id="csv-piping" class="slide level2">
+<h2>CSV Piping</h2>
 <ul>
-<li class="fragment"><p>Julia passes objects by reference - be careful with copying mutable types.</p></li>
-<li class="fragment"><p><code>copy</code> deferences the first layer. <code>deepcopy</code> recursively copies.</p></li>
+<li class="fragment"><p>A common usecase for datascience is importing CSV data.</p></li>
+<li class="fragment"><p>The <code>DataFrame</code> function can be wrapped around a CSV file; or the file piped with <code>|&gt;</code>.</p></li>
+<li class="fragment"><p>A DataFrame may be written to CSV using <code>CSV.write</code>.</p></li>
 </ul>
 <div class="fragment">
-<div class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1"></a>a <span class="op">=</span> <span class="dt">Any</span>[<span class="dt">Any</span>[<span class="fl">1</span>,<span class="fl">2</span>], <span class="dt">Any</span>[<span class="fl">2</span>,<span class="fl">3</span>], <span class="dt">Any</span>[<span class="fl">3</span>,<span class="fl">4</span>], <span class="dt">Any</span>[<span class="fl">4</span>,<span class="fl">5</span>]]</span>
-<span id="cb7-2"><a href="#cb7-2"></a><span class="co">## reference</span></span>
-<span id="cb7-3"><a href="#cb7-3"></a>b1 <span class="op">=</span> a</span>
-<span id="cb7-4"><a href="#cb7-4"></a>b1[<span class="fl">1</span>] <span class="op">=</span> [<span class="st">"a"</span>,<span class="fl">2</span>]</span>
-<span id="cb7-5"><a href="#cb7-5"></a><span class="fu">println</span>(a)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-output-location="fragment" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1"></a><span class="im">using</span> <span class="bu">CSV</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a>df1 <span class="op">=</span> <span class="fu">DataFrame</span>(CSV.<span class="fu">File</span>(<span class="st">"example.csv"</span>))</span>
+<span id="cb6-3"><a href="#cb6-3"></a>df2 <span class="op">=</span> CSV.<span class="fu">File</span>(<span class="st">"example.csv"</span>) <span class="op">|&gt;</span> DataFrame</span>
+<span id="cb6-4"><a href="#cb6-4"></a>df1 <span class="op">==</span> df2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="128">
+<pre><code>true</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="random-number-generation" class="slide level2">
+<h2>Random Number Generation</h2>
+<ul>
+<li class="fragment"><p>The default random function is <code>rand(...)</code> and is highly extensible.</p></li>
+<li class="fragment"><p><code>rand(distribution, nsamples)</code> takes nsamples from a distribution.</p></li>
+<li class="fragment"><p>The default distribution is <span class="math inline">\(U([0,1])\)</span> and default sample number is one. Distributions can be specified as a set.</p></li>
+</ul>
+<div class="fragment">
+<div class="cell" data-output-location="fragment" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1"></a><span class="im">using</span> <span class="bu">Random</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a>rn <span class="op">=</span> <span class="fu">rand</span>()</span>
+<span id="cb8-3"><a href="#cb8-3"></a>rsamp <span class="op">=</span> <span class="fu">rand</span>(<span class="fl">3</span>)</span>
+<span id="cb8-4"><a href="#cb8-4"></a>rsampcustom <span class="op">=</span> <span class="fu">rand</span>([<span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">4</span>,<span class="st">"A"</span>], <span class="fl">5</span>)</span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="fu">display</span>([rn, rsamp, rsampcustom])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>3-element Vector{Any}:
+ 0.8670586065346695
+  [0.24639738482919837, 0.4256291244021718, 0.49045165212590114]
+  Any[1, "A", 4, "A", "A"]</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="seeding-and-permutation" class="slide level2">
+<h2>Seeding and Permutation</h2>
+<ul>
+<li class="fragment"><p>A seed is specified with: <code>Random.seed!(seed_number)</code>.</p></li>
+<li class="fragment"><p>A random permutation is given by the <code>randperm</code> function.</p></li>
+</ul>
+<div class="fragment">
+<div class="cell" data-output-location="fragment" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1"></a><span class="im">using</span> <span class="bu">Random</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="bu">Random</span>.<span class="fu">seed!</span>(<span class="fl">1</span>)</span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="fu">println</span>(<span class="fu">randperm</span>(<span class="fl">5</span>))</span>
+<span id="cb10-4"><a href="#cb10-4"></a><span class="bu">Random</span>.<span class="fu">seed!</span>(<span class="fl">1</span>)</span>
+<span id="cb10-5"><a href="#cb10-5"></a><span class="fu">println</span>(<span class="fu">randperm</span>(<span class="fl">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Any[Any["a", 2], Any[2, 3], Any[3, 4], Any[4, 5]]</code></pre>
+<pre><code>[4, 3, 5, 2, 1]
+[4, 3, 5, 2, 1]</code></pre>
 </div>
 </div>
 </div>
+</section>
+<section id="statistics" class="slide level2">
+<h2>Statistics</h2>
+<ul>
+<li class="fragment"><p>Julia has first class support for statistics.</p></li>
+<li class="fragment"><p>The <code>StatsBase</code> package has the standard statistics functions: <code>mean, var, std, mode, zscore, quantile</code> etc.</p></li>
+<li class="fragment"><p>Weighted statistics are computed with an optional weights vectors; in R they are their own methods.</p></li>
+</ul>
+<div class="fragment">
+<div class="cell" data-output-location="fragment" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1"></a><span class="im">using</span> <span class="bu">StatsBase</span></span>
+<span id="cb12-2"><a href="#cb12-2"></a>x <span class="op">=</span> <span class="fu">rand</span>(<span class="fl">5</span>)</span>
+<span id="cb12-3"><a href="#cb12-3"></a>w <span class="op">=</span> <span class="fu">Weights</span>([<span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>])</span>
+<span id="cb12-4"><a href="#cb12-4"></a><span class="fu">println</span>(<span class="fu">mean</span>(x))</span>
+<span id="cb12-5"><a href="#cb12-5"></a><span class="fu">println</span>(<span class="fu">mean</span>(x, w))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.5162967585244298
+0.5086518596226564</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="distributions" class="slide level2">
+<h2>Distributions</h2>
+<ul>
+<li class="fragment"><p>Julia supports distributions through Distributions package.</p></li>
+<li class="fragment"><p>Distribution fitting is provided through <code>fit(DistributionType, data)</code></p></li>
+<li class="fragment"><p>Distributions can be used in <code>rand</code>.</p></li>
+</ul>
+<div class="fragment">
+<div class="cell" data-output-location="fragment" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1"></a><span class="im">using</span> <span class="bu">Distributions</span></span>
+<span id="cb14-2"><a href="#cb14-2"></a>data <span class="op">=</span> <span class="fu">rand</span>(<span class="fl">100</span>)</span>
+<span id="cb14-3"><a href="#cb14-3"></a>d <span class="op">=</span> <span class="fu">fit</span>(Normal, data)</span>
+<span id="cb14-4"><a href="#cb14-4"></a><span class="fu">rand</span>(d, <span class="fl">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="132">
+<pre><code>4-element Vector{Float64}:
+ 0.429144938555707
+ 0.7461831254934295
+ 0.6104899543409281
+ 0.5791202798362883</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="sampling" class="slide level2">
+<h2>Sampling</h2>
+<ul>
+<li class="fragment"><p><code>sample</code> can be used as alternative to <code>rand</code>.</p></li>
+<li class="fragment"><p><code>sample</code> needs a distribution (can be a categorical vector). Can be weighted.</p></li>
+<li class="fragment"><p>An optional keyword <code>replace=false</code> (default: true) can specify sampling without replacement.</p></li>
+</ul>
+<div class="fragment">
+<div class="cell" data-output-location="fragment" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1"></a><span class="im">using</span> <span class="bu">StatsBase</span></span>
+<span id="cb16-2"><a href="#cb16-2"></a>catdist <span class="op">=</span> [<span class="fl">1</span>,<span class="fl">4</span>,<span class="fl">5</span>,<span class="fl">10</span>]</span>
+<span id="cb16-3"><a href="#cb16-3"></a><span class="fu">println</span>(<span class="fu">sample</span>(catdist, <span class="fl">7</span>))</span>
+<span id="cb16-4"><a href="#cb16-4"></a><span class="fu">println</span>(<span class="fu">sample</span>(catdist, <span class="fl">3</span>, replace<span class="op">=</span><span class="cn">false</span>))</span>
+<span id="cb16-5"><a href="#cb16-5"></a><span class="co"># println(sample(catdist, 7, replace=false))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[5, 1, 5, 1, 5, 10, 5]
+[5, 10, 4]</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="statistics-ecosystem" class="slide level2">
+<h2>Statistics Ecosystem</h2>
+<ul>
+<li class="fragment"><p>The statistics ecosytem is large and well supported.</p></li>
+<li class="fragment"><p>Useful packages: <code>StatsBase, Statistics, Distributions, DataFrames, HypothesisTests</code>.</p></li>
+<li class="fragment"><p>Useful resource: <a href="https://juliastats.org/">JuliaStats</a></p></li>
+</ul>
+</section>
+<section id="functional-programming" class="slide level2">
+<h2>Functional Programming</h2>
+<ul>
+<li class="fragment"><p>Functional programming is a style where functions and data are cleanly seperated.</p></li>
+<li class="fragment"><p>Object oriented programming is where data and functions/methods are attached to objects.</p></li>
+<li class="fragment"><p>Julia lends itself towards functional programming.</p></li>
+</ul>
+</section>
+<section id="map" class="slide level2">
+<h2>Map</h2>
+<ul>
+<li class="fragment"><p><code>map</code> takes a function and applies it to an iterable: vector, range, etc.</p></li>
+<li class="fragment"><p>The function can be a function name, or an anonymous function.</p></li>
+<li class="fragment"><p>Multiple iterables can be passed for functions of multiple variables.</p></li>
+</ul>
 </section>
 <section class="slide level2">
 
 <div class="fragment">
-<div class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1"></a><span class="co">## shallow copy (first layer mutations don't change original object)</span></span>
-<span id="cb9-2"><a href="#cb9-2"></a>b2 <span class="op">=</span> <span class="fu">copy</span>(a)</span>
-<span id="cb9-3"><a href="#cb9-3"></a><span class="fu">println</span>(b2 <span class="op">===</span> a)</span>
-<span id="cb9-4"><a href="#cb9-4"></a>b2[<span class="fl">1</span>] <span class="op">=</span> [<span class="st">"A"</span>,<span class="fl">2</span>]</span>
-<span id="cb9-5"><a href="#cb9-5"></a>b2[<span class="fl">2</span>][<span class="fl">1</span>] <span class="op">=</span> <span class="st">"b"</span></span>
-<span id="cb9-6"><a href="#cb9-6"></a><span class="fu">println</span>(a)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-output-location="fragment" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1"></a>v <span class="op">=</span> <span class="fu">collect</span>(<span class="fl">0</span><span class="op">:</span><span class="fl">0.25</span><span class="op">:</span><span class="cn">pi</span>)</span>
+<span id="cb18-2"><a href="#cb18-2"></a>sin1 <span class="op">=</span> <span class="fu">map</span>(sin, v)</span>
+<span id="cb18-3"><a href="#cb18-3"></a>sin2 <span class="op">=</span> <span class="fu">map</span>(x <span class="op">-&gt;</span> <span class="fu">sin</span>(x), v)</span>
+<span id="cb18-4"><a href="#cb18-4"></a>autod_cos <span class="op">=</span> <span class="fu">map</span>(x <span class="op">-&gt;</span> (<span class="fu">cos</span>(x), <span class="fu">-sin</span>(x)), v)</span>
+<span id="cb18-5"><a href="#cb18-5"></a></span>
+<span id="cb18-6"><a href="#cb18-6"></a>bad_data <span class="op">=</span> <span class="fu">rand</span>([<span class="fl">0</span>,<span class="fl">1</span>], <span class="fu">length</span>(v))</span>
+<span id="cb18-7"><a href="#cb18-7"></a>bad_sin <span class="op">=</span> <span class="fu">map</span>((x,y)<span class="fu">-&gt;</span>(y<span class="op">==</span><span class="fl">1</span> ? <span class="fu">sin</span>(x) <span class="op">:</span> <span class="cn">missing</span>), v, bad_data)</span>
+<span id="cb18-8"><a href="#cb18-8"></a></span>
+<span id="cb18-9"><a href="#cb18-9"></a><span class="fu">println</span>([sin1<span class="op">'</span>, sin2<span class="op">'</span>])</span>
+<span id="cb18-10"><a href="#cb18-10"></a><span class="fu">println</span>(sin1<span class="op">==</span>sin2)</span>
+<span id="cb18-11"><a href="#cb18-11"></a><span class="fu">println</span>(autod_cos)</span>
+<span id="cb18-12"><a href="#cb18-12"></a><span class="fu">println</span>(bad_sin)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>false
-Any[Any["a", 2], Any["b", 3], Any[3, 4], Any[4, 5]]</code></pre>
+<pre><code>LinearAlgebra.Adjoint{Float64, Vector{Float64}}[[0.0 0.24740395925452294 0.479425538604203 0.6816387600233341 0.8414709848078965 0.9489846193555862 0.9974949866040544 0.9839859468739369 0.9092974268256817 0.7780731968879212 0.5984721441039564 0.38166099205233167 0.1411200080598672], [0.0 0.24740395925452294 0.479425538604203 0.6816387600233341 0.8414709848078965 0.9489846193555862 0.9974949866040544 0.9839859468739369 0.9092974268256817 0.7780731968879212 0.5984721441039564 0.38166099205233167 0.1411200080598672]]
+true
+[(1.0, -0.0), (0.9689124217106447, -0.24740395925452294), (0.8775825618903728, -0.479425538604203), (0.7316888688738209, -0.6816387600233341), (0.5403023058681398, -0.8414709848078965), (0.3153223623952687, -0.9489846193555862), (0.0707372016677029, -0.9974949866040544), (-0.17824605564949209, -0.9839859468739369), (-0.4161468365471424, -0.9092974268256817), (-0.6281736227227391, -0.7780731968879212), (-0.8011436155469337, -0.5984721441039564), (-0.9243023786324636, -0.38166099205233167), (-0.9899924966004454, -0.1411200080598672)]
+Union{Missing, Float64}[0.0, 0.24740395925452294, missing, missing, 0.8414709848078965, 0.9489846193555862, missing, missing, missing, 0.7780731968879212, 0.5984721441039564, 0.38166099205233167, missing]</code></pre>
 </div>
 </div>
 </div>
+</section>
+<section id="filter" class="slide level2">
+<h2>Filter</h2>
+<ul>
+<li class="fragment"><p>The <code>filter</code> function behaves similarly to R evaluating a logical condition over an iterable.</p></li>
+<li class="fragment"><p><code>filter!</code> is an in-place operation; <code>filter</code> creates a new copy.</p></li>
+</ul>
 </section>
 <section class="slide level2">
 
 <div class="fragment">
-<div class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1"></a><span class="co">## deep copy (object is completely indistinguishable)</span></span>
-<span id="cb11-2"><a href="#cb11-2"></a>b3 <span class="op">=</span> <span class="fu">deepcopy</span>(a)</span>
-<span id="cb11-3"><a href="#cb11-3"></a><span class="fu">println</span>(b3 <span class="op">===</span> a)</span>
-<span id="cb11-4"><a href="#cb11-4"></a>b3[<span class="fl">3</span>][<span class="fl">1</span>] <span class="op">=</span> <span class="st">"c"</span></span>
-<span id="cb11-5"><a href="#cb11-5"></a><span class="fu">println</span>(a)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-output-location="fragment" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1"></a>a <span class="op">=</span> <span class="fu">collect</span>(<span class="fl">1</span><span class="op">:</span><span class="fl">10</span>)</span>
+<span id="cb20-2"><a href="#cb20-2"></a>b <span class="op">=</span> <span class="fu">filter</span>(iseven, a)</span>
+<span id="cb20-3"><a href="#cb20-3"></a><span class="fu">println</span>(a)</span>
+<span id="cb20-4"><a href="#cb20-4"></a><span class="fu">println</span>(b)</span>
+<span id="cb20-5"><a href="#cb20-5"></a><span class="fu">filter!</span>(isodd, a)</span>
+<span id="cb20-6"><a href="#cb20-6"></a><span class="fu">println</span>(a)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>false
-Any[Any["a", 2], Any["b", 3], Any[3, 4], Any[4, 5]]</code></pre>
+<pre><code>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+[2, 4, 6, 8, 10]
+[1, 3, 5, 7, 9]</code></pre>
 </div>
 </div>
 </div>
 </section>
-<section id="functions-by-reference" class="slide level2">
-<h2>Functions by reference</h2>
+<section id="sum" class="slide level2">
+<h2>Sum</h2>
 <ul>
-<li class="fragment"><p>This applies to objects passed to functions whereas in R they are passed by <em>value</em>.</p></li>
-<li class="fragment"><p>In R a copy of an objects data is used by the functions local environment, in Julia it is the object itself.</p></li>
+<li class="fragment"><p>The <code>sum</code> function supports functions as the first argument; these are applied before summing.</p></li>
+<li class="fragment"><p>The dimension/s which the sum is performed along is given by the <code>dims=(dim1,...)</code> keyword. Default is all.</p></li>
 </ul>
 </section>
 <section class="slide level2">
 
+<div class="fragment">
+<div class="cell" data-output-location="fragment" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1"></a>m <span class="op">=</span> <span class="fu">hcat</span>(<span class="fu">collect</span>(<span class="fl">1</span><span class="op">:</span><span class="fl">10</span>), <span class="fu">collect</span>(<span class="fl">11</span><span class="op">:</span><span class="fl">20</span>))</span>
+<span id="cb22-2"><a href="#cb22-2"></a><span class="fu">sum</span>(x <span class="op">-&gt;</span> x<span class="op">^</span><span class="fl">2</span>, m, dims<span class="op">=</span><span class="fl">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="136">
+<pre><code>10×1 Matrix{Int64}:
+ 122
+ 148
+ 178
+ 212
+ 250
+ 292
+ 338
+ 388
+ 442
+ 500</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="reduce" class="slide level2">
+<h2>Reduce</h2>
 <ul>
-<li class="fragment">R Code</li>
+<li class="fragment"><p>The <code>reduce</code> function behaves exactly the same way as in R.</p></li>
+<li class="fragment"><p>Can support a generic binary operation that can be distributed over an iterable.</p></li>
 </ul>
 <div class="fragment">
-<pre><code>#| echo: true
-#| eval: false
-x &lt;- c(1,2,3,4)
-f &lt;- function(x){x[1] = 10}
-f(x)
-# x is unchanged.</code></pre>
+<div class="cell" data-output-location="fragment" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1"></a>v <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">:</span><span class="fl">20</span></span>
+<span id="cb24-2"><a href="#cb24-2"></a><span class="fu">reduce</span>((x,y)<span class="op">-&gt;</span>x<span class="op">*</span>y<span class="op">^</span><span class="fl">2</span>, v)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="137">
+<pre><code>428670161650355625</code></pre>
 </div>
+</div>
+</div>
+</section>
+<section id="pseudo-outer" class="slide level2">
+<h2>Pseudo-Outer</h2>
 <ul>
-<li class="fragment">Julia Code</li>
+<li class="fragment"><p>R has the <code>outer</code> method which allows for outer product construction.</p></li>
+<li class="fragment"><p>Julia has no <em>specific</em> method but supports it for <em>all</em> generic binary functions through broadcasting.</p></li>
+<li class="fragment"><p>Broadcasting a column vector to a row vector creates a matrix through linear algebra.</p></li>
 </ul>
-<div class="fragment">
-<div class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1"></a>x <span class="op">=</span> [<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span>]</span>
-<span id="cb14-2"><a href="#cb14-2"></a><span class="kw">function</span> <span class="fu">f</span>(x)</span>
-<span id="cb14-3"><a href="#cb14-3"></a>    x[<span class="fl">1</span>] <span class="op">=</span> <span class="fl">10</span></span>
-<span id="cb14-4"><a href="#cb14-4"></a><span class="kw">end</span></span>
-<span id="cb14-5"><a href="#cb14-5"></a><span class="fu">f</span>(x)</span>
-<span id="cb14-6"><a href="#cb14-6"></a><span class="fu">println</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[10, 2, 3, 4]</code></pre>
-</div>
-</div>
-</div>
 </section>
 <section class="slide level2">
 
-<ul>
-<li class="fragment">Functions that mutate their objects are usually denoted by a bang operator.</li>
-</ul>
 <div class="fragment">
-<div class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1"></a>x <span class="op">=</span> <span class="fu">randperm</span>(<span class="fl">5</span>)<span class="ch">'</span></span>
-<span id="cb16-2"><a href="#cb16-2"></a><span class="fu">println</span>(x)</span>
-<span id="cb16-3"><a href="#cb16-3"></a><span class="fu">sort!</span>(x; dims<span class="op">=</span><span class="fl">1</span>)</span>
-<span id="cb16-4"><a href="#cb16-4"></a><span class="fu">println</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[3 1 4 2 5]
-[3 1 4 2 5]</code></pre>
+<div class="cell" data-output-location="fragment" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1"></a><span class="fu">f</span>(x, y) <span class="op">=</span> <span class="fu">sin</span>(x) <span class="op">*</span> <span class="fu">cos</span>(y) <span class="op">+</span> <span class="fu">tan</span>(y)<span class="op">^</span><span class="fl">2</span></span>
+<span id="cb26-2"><a href="#cb26-2"></a>v <span class="op">=</span> <span class="fu">collect</span>(<span class="fl">1</span><span class="op">:</span><span class="fl">10</span>)</span>
+<span id="cb26-3"><a href="#cb26-3"></a><span class="fu">f</span>.(v, v<span class="op">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="138">
+<pre><code>10×10 Matrix{Float64}:
+ 2.88017  4.42422  -0.81273   0.790528  …  46.1136  -0.5621     -0.285683
+ 2.91681  4.396    -0.879878  0.746194     46.1038  -0.623899   -0.342594
+ 2.50177  4.71567  -0.119388  1.24831      46.2155   0.0760107   0.301962
+ 2.01662  5.08934   0.769548  1.83523      46.3462   0.894135    1.05538
+ 1.90741  5.17345   0.969647  1.96734      46.3756   1.07829     1.22498
+ 2.27455  4.89068   0.296939  1.52319   …  46.2767   0.459173    0.654821
+ 2.78049  4.501    -0.630092  0.911115     46.1405  -0.394011   -0.130887
+ 2.96007  4.36268  -0.959138  0.693862     46.0921  -0.696845   -0.409771
+ 2.64819  4.6029   -0.387675  1.07117      46.1761  -0.170904    0.0745749
+ 2.13158  5.00079   0.558896  1.69615      46.3152   0.700264    0.876844</code></pre>
 </div>
 </div>
 </div>
-</section>
-<section id="multiple-dispatch" class="slide level2">
-<h2>Multiple Dispatch</h2>
-<ul>
-<li class="fragment"><p>Functions in Julia may be overloaded with multiple definitions; Packages often do this.</p></li>
-<li class="fragment"><p>The compiler decides which definition to use based on type inference.</p></li>
-</ul>
-<div class="fragment">
-<div class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1"></a><span class="kw">function</span> <span class="fu">custom_modulus</span>(x<span class="op">::</span><span class="dt">Real</span>)</span>
-<span id="cb18-2"><a href="#cb18-2"></a>    <span class="cf">return</span> <span class="fu">abs</span>(x)</span>
-<span id="cb18-3"><a href="#cb18-3"></a><span class="kw">end</span></span>
-<span id="cb18-4"><a href="#cb18-4"></a></span>
-<span id="cb18-5"><a href="#cb18-5"></a><span class="kw">function</span> <span class="fu">custom_modulus</span>(x<span class="op">::</span><span class="dt">Complex</span>)</span>
-<span id="cb18-6"><a href="#cb18-6"></a>    res<span class="op">::</span><span class="dt">Complex </span><span class="op">=</span> <span class="fu">sqrt</span>(x.re<span class="op">^</span><span class="fl">2</span> <span class="op">+</span> x.<span class="cn">im</span><span class="op">^</span><span class="fl">2</span>)</span>
-<span id="cb18-7"><a href="#cb18-7"></a>    <span class="cf">return</span> res</span>
-<span id="cb18-8"><a href="#cb18-8"></a><span class="kw">end</span></span>
-<span id="cb18-9"><a href="#cb18-9"></a></span>
-<span id="cb18-10"><a href="#cb18-10"></a><span class="fu">println</span>([<span class="fu">custom_modulus</span>(<span class="op">-</span><span class="fl">2</span>), <span class="fu">typeof</span>(<span class="fu">custom_modulus</span>(<span class="op">-</span><span class="fl">2</span>))])</span>
-<span id="cb18-11"><a href="#cb18-11"></a><span class="fu">println</span>([<span class="fu">custom_modulus</span>(<span class="op">-</span><span class="fl">2</span><span class="op">+</span><span class="fl">1im</span>), <span class="fu">typeof</span>(<span class="fu">custom_modulus</span>(<span class="op">-</span><span class="fl">2</span><span class="op">+</span><span class="fl">1im</span>))])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Any[2, Int64]
-Any[2.23606797749979 + 0.0im, ComplexF64]</code></pre>
-</div>
-</div>
-</div>
-<aside class="notes">
-<ul>
-<li>This allows for
-<ol type="1">
-<li>Speed: the domain specific efficient methods can be employed.</li>
-<li>Abstraction: domains with different computational objects can be unified under meaningful function constructs</li>
-</ol></li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="functions-broadcasting" class="slide level2">
-<h2>Functions: Broadcasting</h2>
-<ul>
-<li class="fragment"><p>Broadcasting is done with the <code>@broadcast</code> macro, or the <code>.</code> notation.</p></li>
-<li class="fragment"><p>Using the<code>.</code> notation any function can be broadcast onto an array.</p></li>
-<li class="fragment"><p>This is native vectorisation as you might expect in R.</p></li>
-</ul>
-<div class="fragment">
-<div class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1"></a><span class="im">using</span> <span class="bu">StatsBase</span></span>
-<span id="cb20-2"><a href="#cb20-2"></a>samples <span class="op">=</span> [<span class="fu">rand</span>(<span class="fl">100</span>)<span class="op">*</span>i for i <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>]</span>
-<span id="cb20-3"><a href="#cb20-3"></a>variances <span class="op">=</span> <span class="fu">var</span>.(samples)</span>
-<span id="cb20-4"><a href="#cb20-4"></a><span class="fu">println</span>(variances)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[0.08584090919989679, 0.3625153119275073, 0.8245971308803981, 1.501499219799952, 1.9577592471932412]</code></pre>
-</div>
-</div>
-</div>
-</section>
-<section id="functions-vectorisation" class="slide level2">
-<h2>Functions: Vectorisation</h2>
-<ul>
-<li class="fragment"><p>There is no performance hit to <em>not</em> vectorising unlike R which <em>must</em> be vectorised.</p></li>
-<li class="fragment"><p>Choose the format that comes naturally when writing code.</p></li>
-<li class="fragment"><p><em>Don’t</em> spend time posing the problem in linear algebra format unless it make sense.</p></li>
-</ul>
-</section>
-<section id="packages" class="slide level2">
-<h2>Packages</h2>
-<ul>
-<li class="fragment"><p>Packages are a collection of function and type defintions.</p></li>
-<li class="fragment"><p>Packages in Julia are loaded with the <code>using</code> keyword. Some are included in the base installation.</p></li>
-</ul>
-<div class="fragment">
-<div class="cell" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1"></a><span class="im">using</span> <span class="bu">Random</span></span>
-<span id="cb22-2"><a href="#cb22-2"></a><span class="fu">randperm</span>(<span class="fl">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="139">
-<pre><code>5-element Vector{Int64}:
- 4
- 1
- 2
- 5
- 3</code></pre>
-</div>
-</div>
-</div>
-</section>
-<section class="slide level2">
-
-<ul>
-<li class="fragment">Package functions are imported into the namespace; and can also be accessed using <code>PkgName.function</code>.</li>
-</ul>
-<div class="fragment">
-<div class="cell" data-execution_count="12">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1"></a><span class="im">using</span> <span class="bu">StatsBase</span>, <span class="bu">Random</span></span>
-<span id="cb24-2"><a href="#cb24-2"></a>vec <span class="op">=</span> <span class="bu">Random</span>.<span class="fu">randperm</span>(<span class="fl">100</span>)</span>
-<span id="cb24-3"><a href="#cb24-3"></a>stdv100 <span class="op">=</span> <span class="fu">std</span>(vec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="140">
-<pre><code>29.011491975882016</code></pre>
-</div>
-</div>
-</div>
-</section>
-<section id="package-manager" class="slide level2">
-<h2>Package manager</h2>
-<ul>
-<li class="fragment"><p>Package management in Julia is easing using the Pkg package, or the package environment.</p></li>
-<li class="fragment"><p>To access package press <code>]</code> in the REPL. To exit press <code>:esc</code> in the enviroment.</p></li>
-<li class="fragment"><p>To add/remove/build a package use the <code>add</code>/<code>remove</code>/<code>build</code> keywords in the package manager followed by the package name.</p></li>
-<li class="fragment"><p>Alternatively Pkg.add(“PkgName”). Equivalently: <code>Pkg.remove</code>, <code>Pkg.build</code>.</p></li>
-</ul>
-</section>
-<section id="macros" class="slide level2">
-<h2>Macros</h2>
-<ul>
-<li class="fragment"><p>Macros are useful shorthands for blocks of code; often packages export there own macros</p></li>
-<li class="fragment"><p>Macros are used with the <code>@macro</code> syntax placed before a code block.</p></li>
-<li class="fragment"><p>Useful benchmarking macros are: <span class="citation" data-cites="time">@time</span> (Base), <span class="citation" data-cites="btime">@btime</span> &amp; <span class="citation" data-cites="benchmark">@benchmark</span> (Benchmarking Tools), <span class="citation" data-cites="profile">@profile</span> (Profile).</p></li>
-</ul>
-<div class="fragment">
-<div class="cell" data-execution_count="13">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1"></a>x <span class="op">=</span> <span class="fl">0</span></span>
-<span id="cb26-2"><a href="#cb26-2"></a><span class="pp">@time</span> <span class="cf">for</span> i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">100000</span></span>
-<span id="cb26-3"><a href="#cb26-3"></a>x <span class="op">*=</span> x<span class="op">^</span>i</span>
-<span id="cb26-4"><a href="#cb26-4"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  0.009193 seconds (99.49 k allocations: 1.518 MiB)</code></pre>
-</div>
-</div>
-</div>
-</section>
-<section id="data-io" class="slide level2">
-<h2>Data I/O</h2>
-<ul>
-<li class="fragment"><p>Julia supports low level IO through <code>read</code> and <code>write</code> functions.</p></li>
-<li class="fragment"><p>Julia objects can be saved through the <code>FileIO</code> package. <code>save("path", object, "save_name")</code>, and <code>load("path", "save_name")</code>.</p></li>
-<li class="fragment"><p>CSV is a package for CSV with readcsv with <code>CSV.read</code>, and <code>CVS.write</code> analogous to <code>read_csv</code> and <code>write_csv</code> in R. <code>CSV.File("path")</code> creates an object useful for piping.</p></li>
-<li class="fragment"><p>DelimitedFiles is a package for generic delimiters with <code>writedlm("dir", obj, delim)</code> and <code>readdlm("path", delim)</code>.</p></li>
-</ul>
-<aside class="notes">
-<ul>
-<li><p>In general it is better to use the high level API calls rather than <code>read</code> and <code>write</code>.</p></li>
-<li><p><code>save</code> can save a dictionary. <code>load("path")</code> loads the path as a whole dictionary.</p></li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="workflow-module" class="slide level2">
-<h2>Workflow: Module</h2>
-<ul>
-<li class="fragment"><p>Having a large script with many static function definitions is unwieldy.</p></li>
-<li class="fragment"><p>A module can be used to abstract many functions and types away and export only necessary functions.</p></li>
-<li class="fragment"><p>It acts like a local package.</p></li>
-</ul>
-</section>
-<section id="creating-a-module" class="slide level2">
-<h2>Creating a Module</h2>
-<ul>
-<li class="fragment"><p>A module enviroment is created using the <code>module PackageName</code> syntax.</p></li>
-<li class="fragment"><p>Definitions are exported using the <code>export</code> keyword.</p></li>
-<li class="fragment"><p>A module is included in a script with <code>include("path/to/module")</code> and using .PackagName<code>or</code>using Main.PackageName`.</p></li>
-</ul>
-<div class="fragment">
-
-</div>
-</section>
-<section id="workflow-revise" class="slide level2">
-<h2>Workflow: Revise</h2>
-<ul>
-<li class="fragment"><p>Including a module imports new functions to the namespace which results in conflicts.</p></li>
-<li class="fragment"><p>Starting a new session resolves this, but incurs start-up time penalty.</p></li>
-<li class="fragment"><p>The <code>Revise</code> package tracks changes in files included with <code>includet("path/to/file")</code>.</p></li>
-<li class="fragment"><p>This allows for developing modules.</p></li>
-</ul>
-</section>
-<section id="workflow-environments" class="slide level2">
-<h2>Workflow: Environments</h2>
-<ul>
-<li class="fragment"><p>An environment is a version controlled local version of Julia.</p></li>
-<li class="fragment"><p>It includes a Project.toml, and Manifest.toml which list pacakge dependencies.</p></li>
-<li class="fragment"><p>They are good for reproducible code.</p></li>
-<li class="fragment"><p>They can be upgraded into a package easily.</p></li>
-</ul>
-</section>
-<section id="creating-environments" class="slide level2">
-<h2>Creating Environments</h2>
-<ul>
-<li class="fragment"><p>Start a Julia session in the parent directory of an environment.</p></li>
-<li class="fragment"><p>Generate the enviroment with the package manager <code>]generate PackageName</code></p></li>
-<li class="fragment"><p>This creates a directory called PackageName with a Manifest, Project, and src files.</p></li>
-</ul>
-</section>
-<section id="activating-enviroments" class="slide level2">
-<h2>Activating Enviroments</h2>
-<ul>
-<li class="fragment"><p>Navigate to the enviroment directory and start a Julia session with <code>julia --project=.</code></p></li>
-<li class="fragment"><p>Alternatively, start julia in the directory and use the package manager: <code>]activate .</code></p></li>
-<li class="fragment"><p>Once the environment is activated the package may be included with <code>using PackageName</code></p></li>
-<li class="fragment"><p>There is <em>no</em> dot.</p></li>
-</ul>
-</section>
-<section id="environements-and-revise" class="slide level2">
-<h2>Environements and Revise</h2>
-<ul>
-<li class="fragment"><p>In the enviroment <code>using Revise</code> will track all changes.</p></li>
-<li class="fragment"><p>This allows splitting a module into several files.</p></li>
-<li class="fragment"><p>This can be useful for organisation in large projects.</p></li>
-</ul>
 <div class="footer footer-default">
 
 </div>
@@ -810,20 +762,20 @@ Any[2.23606797749979 + 0.0im, ComplexF64]</code></pre>
   </div>
 
   <script>window.backupDefine = window.define; window.define = undefined;</script>
-  <script src="lecture2_files/libs/revealjs/dist/reveal.js"></script>
+  <script src="lecture3_files/libs/revealjs/dist/reveal.js"></script>
   <!-- reveal.js plugins -->
-  <script src="lecture2_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
-  <script src="lecture2_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
-  <script src="lecture2_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
-  <script src="lecture2_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
-  <script src="lecture2_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
-  <script src="lecture2_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  <script src="lecture3_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="lecture3_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="lecture3_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="lecture3_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="lecture3_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="lecture3_files/libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
-  <script src="lecture2_files/libs/revealjs/plugin/notes/notes.js"></script>
-  <script src="lecture2_files/libs/revealjs/plugin/search/search.js"></script>
-  <script src="lecture2_files/libs/revealjs/plugin/zoom/zoom.js"></script>
-  <script src="lecture2_files/libs/revealjs/plugin/math/math.js"></script>
+  <script src="lecture3_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="lecture3_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="lecture3_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="lecture3_files/libs/revealjs/plugin/math/math.js"></script>
   <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
 
   <script>

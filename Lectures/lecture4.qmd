@@ -4,10 +4,14 @@ subtitle: " Performance Computing"
 author: "Nicholas Gale and Stephen Eglen"
 format:
   revealjs:
-   slide-number: true
-   logo: julia_image.png
+    slide-number: true
+    theme: serif
+    chalkboard: true 
+    transition: concave
+    background-transition: convex
+    incremental: true
+    background-image: julia_background.png
 ---
-
 
 ## Plots
 
@@ -86,7 +90,7 @@ plot(p1, p2, p3, p4; layout=L)
 using DataFrames, CSV, StatsPlots
 
 experiment = CSV.File("plotting_data.csv") |> DataFrame
-@df experiment density(:BodyLength, group = (:Planet, :Diet), legend=:TopRight)
+@df experiment density(:BodyLength, group = (:Planet, :Diet), legend=:topright)
 ```
 
 ## Save Plots
@@ -100,7 +104,7 @@ experiment = CSV.File("plotting_data.csv") |> DataFrame
 ```{julia}
 #| echo: true
 plt = plot(collect(1:10), rand(10); st=:scatter)
-savefig("my_first_plot.png", plt)
+savefig(plt, "my_first_plot.png")
 ```
 
 ## Animate

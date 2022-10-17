@@ -1,5 +1,5 @@
 ---
-title: "Scientific Programming in Julia"
+title: "Scientific Programming in Julia: Lecture 2"
 subtitle: "Package Management, Advanced Concepts, and Worflows"
 author: "Nicholas Gale & Stephen Eglen"
 format:
@@ -19,6 +19,7 @@ format:
 * Function definitions can apply to all subtypes.
 
 * Sub/super type can be checked with `<:`.
+
 
 ::: fragment 
 ```{julia}
@@ -137,9 +138,9 @@ println(a)
 
 * In R a copy of an objects data is used by the functions local environment, in Julia it is the object itself.
 
+* Functions that mutate their objects are usually denoted by a bang operator.
 
 ---
-
 * R Code
 
 ::: fragment
@@ -154,7 +155,6 @@ f(x)
 :::
 
 * Julia Code
-
 ::: fragment 
 ```{julia}
 #| echo: true
@@ -167,9 +167,6 @@ println(x)
 ```
 :::
 
----
-
-* Functions that mutate their objects are usually denoted by a bang operator.
 
 ::: fragment 
 ```{julia}
@@ -309,77 +306,15 @@ end
 
 :::
 
+## Performance: Data Access Patterns
+
+## Performance: @inbounds and @simd
+
+## Performance: Strict Typing
+
 ## Workflow: Module
-
-* Having a large script with many static function definitions is unwieldy.
-
-* A module can be used to abstract many functions and types away and export only necessary functions.
-
-* It acts like a local package.
-
-## Creating a Module
-
-* A module enviroment is created using the `module PackageName` syntax.
-
-* Definitions are exported using the `export` keyword.
-
-* A module is included in a script with `include("path/to/module")` and using .PackagName` or `using Main.PackageName`.
-
-::: fragment
-```{julia}
-module BasicStats
-export std
-mean(x) = sum(x)/length(x)
-std(x) = sqrt(sum((x .- mean(x)).^2)/length(x))
-end
-using .BasicStats
-```
-:::
 
 ## Workflow: Revise
 
-* Including a module imports new functions to the namespace which results in conflicts.
-
-* Starting a new session resolves this, but incurs start-up time penalty.
-
-* The `Revise` package tracks changes in files included with `includet("path/to/file")`.
-
-* This allows for developing modules.
-
 ## Workflow: Environments
-
-* An environment is a version controlled local version of Julia.
-
-* It includes a Project.toml, and Manifest.toml which list pacakge dependencies.
-
-* They are good for reproducible code.
-
-* They can be upgraded into a package easily.
-
-## Creating Environments
-
-* Start a Julia session in the parent directory of an environment.
-
-* Generate the enviroment with the package manager `]generate PackageName`
-
-* This creates a directory called PackageName with a Manifest, Project, and src files.
-
-## Activating Enviroments
-
-* Navigate to the enviroment directory and start a Julia session with `julia --project=.`
-
-* Alternatively, start julia in the directory and use the package manager: `]activate .`
-
-* Once the environment is activated the package may be included with `using PackageName`
-
-* There is *no* dot.
-
-## Environements and Revise
-
-* In the enviroment `using Revise` will track all changes.
-
-* This allows splitting a module into several files.
-
-* This can be useful for organisation in large projects.
-
 

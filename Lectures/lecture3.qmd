@@ -4,8 +4,13 @@ subtitle: "Statistics, Functional Programming, and Performance Computing"
 author: "Nicholas Gale and Stephen Eglen"
 format:
   revealjs:
-   slide-number: true
-   logo: julia_image.png
+    slide-number: true
+    theme: serif
+    chalkboard: true 
+    transition: concave
+    background-transition: convex
+    incremental: true
+    background-image: julia_background.png
 ---
 
 ## DataFrames
@@ -25,12 +30,15 @@ format:
 
 * Any empty data frame can be initialised by empty typed data vectors.
 
+::: fragment
 ```{julia}
+#| output-location: fragment
 #| echo: true
 using DataFrames
 df1 = DataFrame(x=rand(5), y=rand(5));
 df2 = DataFrame(x=Float64[], st=String[]);
 ```
+:::
 
 ## Accessing DataFrames
 
@@ -38,27 +46,42 @@ df2 = DataFrame(x=Float64[], st=String[]);
 
 * Entire rows can be indexed as normal with `:` or by `!`.
 
+::: fragment
 ```{julia}
+#| output-location: fragment
 #| echo: true
-df = DataFrame(A=rand(10), B='a':'j', C=collect(1:10))
+df = DataFrame(A=rand(4), B='a':'d', C=collect(1:4))
 println(df[!, :A])
-println(df[2,3]
-println(df[:, [:C, :A])
+println(df[2,3])
+println(df[:, [:C, :A]])
 ```
+:::
 
 ## Modifying DataFrames
 
+:::: {.columns}
+
+::: {.column width="50%"}
 * The `push!` function is used to add more data. The function accepts an ordered tuple.
 
 * The `promote=true` can be used when the symbols datatype does not match the data.
+:::
 
+::: {.column width="50%"}
+
+::: fragment
 ```{julia}
+#| output-location: fragment
 #| echo: true
 df = DataFrame(S=String[], N=Float64[])
-println(push!(df, ("A string", 4.4))
-println(push!(df, ('C', 4.4))
-println(push!(df, ('C', 4.4), promote=true)
+println(push!(df, ("A string", 4.4)))
+# println(push!(df, ('C', 4.4)))
+println(push!(df, ('C', 4.4), promote=true))
 ```
+:::
+
+:::
+::::
 
 ## CSV Piping
 
@@ -67,13 +90,17 @@ println(push!(df, ('C', 4.4), promote=true)
 * The `DataFrame` function can be wrapped around a CSV file; or the file piped with `|>`.
 
 * A DataFrame may be written to CSV using `CSV.write`.
+
+::: fragment
 ```{julia}
+#| output-location: fragment
 #| echo: true
 using CSV
 df1 = DataFrame(CSV.File("example.csv"))
 df2 = CSV.File("example.csv") |> DataFrame
 df1 == df2
 ```
+:::
 
 ## Random Number Generation
 
@@ -83,20 +110,26 @@ df1 == df2
 
 * The default distribution is $U([0,1])$ and default sample number is one. Distributions can be specified as a set.
 
+::: fragment
 ```{julia}
+#| output-location: fragment
 #| echo: true
 using Random
 rn = rand()
-rsamp = rand(5)
+rsamp = rand(3)
 rsampcustom = rand([0,1,4,"A"], 5)
+display([rn, rsamp, rsampcustom])
 ```
+:::
 ## Seeding and Permutation
 
 * A seed is specified with: `Random.seed!(seed_number)`.
 
 * A random permutation is given by the `randperm` function.
 
+::: fragment
 ```{julia}
+#| output-location: fragment
 #| echo: true
 using Random
 Random.seed!(1)
@@ -104,6 +137,7 @@ println(randperm(5))
 Random.seed!(1)
 println(randperm(5))
 ```
+:::
 ## Statistics
 
 * Julia has first class support for statistics.
@@ -112,13 +146,17 @@ println(randperm(5))
 
 * Weighted statistics are computed with an optional weights vectors; in R they are their own methods.
 
+::: fragment
 ```{julia}
-#! echo: true
+#| output-location: fragment
+#| echo: true
 using StatsBase
 x = rand(5)
 w = Weights([2, 1, 4, 4, 4])
 println(mean(x))
 println(mean(x, w))
+```
+:::
 
 ## Distributions
 
@@ -128,13 +166,16 @@ println(mean(x, w))
 
 * Distributions can be used in ``rand``.
 
+::: fragment
 ```{julia}
+#| output-location: fragment
 #| echo: true
 using Distributions
 data = rand(100)
 d = fit(Normal, data)
 rand(d, 4)
 ```
+:::
 ## Sampling
 
 * `sample` can be used as alternative to `rand`.
@@ -143,14 +184,17 @@ rand(d, 4)
 
 * An optional keyword `replace=false` (default: true) can specify sampling without replacement.
 
+::: fragment
 ```{julia}
+#| output-location: fragment
 #| echo: true
 using StatsBase
 catdist = [1,4,5,10]
 println(sample(catdist, 7))
 println(sample(catdist, 3, replace=false))
-println(sample(catdist, 7, replcae=false))
+# println(sample(catdist, 7, replace=false))
 ```
+:::
 
 ## Statistics Ecosystem
 
@@ -175,8 +219,12 @@ println(sample(catdist, 7, replcae=false))
 
 * Multiple iterables can be passed for functions of multiple variables.
 
+---
+
+::: fragment
 ```{julia}
-#| echo = true
+#| output-location: fragment
+#| echo: true
 v = collect(0:0.25:pi)
 sin1 = map(sin, v)
 sin2 = map(x -> sin(x), v)
@@ -187,17 +235,22 @@ bad_sin = map((x,y)->(y==1 ? sin(x) : missing), v, bad_data)
 
 println([sin1', sin2'])
 println(sin1==sin2)
-println(autod_cos')
-println(bad_sin')
+println(autod_cos)
+println(bad_sin)
 ```
+:::
  
 ## Filter
 * The `filter` function behaves similarly to R evaluating a logical condition over an iterable.
 
 * `filter!` is an in-place operation; `filter` creates a new copy.
 
+---
+
+::: fragment
 ```{julia}
-#| echo = true
+#| output-location: fragment
+#| echo: true
 a = collect(1:10)
 b = filter(iseven, a)
 println(a)
@@ -205,6 +258,7 @@ println(b)
 filter!(isodd, a)
 println(a)
 ```
+:::
 
 
 ## Sum
@@ -213,11 +267,16 @@ println(a)
 
 * The dimension/s which the sum is performed along is given by the `dims=(dim1,...)` keyword. Default is all.
 
+---
+
+::: fragment
 ```{julia}
+#| output-location: fragment
 #| echo: true
 m = hcat(collect(1:10), collect(11:20))
 sum(x -> x^2, m, dims=2)
 ```
+:::
 
 ## Reduce
 
@@ -225,11 +284,14 @@ sum(x -> x^2, m, dims=2)
 
 * Can support a generic binary operation that can be distributed over an iterable.
 
+::: fragment
 ```{julia}
+#| output-location: fragment
 #| echo: true
 v = 1:2:20
 reduce((x,y)->x*y^2, v)
 ```
+:::
 
 ## Pseudo-Outer
 
@@ -239,10 +301,15 @@ reduce((x,y)->x*y^2, v)
 
 * Broadcasting a column vector to a row vector creates a matrix through linear algebra.
 
+---
+
+::: fragment
 ```{julia}
+#| output-location: fragment
 #| echo: true
 f(x, y) = sin(x) * cos(y) + tan(y)^2
 v = collect(1:10)
 f.(v, v')
 ```
+:::
 
