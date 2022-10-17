@@ -1,0 +1,248 @@
+---
+title: "Scientific Programming in Julia"
+subtitle: "Statistics, Functional Programming, and Performance Computing"
+author: "Nicholas Gale and Stephen Eglen"
+format:
+  revealjs:
+   slide-number: true
+   logo: julia_image.png
+---
+
+## DataFrames
+
+* Dataframes are tabular data with named columns (or factors in R).
+
+* They are supported using the `DataFrames` package.
+
+* The names are given in symbols.
+
+
+## Using DataFrames
+
+* They can be initialised, loaded, or constructed. 
+
+* To initalise a data frame use the `dataframe(colname1=data1, colname2=data2)`
+
+* Any empty data frame can be initialised by empty typed data vectors.
+
+```{julia}
+#| echo: true
+using DataFrames
+df1 = DataFrame(x=rand(5), y=rand(5));
+df2 = DataFrame(x=Float64[], st=String[]);
+```
+
+## Accessing DataFrames
+
+* Data indexed as a matrix, by a rows and symbols.
+
+* Entire rows can be indexed as normal with `:` or by `!`.
+
+```{julia}
+#| echo: true
+df = DataFrame(A=rand(10), B='a':'j', C=collect(1:10))
+println(df[!, :A])
+println(df[2,3]
+println(df[:, [:C, :A])
+```
+
+## Modifying DataFrames
+
+* The `push!` function is used to add more data. The function accepts an ordered tuple.
+
+* The `promote=true` can be used when the symbols datatype does not match the data.
+
+```{julia}
+#| echo: true
+df = DataFrame(S=String[], N=Float64[])
+println(push!(df, ("A string", 4.4))
+println(push!(df, ('C', 4.4))
+println(push!(df, ('C', 4.4), promote=true)
+```
+
+## CSV Piping
+
+* A common usecase for datascience is importing CSV data.
+
+* The `DataFrame` function can be wrapped around a CSV file; or the file piped with `|>`.
+
+* A DataFrame may be written to CSV using `CSV.write`.
+```{julia}
+#| echo: true
+using CSV
+df1 = DataFrame(CSV.File("example.csv"))
+df2 = CSV.File("example.csv") |> DataFrame
+df1 == df2
+```
+
+## Random Number Generation
+
+* The default random function is `rand(...)` and is highly extensible.
+
+* `rand(distribution, nsamples)` takes nsamples from a distribution.
+
+* The default distribution is $U([0,1])$ and default sample number is one. Distributions can be specified as a set.
+
+```{julia}
+#| echo: true
+using Random
+rn = rand()
+rsamp = rand(5)
+rsampcustom = rand([0,1,4,"A"], 5)
+```
+## Seeding and Permutation
+
+* A seed is specified with: `Random.seed!(seed_number)`.
+
+* A random permutation is given by the `randperm` function.
+
+```{julia}
+#| echo: true
+using Random
+Random.seed!(1)
+println(randperm(5))
+Random.seed!(1)
+println(randperm(5))
+```
+## Statistics
+
+* Julia has first class support for statistics.
+
+* The `StatsBase` package has the standard statistics functions: `mean, var, std, mode, zscore, quantile` etc.
+
+* Weighted statistics are computed with an optional weights vectors; in R they are their own methods.
+
+```{julia}
+#! echo: true
+using StatsBase
+x = rand(5)
+w = Weights([2, 1, 4, 4, 4])
+println(mean(x))
+println(mean(x, w))
+
+## Distributions
+
+* Julia supports distributions through Distributions package.
+
+* Distribution fitting is provided through ``fit(DistributionType, data)``
+
+* Distributions can be used in ``rand``.
+
+```{julia}
+#| echo: true
+using Distributions
+data = rand(100)
+d = fit(Normal, data)
+rand(d, 4)
+```
+## Sampling
+
+* `sample` can be used as alternative to `rand`.
+
+* `sample` needs a distribution (can be a categorical vector). Can be weighted.
+
+* An optional keyword `replace=false` (default: true) can specify sampling without replacement.
+
+```{julia}
+#| echo: true
+using StatsBase
+catdist = [1,4,5,10]
+println(sample(catdist, 7))
+println(sample(catdist, 3, replace=false))
+println(sample(catdist, 7, replcae=false))
+```
+
+## Statistics Ecosystem
+
+* The statistics ecosytem is large and well supported.
+
+* Useful packages: ``StatsBase, Statistics, Distributions, DataFrames, HypothesisTests``.
+
+* Useful resource: [JuliaStats](https://juliastats.org/)
+
+## Functional Programming
+
+* Functional programming is a style where functions and data are cleanly seperated.
+
+* Object oriented programming is where data and functions/methods are attached to objects.
+
+* Julia lends itself towards functional programming.
+
+## Map
+* `map` takes a function and applies it to an iterable: vector, range, etc.
+
+* The function can be a function name, or an anonymous function.
+
+* Multiple iterables can be passed for functions of multiple variables.
+
+```{julia}
+#| echo = true
+v = collect(0:0.25:pi)
+sin1 = map(sin, v)
+sin2 = map(x -> sin(x), v)
+autod_cos = map(x -> (cos(x), -sin(x)), v)
+
+bad_data = rand([0,1], length(v))
+bad_sin = map((x,y)->(y==1 ? sin(x) : missing), v, bad_data)
+
+println([sin1', sin2'])
+println(sin1==sin2)
+println(autod_cos')
+println(bad_sin')
+```
+ 
+## Filter
+* The `filter` function behaves similarly to R evaluating a logical condition over an iterable.
+
+* `filter!` is an in-place operation; `filter` creates a new copy.
+
+```{julia}
+#| echo = true
+a = collect(1:10)
+b = filter(iseven, a)
+println(a)
+println(b)
+filter!(isodd, a)
+println(a)
+```
+
+
+## Sum
+
+* The `sum` function supports functions as the first argument; these are applied before summing.
+
+* The dimension/s which the sum is performed along is given by the `dims=(dim1,...)` keyword. Default is all.
+
+```{julia}
+#| echo: true
+m = hcat(collect(1:10), collect(11:20))
+sum(x -> x^2, m, dims=2)
+```
+
+## Reduce
+
+* The `reduce` function behaves exactly the same way as in R.
+
+* Can support a generic binary operation that can be distributed over an iterable.
+
+```{julia}
+#| echo: true
+v = 1:2:20
+reduce((x,y)->x*y^2, v)
+```
+
+## Pseudo-Outer
+
+* R has the `outer` method which allows for outer product construction.
+
+* Julia has no *specific* method but supports it for *all* generic binary functions through broadcasting.
+
+* Broadcasting a column vector to a row vector creates a matrix through linear algebra.
+
+```{julia}
+#| echo: true
+f(x, y) = sin(x) * cos(y) + tan(y)^2
+v = collect(1:10)
+f.(v, v')
+```
+

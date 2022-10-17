@@ -1,0 +1,278 @@
+---
+title: "Scientific Programming in Julia: Lecture 2"
+subtitle: "Package Management, Advanced Concepts, and Worflows"
+author: "Nicholas Gale & Stephen Eglen"
+format:
+  revealjs:
+    slide-number: true
+    logo: julia_image.png
+
+---
+## Types and Hierarchy {.slide-number=true}
+
+* Julia has a hierarchy of types e.g. Int <: Real <: Number <: Any.
+
+* Function definitions can apply to all subtypes.
+
+* Sub/super type can be checked with `<:`.
+
+
+```{julia}
+#| echo: true
+println(Int64 <: Real)
+println(Float64 <: Real)
+println(Int64 <: Float64)
+```
+
+## Custom Types
+
+* Julia supports custom types which can be inserted into a hierarchy.
+
+* Custom types are defined with the `struct` keyword and have named fields.
+
+* An object is called using the name of the `struct`
+```{julia}
+#| echo: true
+
+struct Stats
+## a statistics container of the mean, variance, and kurtosis entered by user
+	xbar::Real
+	xsig::Real
+	xkur::Real
+end
+
+Stats(4,0.4,0.1)
+```
+
+## Type Constructors
+
+::::{.columns}
+
+:::{.column width="50%"}
+* An object is created by calling the struct name with fields.
+
+* A type constructor may also be defined in the `struct` definition and the `new` method.
+
+* Objects can now be created with a function constructor.
+:::
+
+:::{.column width="50%"}
+```{julia}
+#| echo: true
+using StatsBase
+struct StatsGenerator
+	xmean::Real
+	xvar::Real
+	xkur::Real
+	function StatsGenerator(n::Int)
+		# take a sample of n draws
+		sample = randexp(n)
+		av = round(mean(sample), digits=3)
+		v = round(var(sample), digits=3)
+		k = round(kurtosis(sample), digits=3)
+		new(av, v, k)
+	end
+end
+
+println([StatsGenerator(100), StatsGenerator(100), StatsGenerator(1000)])
+```
+:::
+
+::::
+
+## Mutable Types
+
+## Changing Objects {.scrollable}
+
+* Julia passes objects by reference - be careful with copying mutable types.
+
+* ``copy`` deferences the first layer. ``deepcopy`` recursively copies. 
+
+```{julia}
+#| echo: true
+a = Any[Any[1,2], Any[2,3], Any[3,4], Any[4,5]]
+
+## reference
+b1 = a
+b1[1] = ["a",2]
+println(a)
+
+## shallow copy (first layer mutations don't change original object)
+b2 = copy(a)
+println(b2 === a)
+b2[1] = ["A",2]
+b2[2][1] = "b"
+println(a)
+
+## deep copy (object is completely indistinguishable)
+b3 = deepcopy(a)
+println(b3 === a)
+b3[3][1] = "c"
+println(a)
+```
+
+## Functions by reference
+
+* This applies to objects passed to functions whereas in R they are passed by *value*.
+
+* In R a copy of an objects data is used by the functions local environment, in Julia it is the object itself.
+
+* Functions that mutate their objects are usually denoted by a bang operator.
+
+```{r}
+#| echo: true
+x <- c(1,2,3,4)
+f <- function(x){x[1] = 10}
+f(x)
+print(x)
+```
+
+```{julia}
+#| echo: true
+x = [1,2,3,4]
+function f(x)
+	x[1] = 10
+end
+f(x)
+println(x)
+```
+
+
+```{julia}
+#| echo: true
+x = randperm(5)'
+println(x)
+sort!(x)
+println(x)
+```
+## Multiple Dispatch
+
+* Functions in Julia may be overloaded with multiple definitions; Packages often do this.
+
+* The compiler decides which definition to use based on type inference.
+
+```{julia}
+#| echo: true
+function custom_modulus(x::Real)
+	return abs(x)
+end
+
+function custom_modulus(x::Complex)
+	res::Complex = sqrt(x.re^2 + x.im^2)
+	return res
+end
+
+println([custom_modulus(-2), typeof(custom_modulus(-2))])
+println([custom_modulus(-2+1im), typeof(custom_modulus(-2+1im))])
+```
+
+::: {.notes}
+* This allows for 
+	1. Speed: the domain specific efficient methods can be employed.
+	2. Abstraction: domains with different computational objects can be unified under meaningful function constructs
+:::
+
+
+## Functions: Broadcasting
+
+* Broadcasting is done with the `@broadcast` macro, or the `.` notation.
+
+* Using the`.` notation any function can be broadcast onto an array.
+
+* This is native vectorisation as you might expect in R.
+
+```{julia}
+#| echo: true
+using StatsBase
+samples = [rand(100)*i for i in 1:5]
+variances = var.(samples)
+println(variances)
+```
+
+## Functions: Vectorisation
+
+* There is no performance hit to *not* vectorising unlike R which *must* be vectorised.
+
+* Choose the format that comes naturally when writing code.
+
+* *Don't* spend time posing the problem in linear algebra format unless it make sense.
+
+## Packages
+
+* Packages are a collection of function and type defintions.
+
+* Packages in Julia are loaded with the `using` keyword. Some are included in the base installation.
+
+```{julia}
+#| echo: true
+using Random
+randperm(5)
+```
+---
+* Package functions are imported into the namespace; and can also be accessed using `PkgName.function`.
+
+```{julia}
+#| echo: true
+using StatsBase, Random
+vec = Random.randperm(100)
+stdv100 = std(vec)
+```
+
+## Package manager
+
+* Package management in Julia is easing using the Pkg package, or the package environment.
+
+* To access package press `]` in the REPL. To exit press `:esc` in the enviroment.
+
+* To add/remove/build a package use the `add`/`remove`/`build` keywords in the package manager followed by the package name. 
+
+* Alternatively Pkg.add("PkgName"). Equivalently: `Pkg.remove`, `Pkg.build`.
+
+
+## Macros
+
+* Macros are useful shorthands for blocks of code; often packages export there own macros
+
+* Macros are used with the `@macro` syntax placed before a code block.
+
+* Useful benchmarking macros are: @time (Base), @btime & @benchmark (Benchmarking Tools), @profile (Profile).
+
+
+```{julia}
+#| echo: true
+x = 0
+@time for i = 1:100000
+x *= x^i
+end
+```
+
+## Data I/O
+
+* Julia supports low level IO through `read` and `write` functions.
+
+* Julia objects can be saved through the `FileIO` package. `save("path", object, "save_name")`, and `load("path", "save_name")`.
+
+* CSV is a package for CSV with readcsv with `CSV.read`, and `CVS.write` analogous to `read_csv` and `write_csv` in R. `CSV.File("path")` creates an object useful for piping.
+
+* DelimitedFiles is a package for generic delimiters with `writedlm("dir", obj, delim)` and `readdlm("path", delim)`.
+
+::: {.notes}
+
+* In general it is better to use the high level API calls rather than ``read`` and ``write``.
+
+* `save` can save a dictionary. `load("path")` loads the path as a whole dictionary.
+
+:::
+
+## Performance: Data Access Patterns
+
+## Performance: @inbounds and @simd
+
+## Performance: Strict Typing
+
+## Workflow: Module
+
+## Workflow: Revise
+
+## Workflow: Environments
+
