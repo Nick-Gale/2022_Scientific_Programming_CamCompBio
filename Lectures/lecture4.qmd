@@ -1,6 +1,6 @@
 ---
 title: "Scientific Programming in Julia"
-subtitle: " Performance Computing"
+subtitle: "Plots and High Performance Computing"
 author: "Nicholas Gale and Stephen Eglen"
 format:
   revealjs:
@@ -32,6 +32,9 @@ format:
 	3) label = "series label"
 	4) xlabel= , title= , ylabel=
 
+---
+
+::: fragment
 ```{julia}
 #| echo: true
 using Plots
@@ -40,6 +43,8 @@ x = collect(0:0.1:10)
 y = sin.(x)
 plot(x, y; st="line", label=false, title="Plot of a sin wave", ylabel="sin", xlabel="x", colour=:blue)
 ```
+:::
+
 
 ## Plot Objects
 
@@ -49,34 +54,42 @@ plot(x, y; st="line", label=false, title="Plot of a sin wave", ylabel="sin", xla
 
 * Plot objects can be referenced later.
 
+---
+
+::: fragment
 ```{julia}
 #| echo: true
 x = 0:0.01:2pi
 y1 = sin.(x)
 y2 = cos.(x)
-y3 = tan.(x)
 
-trig_plot = plot(x, [y1, y2]; title="Trigonometric Plots", xlabel="x", label=["sin(x) cos(x)"])
-plot!(trig_plot, x, y3; label="tan(x)")
+trig_plot = plot(x, y1; title="Trigonometric Plots", xlabel="x", label="sin(x)")
+plot!(trig_plot, x, y2; label="cos(x)")
 ```
+:::
 
 ## Plot Layouts
 
-*Subplots are handled through layout specification.
+* Subplots are handled through layout specification.
 
-*Simple layouts can specify a grid format. A more complicated layout can be defined with the `@layout`
+* Simple layouts can specify a grid format. A more complicated layout can be defined with the `@layout`
 
-*A layout is arranged as a matrix with `a,b,c` denoting the plots. They are optionally given widths and heights e.g. `a{0.2h 0.3w}`.
+* A layout is arranged as a matrix with `a,b,c` denoting the plots. They are optionally given widths and heights e.g. `a{0.2h 0.3w}`.
 
+---
+
+::: fragment
 ```{julia}
 #| echo: true
 p1 = plot(rand(10)); p2 = plot(rand(10)); p3 = plot(rand(10)); p4 = plot(rand(10));
 
 # plot(p1, p2, p3, p4; layout=(2,2))
 
-L = @layout [a{0.2h, 0.4w} b; d{0.8h} d{0.5w}]
+L = @layout [a{0.2h, 0.4w} b; d{0.8h} d]
 plot(p1, p2, p3, p4; layout=L)
 ```
+:::
+
 ## StatsPlots
 
 * Plots supports recipes and thus a Plotting ecosystem.
@@ -85,6 +98,9 @@ plot(p1, p2, p3, p4; layout=L)
 
 * A slightly more complex grammar; documentation found [here](https://docs.juliaplots.org/latest/generated/statsplots/)
 
+---
+
+::: fragment
 ```{julia}
 #| echo: true
 using DataFrames, CSV, StatsPlots
@@ -92,6 +108,8 @@ using DataFrames, CSV, StatsPlots
 experiment = CSV.File("plotting_data.csv") |> DataFrame
 @df experiment density(:BodyLength, group = (:Planet, :Diet), legend=:topright)
 ```
+:::
+
 
 ## Save Plots
 
@@ -101,11 +119,16 @@ experiment = CSV.File("plotting_data.csv") |> DataFrame
 
 * The path defines the file type.
 
+---
+
+::: fragment
 ```{julia}
 #| echo: true
 plt = plot(collect(1:10), rand(10); st=:scatter)
 savefig(plt, "my_first_plot.png")
 ```
+:::
+
 
 ## Animate
 
@@ -115,6 +138,9 @@ savefig(plt, "my_first_plot.png")
 
 * The animation can be saved through the `gif` API call. This takes the animation object, then path, and optional FPS.
 
+---
+
+::: fragment
 ```{julia}
 #| echo: true
 x = collect(0:0.05:2pi)
@@ -124,6 +150,8 @@ anim_obj = @animate for t in 1:length(x)
 end
 gif(anim_obj, "my_first_animation.gif", fps=30)
 ```
+:::
+
 
 ## Performance Computing
 
@@ -141,21 +169,25 @@ gif(anim_obj, "my_first_animation.gif", fps=30)
 
 * Slow code uses columns as the 'fast-changing' index, but is more traditional. When looping use columns as the outer variable.
 
+---
+
+::: fragment
 ```{julia}
 #| echo: true
-L = 10^7
+L = 10^4
 a1 = rand(L, L); a2 = a1'; v1 = zeros(L); v2 = zeros(L);
 
-@time for j = 1:size(a)[2]
+@time for j = 1:size(a1)[2]
 	v1[j] = sum(a1[:,j])
 end
 
-@time for j = size(a2)[1]
-	v2[j] = sum(a2[i, :])
+@time for i = 1:size(a2)[1]
+	v2[i] = sum(a2[i, :])
 end
 
 v1 == v2
 ```
+:::
 
 
 ::: {.notes}
@@ -172,34 +204,23 @@ v1 == v2
 
 * It is activated with the `@inbounds` macro and distributes to all nested loops.
 
-```{julia}
-#| echo: true
-v = rand(10^9); res = 0
-for i = 1:length(v)
-	res += v[1]
-end
-```
+---
 
-```{julia}
-#| echo: true
-v = rand(10^9); res = 0;
-@inbounds for i = 1:(length(v) + 1)
-	res += v[1]
-end
 
+::: fragment
 ```{julia}
 #| echo: true
 v = rand(10^9); res = 0;
 @time for i = 1:length(v)
-	res += v[1]
+	res += v[i]
 end
-
-```{julia}
-#| echo: true
-v = rand(10^9); res = 0;
+res=0;
 @time @inbounds for i = 1:length(v)
-	res += v[1]
+	res += v[i]
 end
+```
+:::
+
 ::: {.notes}
 
 * It is also safe, so you don't make numerical errors when it accesses (valid) but not in-range data. It's a hard error to track.
@@ -216,6 +237,9 @@ end
 
 * Turn it on using the ``@simd` macro. For well organised data you can expect some speed up.
 
+---
+
+::: fragment
 ```{julia}
 #| echo: true
 v = rand(10^9)
@@ -226,6 +250,8 @@ end
 @time @simd for i = 1:length(v)
 	v[i] -= 1
 end
+```
+:::
 
 ## Type Mutation
 
@@ -235,10 +261,13 @@ end
 
 * To avoid this Julia can strictly type variables and functions which alleviates the pressure.
 
+::: fragment
 ```{julia}
 #| echo: true
 a::Array{Float32, 1} = [4.0, 2.0, 1.2] # a strictly typed vector.
 f(x::Array{Float32, 1}) = sum(x) # a strictly typed function.
+```
+:::
 
 ## High Performance Computing
 
@@ -260,6 +289,9 @@ f(x::Array{Float32, 1}) = sum(x) # a strictly typed function.
 
 * To make processes available use the ``addprocs(n)`` method.
 
+---
+
+::: fragment
 ```{julia}
 #| echo: true
 using Distributed
@@ -269,10 +301,12 @@ addprocs(4)
 	i^2
 end
 
-@time @distributed for i = 1:10^9
+@time @sync @distributed for i = 1:10^9
 	i^2
 end
 ```
+:::
+
 
 ## Distributed Reduce
 
@@ -280,12 +314,15 @@ end
 
 * A distributed for block can specify a binary operation to reduce on.
 
+::: fragment
 ```{julia}
 #| echo: true
-sumodds = @distribute (+) for i = 1:10000
-	Int(isodd(i))
+sumodds = @distributed (+) for i = 1:100
+	Int(isodd(i) && i)
 end
 ```
+:::
+
 
 ## Shared Functions
 
@@ -293,14 +330,17 @@ end
 
 * The `@everywhere` macro is used to specify that a function/package can be accessed from thread.
 
+::: fragment
 ```{julia}
 #| echo: true
 @everywhere function myfunc(x)
 	return x^2 - y^3 + sin(x * y)
 end
 
-@everwhere using Statistics
+@everywhere using Statistics
 ```
+:::
+
 
 ## Shared Data
 
@@ -308,17 +348,20 @@ end
 
 * The `SharedArrays` package allows for memory to be shared between threads through a `SharedArray` object.
 
+::: fragment
 ```{julia}
 #| echo: true
 @everywhere using SharedArrays
 
 v = SharedArray(zeros(5))
 
-@distribute for i = 1:length(v)
+@sync @distributed for i = 1:length(v)
 	v[i] = i^2
 end
 println(v) 
 ```
+:::
+
 
 ## Race Conditions and Synchronisation
 
@@ -337,10 +380,13 @@ println(v)
 
 * There is a slight performance cost and is best used with complex function calls.
 
+::: fragment
 ```{julia}
 #| echo: true
 pmap( x -> x^2, 1:5)
 ```
+:::
+
 ## GPU Compute
 
 * Graphical Processing Units use a special hardware layout to launch hundreds of threads with a low clock speed.
@@ -364,19 +410,21 @@ pmap( x -> x^2, 1:5)
 * Indexed functions are *highly* discouraged: the GPU has to fall back on the CPU incurring a *very* high cost.
 
 * Calls are asyncronous and the `PACKAGE.@sync` macro will synchronise data which is important for data dependencies.
+
+---
+
+::: fragment
 ```{julia}
+#| echo: true
 using CUDA
-
-a = rand(10^9);
+a = rand(10^8);
 a_gpu = CuArray(a);
-
 @time sum(a);
 CUDA.@time CUDA.@sync sum(a_gpu)
 ```
+:::
 
 ## Kernels
-
-* GPU calls are handled by `kernels`.
 
 * These are normally written in the backend before being overloaded into existing functions.
 
