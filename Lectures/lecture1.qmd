@@ -2,13 +2,14 @@
 title: "Scientific Programming in Julia"
 subtitle: "Performant and Elegant"
 author: "Nicholas Gale & Stephen Eglen"
+execute:
+  echo: true
+  output-location: fragment  
 format:
   revealjs:
     slide-number: true
     theme: serif
     chalkboard: true 
-    transition: concave
-    background-transition: convex
     incremental: true
     background-image: julia_background.png
 ---
@@ -73,8 +74,6 @@ In this course we will cover:
 
 ::: fragment
 ```{julia} 
-#| echo: true
-#| output-location: fragment
 include("my_first_script.jl")
 ```
 :::
@@ -84,7 +83,8 @@ include("my_first_script.jl")
 * `println(arg)` is the method for printing (print works, but doesn't generate a new line).
 
 * `display(arg)` creates a user-friendly readout in the ```
-:::L.
+<!-- SJE: is something missing here? -->
+<!-- :::L. -->
 
 ::: {.notes}
 * The REPL  also lets you run quick commands between script being called.
@@ -98,16 +98,16 @@ include("my_first_script.jl")
 
 * Variable assignment is done through the `=` operator, equality is tested through the `==` operator, and indistinguishability through the `===` operator. This is different to R which uses the `<-` assignment operator and the ``identical(a,b)`` function for indistinguishability.
 
+
 ::: fragment
 ```{julia} 
-#| echo: true
-#| output-location: fragment
 a = 1.0
 b = 1
 println(a == b)
 println(a === b)
 ```
 :::
+
 
 ::: {.notes}
 * Types are inferred automatically unless specified: `a` was inferred as a float and `b` as an integer. They are numerically equal, but not indistinguishable.
@@ -125,8 +125,6 @@ println(a === b)
 
 ::: fragment
 ```{julia} 
-#| echo: true
-#| output-location: fragment
 a = 0
 a += 1
 println(a)
@@ -139,8 +137,6 @@ println(a)
 
 ::: fragment
 ```{julia} 
-#| echo: true
-#| output-location: fragment
 a = [1, 2, 4.0, 1]
 ```
 :::
@@ -153,8 +149,6 @@ a = [1, 2, 4.0, 1]
 
 ::: fragment
 ```{julia} 
-#| echo: true
-#| output-location: fragment
 println(a[2])
 println(a[[true, false, true, false]])
 println(a[CartesianIndex(1)])
@@ -170,8 +164,6 @@ println(a[2:4])
 
 ::: fragment
 ```{julia} 
-#| echo: true
-#| output-location: fragment
 a = [1,2,3,4,5,6,7]
 println(a[2:2:(end-1)])
 ```
@@ -183,8 +175,6 @@ println(a[2:2:(end-1)])
 
 ::: fragment
 ```{julia} 
-#| echo: true
-#| output-location: fragment
 a =	 [1 2 3;
 	8 9 10;
 	4 -30 0]
@@ -196,8 +186,6 @@ a =	 [1 2 3;
 
 ::: fragment
 ```{julia} 
-#| echo: true
-#| output-location: fragment
 a = [1 2 3; 8 9 10; 4 -30 0];
 println(a)
 println(a[4])
@@ -214,11 +202,11 @@ println(a[1:2, 2:3])
 
 * Higher order arrays can be constructed like this, but it is generally cumbersome.
 
-* Multidimensional indexes extend the rules for vectors and matrices: `[dim1, dim2, dim3...]`
+* Multidimensional indexes extend the rules for vectors and matrices:
+  `[dim1, dim2, dim3...]`
+  
 ::: fragment
 ```{julia} 
-#| echo: true
-#| output-location: fragment
 a = [1; 2;; 3; 4;; 5; 6;;;
         7; 8;; 9; 10;; 11; 12]
 
@@ -229,11 +217,11 @@ println(a[CartesianIndex(2, 3, 2)])
 
 ## General Arrays and Construction
 
-* In Julia ranges can be created with steps like in R and are iterables but they are non-allocating (in R they create a vector). 
+* In Julia ranges can be created with steps like in R and are
+  iterables but they are non-allocating (in R they create a vector). 
+  
 ::: fragment
 ```{julia} 
-#| echo: true
-#| output-location: fragment
 a = 2:50:300
 println(a[4])
 println(a)
@@ -243,11 +231,11 @@ println(typeof(a))
 
 ## Collect
 
-* Vectors can be created with the `collect` function which works on any iterable collection.
+* Vectors can be created with the `collect` function which works on
+  any iterable collection.
+  
 ::: fragment
 ```{julia} 
-#| echo: true
-#| output-location: fragment
 a = collect(2:50:300)
 println(a)
 println(typeof(a))
@@ -260,8 +248,6 @@ println(typeof(a))
 
 ::: fragment
 ```{julia} 
-#| echo: true
-#| output-location: fragment
 a = ones(2,3,5)
 b = zeros(4,4)
 display(a)
@@ -278,8 +264,6 @@ display(b)
 
 ::: fragment
 ```{julia}
-#| echo: true
-#| output-location: fragment
 a = ones(3,3);
 b = zeros(3,3);
 display(hcat(a,b))
@@ -297,8 +281,6 @@ display(vcat(a,b))
 
 ::: fragment
 ```{julia} 
-#| echo: true
-#| output-location: fragment
 """The triple quotes allow for "quotes" to be embedded into a string."""
 ```
 :::
@@ -309,8 +291,6 @@ display(vcat(a,b))
 
 ::: fragment
 ```{julia} 
-#| echo: true
-#| output-location: fragment
 a = "A very long string"
 println(a[2:2:10])
 ```
@@ -326,8 +306,6 @@ println(a[2:2:10])
 
 ::: fragment
 ```{julia}
-#| echo: true
-#| output-location: fragment
 println(true == false)
 println(true == 1)
 println(false == 0)
@@ -336,11 +314,11 @@ println(false == 0)
 
 ## If, else, and elseif
 
-* If blocks can have optional `elseif` and `else` keywords inside the block:
+* If blocks can have optional `elseif` and `else` keywords inside the
+  block:
+  
 ::: fragment
 ```{julia} 
-#| echo: true
-#| output-location: fragment
 cond = true
 if cond
 	println("If this wasn't true, nothing would happen")
@@ -353,8 +331,6 @@ end
 
 ::: fragment
 ```{julia} 
-#| echo: true
-#| output-location: fragment
 condelse = 1
 if condelse==2
 	println("It's an even prime!")
@@ -368,8 +344,6 @@ end
 
 ::: fragment
 ```{julia} 
-#| echo: true
-#| output-location: fragment
 condif = false	
 condelse = "three"
 if condif == 1
@@ -387,8 +361,6 @@ end
 
 ::: fragment
 ```{julia}
-#| echo: true
-#| output-location: fragment
 res = (8 < 4) ? "Maths broke." : "Situation Normal"
 println(res)
 ```
@@ -396,11 +368,11 @@ println(res)
 
 ## While
 
-* While statements are also executed when a conditional expression evaluates as true. They can be useful in loops:
+* While statements are also executed when a conditional expression
+  evaluates as true. They can be useful in loops:
+  
 ::: fragment
 ```{julia} 
-#| echo: true
-#| output-location: fragment
 i = 0
 while i < 10
 	i+=1
@@ -416,10 +388,9 @@ println("Done")
 * They can operate over any abstract collection or vector.
 
 * The `in` operator can be replaced with `=`.
+
 ::: fragment
 ```{julia} 
-#| echo: true
-#| output-location: fragment
 for i = 1:2
 	println(i)
 end
@@ -436,8 +407,6 @@ end
 
 ::: fragment
 ```{julia} 
-#| echo: true
-#| output-location: fragment
 vec = [i^2 for i in 1:4:33]
 ```
 :::
@@ -454,8 +423,6 @@ vec = [i^2 for i in 1:4:33]
 
 ::: fragment
 ```{julia} 
-#| echo: true
-#| output-location: fragment
 function complex_modulus1(x, iy)
 	tmp = x^2 + iy^2
 	return sqrt(tmp)
@@ -471,8 +438,6 @@ end
 
 ::: fragment
 ```{julia} 
-#| echo: true
-#| output-location: fragment
 complex_modulus(x, iy) = sqrt(x^2 + iy^2)
 ```
 :::
@@ -487,8 +452,6 @@ complex_modulus(x, iy) = sqrt(x^2 + iy^2)
 
 ::: fragment
 ```{julia} 
-#| echo: true
-#| output-location: fragment
 function g(x...)
 	return x
 end
@@ -503,8 +466,6 @@ println(g(gvec))
 
 ::: fragment
 ```{julia}
-#| echo: true
-#| output-location: fragment
 function f(x1, x2, x3)
 	return [x1, x2, x3]
 end
@@ -517,11 +478,11 @@ println(f(fvec...))
 
 ## Anonymous Functions
 * Anonymous functions in Julia are given using the `->` operator. This is *assignment* in R as opposed to the `function(x) exp_x` syntax in R.
-* Functions are first class objects in Julia so these may be assigned variable names or exist as standalones
+* Functions are first class objects in Julia so these may be assigned
+  variable names or exist as standalones
+  
 ::: fragment
 ```{julia}
-#| echo: true
-#| output-location: fragment
 F = x -> x^2
 println(F(2))
 ```
