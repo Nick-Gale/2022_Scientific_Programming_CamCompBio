@@ -2,6 +2,7 @@
 title: "Scientific Programming in Julia"
 subtitle: "Performant and Elegant"
 author: "Nicholas Gale & Stephen Eglen"
+engine: jupyter
 execute:
   echo: true
   output-location: fragment  
@@ -110,14 +111,21 @@ println(a === b)
 
 
 ::: {.notes}
-* Types are inferred automatically unless specified: `a` was inferred as a float and `b` as an integer. They are numerically equal, but not indistinguishable.
+* Types are inferred automatically unless specified: `a` was inferred
+  as a float and `b` as an integer. They are numerically equal, but
+  not indistinguishable.
+  
+* should we include the following example here:
+  `.1 + .2 ≈ .3` highlighting fp tolerance, unicode and how to type it
+
+
 :::
 
 ## Operators
 
-* Operators are the same as in R (+, -, \*, ^, etc).
+* Base operators are the same as in R (+, -, \*, ^, etc).
 
-* Mod is given by `mod(a,b)` not `%%` but remainder is still `%`.
+* `div(a,b)` and `mod(a,b)` get division without remainder, and remainder.
 
 * Unlike R, Julia supports infix operators: +=, -=, \*=, /=.
 
@@ -125,9 +133,9 @@ println(a === b)
 
 ::: fragment
 ```{julia} 
-a = 0
+a = 7
 a += 1
-println(a)
+a
 ```
 :::
 
@@ -169,6 +177,28 @@ println(a[2:2:(end-1)])
 ```
 :::
 
+
+## Attention to detail
+
+What is this thing called a range?  Beware in R:
+
+```{r}
+x = 1:1e6
+format( object.size(x), units='MB')
+```
+
+will say the object is 3.8Mb.
+
+whereas in Julia
+
+```{julia}
+x = 1:1e6
+sizeof(x)
+```
+
+This is an example of an iterator.
+
+
 ## Matrices
 
 * A matrix is created with semi-colons to delimit rows and spaces (or ``;;``) to delimit columns.
@@ -209,7 +239,7 @@ println(a[1:2, 2:3])
 ```{julia} 
 a = [1; 2;; 3; 4;; 5; 6;;;
         7; 8;; 9; 10;; 11; 12]
-
+display(a)
 println(a[10])
 println(a[CartesianIndex(2, 3, 2)])
 ```
@@ -327,7 +357,6 @@ end
 :::
 
 ---
-
 
 ::: fragment
 ```{julia} 
@@ -453,10 +482,9 @@ complex_modulus(x, iy) = sqrt(x^2 + iy^2)
 ::: fragment
 ```{julia} 
 function g(x...)
-	return x
+	return x[end]
 end
-gvec = [1, 2, 3, "EOL"]
-println(g(gvec))
+println(g(4,5,6))
 ```
 :::
 
@@ -467,14 +495,17 @@ println(g(gvec))
 ::: fragment
 ```{julia}
 function f(x1, x2, x3)
-	return [x1, x2, x3]
+	return (x1*x2)-x3
 end
-fvec = [5,"a",1.0]
+fvec = [5,4,1.0];
 println(f(fvec...))
 ```
 :::
 
+
+
 * Unlike R `...` must be attached to a variable name
+
 
 ## Anonymous Functions
 * Anonymous functions in Julia are given using the `->` operator. This is *assignment* in R as opposed to the `function(x) exp_x` syntax in R.
