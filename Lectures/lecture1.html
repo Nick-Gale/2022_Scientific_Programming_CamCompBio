@@ -486,7 +486,7 @@
 <li class="fragment">The REPL can execute basic commands or run scripts with the include function:</li>
 </ul>
 <div class="fragment">
-<div class="cell" data-output-location="fragment" data-execution_count="1">
+<div class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">include</span>(<span class="st">"my_first_script.jl"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>The output of my first script, is a string!</code></pre>
@@ -496,7 +496,7 @@
 <ul>
 <li class="fragment"><p>Scripting in the REPL is costly <em>once</em>. Scripting from terminal is costly <em>everytime</em>.</p></li>
 <li class="fragment"><p><code>println(arg)</code> is the method for printing (print works, but doesn’t generate a new line).</p></li>
-<li class="fragment"><p><code>display(arg)</code> creates a user-friendly readout in the ``` :::L.</p></li>
+<li class="fragment"><p><code>display(arg)</code> creates a user-friendly readout in the ``` <!-- SJE: is something missing here? --> <!-- :::L. --></p></li>
 </ul>
 <aside class="notes">
 <ul>
@@ -523,7 +523,7 @@
 <li class="fragment"><p>Variable assignment is done through the <code>=</code> operator, equality is tested through the <code>==</code> operator, and indistinguishability through the <code>===</code> operator. This is different to R which uses the <code>&lt;-</code> assignment operator and the <code>identical(a,b)</code> function for indistinguishability.</p></li>
 </ul>
 <div class="fragment">
-<div class="cell" data-output-location="fragment" data-execution_count="2">
+<div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1"></a>a <span class="op">=</span> <span class="fl">1.0</span></span>
 <span id="cb3-2"><a href="#cb3-2"></a>b <span class="op">=</span> <span class="fl">1</span></span>
 <span id="cb3-3"><a href="#cb3-3"></a><span class="fu">println</span>(a <span class="op">==</span> b)</span>
@@ -536,7 +536,8 @@ false</code></pre>
 </div>
 <aside class="notes">
 <ul>
-<li>Types are inferred automatically unless specified: <code>a</code> was inferred as a float and <code>b</code> as an integer. They are numerically equal, but not indistinguishable.</li>
+<li><p>Types are inferred automatically unless specified: <code>a</code> was inferred as a float and <code>b</code> as an integer. They are numerically equal, but not indistinguishable.</p></li>
+<li><p>should we include the following example here: <code>.1 + .2 ≈ .3</code> highlighting fp tolerance, unicode and how to type it</p></li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -553,18 +554,18 @@ false</code></pre>
 <section id="operators" class="slide level2">
 <h2>Operators</h2>
 <ul>
-<li class="fragment"><p>Operators are the same as in R (+, -, *, ^, etc).</p></li>
-<li class="fragment"><p>Mod is given by <code>mod(a,b)</code> not <code>%%</code> but remainder is still <code>%</code>.</p></li>
+<li class="fragment"><p>Base operators are the same as in R (+, -, *, ^, etc).</p></li>
+<li class="fragment"><p><code>div(a,b)</code> and <code>mod(a,b)</code> get division without remainder, and remainder.</p></li>
 <li class="fragment"><p>Unlike R, Julia supports infix operators: +=, -=, *=, /=.</p></li>
 <li class="fragment"><p>Infix operators modifiy a variable in-place and can be very useful e.g.&nbsp;loops:</p></li>
 </ul>
 <div class="fragment">
-<div class="cell" data-output-location="fragment" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1"></a>a <span class="op">=</span> <span class="fl">0</span></span>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1"></a>a <span class="op">=</span> <span class="fl">7</span></span>
 <span id="cb5-2"><a href="#cb5-2"></a>a <span class="op">+=</span> <span class="fl">1</span></span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="fu">println</span>(a)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>1</code></pre>
+<span id="cb5-3"><a href="#cb5-3"></a>a</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<pre><code>8</code></pre>
 </div>
 </div>
 </div>
@@ -575,9 +576,9 @@ false</code></pre>
 <li class="fragment">A vector is created with square brackets and is column delimited as opposed to R’s <code>c(tuple...)</code>:</li>
 </ul>
 <div class="fragment">
-<div class="cell" data-output-location="fragment" data-execution_count="4">
+<div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1"></a>a <span class="op">=</span> [<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">4.0</span>, <span class="fl">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="125">
+<div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>4-element Vector{Float64}:
  1.0
  2.0
@@ -594,14 +595,16 @@ false</code></pre>
 <li class="fragment"><p>Logical indexes must be the same size as the array, unlike in R.</p></li>
 </ul>
 <div class="fragment">
-<div class="cell" data-output-location="fragment" data-execution_count="5">
+<div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">println</span>(a[<span class="fl">2</span>])</span>
 <span id="cb9-2"><a href="#cb9-2"></a><span class="fu">println</span>(a[[<span class="cn">true</span>, <span class="cn">false</span>, <span class="cn">true</span>, <span class="cn">false</span>]])</span>
 <span id="cb9-3"><a href="#cb9-3"></a><span class="fu">println</span>(a[<span class="fu">CartesianIndex</span>(<span class="fl">1</span>)])</span>
 <span id="cb9-4"><a href="#cb9-4"></a><span class="fu">println</span>(a[<span class="fl">2</span><span class="op">:</span><span class="fl">4</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>2.0
-[1.0, 4.0]
+<pre><code>2.0</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1.0, 4.0]
 1.0
 [2.0, 4.0, 1.0]</code></pre>
 </div>
@@ -615,14 +618,30 @@ false</code></pre>
 <li class="fragment"><p>It does have a keyword <code>end</code> which references the end of a vector and can be combined with arithmetics to create consistent negative indexing</p></li>
 </ul>
 <div class="fragment">
-<div class="cell" data-output-location="fragment" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1"></a>a <span class="op">=</span> [<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span>,<span class="fl">5</span>,<span class="fl">6</span>,<span class="fl">7</span>]</span>
-<span id="cb11-2"><a href="#cb11-2"></a><span class="fu">println</span>(a[<span class="fl">2</span><span class="op">:</span><span class="fl">2</span><span class="op">:</span>(<span class="kw">end</span><span class="op">-</span><span class="fl">1</span>)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1"></a>a <span class="op">=</span> [<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span>,<span class="fl">5</span>,<span class="fl">6</span>,<span class="fl">7</span>]</span>
+<span id="cb12-2"><a href="#cb12-2"></a><span class="fu">println</span>(a[<span class="fl">2</span><span class="op">:</span><span class="fl">2</span><span class="op">:</span>(<span class="kw">end</span><span class="op">-</span><span class="fl">1</span>)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[2, 4, 6]</code></pre>
 </div>
 </div>
 </div>
+</section>
+<section id="attention-to-detail" class="slide level2">
+<h2>Attention to detail</h2>
+<p>What is this thing called a range? Beware in R:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode numberSource {r} number-lines code-with-copy"><code class="sourceCode"><span id="cb14-1"><a href="#cb14-1"></a>x = 1:1e6</span>
+<span id="cb14-2"><a href="#cb14-2"></a>format( object.size(x), units='MB')</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>will say the object is 3.8Mb.</p>
+<p>whereas in Julia</p>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1"></a>x <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">1e6</span></span>
+<span id="cb15-2"><a href="#cb15-2"></a><span class="fu">sizeof</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<pre><code>48</code></pre>
+</div>
+</div>
+<p>This is an example of an iterator.</p>
 </section>
 <section id="matrices" class="slide level2">
 <h2>Matrices</h2>
@@ -630,11 +649,11 @@ false</code></pre>
 <li class="fragment">A matrix is created with semi-colons to delimit rows and spaces (or <code>;;</code>) to delimit columns.</li>
 </ul>
 <div class="fragment">
-<div class="cell" data-output-location="fragment" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1"></a>a <span class="op">=</span>  [<span class="fl">1</span> <span class="fl">2</span> <span class="fl">3</span>;</span>
-<span id="cb13-2"><a href="#cb13-2"></a>    <span class="fl">8</span> <span class="fl">9</span> <span class="fl">10</span>;</span>
-<span id="cb13-3"><a href="#cb13-3"></a>    <span class="fl">4</span> <span class="op">-</span><span class="fl">30</span> <span class="fl">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="128">
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1"></a>a <span class="op">=</span>  [<span class="fl">1</span> <span class="fl">2</span> <span class="fl">3</span>;</span>
+<span id="cb17-2"><a href="#cb17-2"></a>    <span class="fl">8</span> <span class="fl">9</span> <span class="fl">10</span>;</span>
+<span id="cb17-3"><a href="#cb17-3"></a>    <span class="fl">4</span> <span class="op">-</span><span class="fl">30</span> <span class="fl">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
 <pre><code>3×3 Matrix{Int64}:
  1    2   3
  8    9  10
@@ -649,13 +668,13 @@ false</code></pre>
 <li class="fragment">Matrices are column ordered so a linear index will access elements in the column first.</li>
 </ul>
 <div class="fragment">
-<div class="cell" data-output-location="fragment" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1"></a>a <span class="op">=</span> [<span class="fl">1</span> <span class="fl">2</span> <span class="fl">3</span>; <span class="fl">8</span> <span class="fl">9</span> <span class="fl">10</span>; <span class="fl">4</span> <span class="op">-</span><span class="fl">30</span> <span class="fl">0</span>];</span>
-<span id="cb15-2"><a href="#cb15-2"></a><span class="fu">println</span>(a)</span>
-<span id="cb15-3"><a href="#cb15-3"></a><span class="fu">println</span>(a[<span class="fl">4</span>])</span>
-<span id="cb15-4"><a href="#cb15-4"></a><span class="fu">println</span>(a[<span class="fu">CartesianIndex</span>(<span class="fl">2</span>,<span class="fl">1</span>)])</span>
-<span id="cb15-5"><a href="#cb15-5"></a><span class="fu">println</span>(a[<span class="fl">2</span>, <span class="fl">3</span>])</span>
-<span id="cb15-6"><a href="#cb15-6"></a><span class="fu">println</span>(a[<span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">:</span><span class="fl">3</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1"></a>a <span class="op">=</span> [<span class="fl">1</span> <span class="fl">2</span> <span class="fl">3</span>; <span class="fl">8</span> <span class="fl">9</span> <span class="fl">10</span>; <span class="fl">4</span> <span class="op">-</span><span class="fl">30</span> <span class="fl">0</span>];</span>
+<span id="cb19-2"><a href="#cb19-2"></a><span class="fu">println</span>(a)</span>
+<span id="cb19-3"><a href="#cb19-3"></a><span class="fu">println</span>(a[<span class="fl">4</span>])</span>
+<span id="cb19-4"><a href="#cb19-4"></a><span class="fu">println</span>(a[<span class="fu">CartesianIndex</span>(<span class="fl">2</span>,<span class="fl">1</span>)])</span>
+<span id="cb19-5"><a href="#cb19-5"></a><span class="fu">println</span>(a[<span class="fl">2</span>, <span class="fl">3</span>])</span>
+<span id="cb19-6"><a href="#cb19-6"></a><span class="fu">println</span>(a[<span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">:</span><span class="fl">3</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1 2 3; 8 9 10; 4 -30 0]
 2
@@ -671,60 +690,67 @@ false</code></pre>
 <ul>
 <li class="fragment"><p>Generally, <code>;</code> concatenates in the first dimension <code>;;</code> in the second and so on…</p></li>
 <li class="fragment"><p>Higher order arrays can be constructed like this, but it is generally cumbersome.</p></li>
-<li class="fragment"><p>Multidimensional indexes extend the rules for vectors and matrices: <code>[dim1, dim2, dim3...]</code> ::: fragment</p></li>
+<li class="fragment"><p>Multidimensional indexes extend the rules for vectors and matrices: <code>[dim1, dim2, dim3...]</code></p></li>
 </ul>
-<div class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1"></a>a <span class="op">=</span> [<span class="fl">1</span>; <span class="fl">2</span>;; <span class="fl">3</span>; <span class="fl">4</span>;; <span class="fl">5</span>; <span class="fl">6</span>;;;</span>
-<span id="cb17-2"><a href="#cb17-2"></a>        <span class="fl">7</span>; <span class="fl">8</span>;; <span class="fl">9</span>; <span class="fl">10</span>;; <span class="fl">11</span>; <span class="fl">12</span>]</span>
-<span id="cb17-3"><a href="#cb17-3"></a></span>
-<span id="cb17-4"><a href="#cb17-4"></a><span class="fu">println</span>(a[<span class="fl">10</span>])</span>
-<span id="cb17-5"><a href="#cb17-5"></a><span class="fu">println</span>(a[<span class="fu">CartesianIndex</span>(<span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">2</span>)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="fragment">
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1"></a>a <span class="op">=</span> [<span class="fl">1</span>; <span class="fl">2</span>;; <span class="fl">3</span>; <span class="fl">4</span>;; <span class="fl">5</span>; <span class="fl">6</span>;;;</span>
+<span id="cb21-2"><a href="#cb21-2"></a>        <span class="fl">7</span>; <span class="fl">8</span>;; <span class="fl">9</span>; <span class="fl">10</span>;; <span class="fl">11</span>; <span class="fl">12</span>]</span>
+<span id="cb21-3"><a href="#cb21-3"></a><span class="fu">display</span>(a)</span>
+<span id="cb21-4"><a href="#cb21-4"></a><span class="fu">println</span>(a[<span class="fl">10</span>])</span>
+<span id="cb21-5"><a href="#cb21-5"></a><span class="fu">println</span>(a[<span class="fu">CartesianIndex</span>(<span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">2</span>)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>2×3×2 Array{Int64, 3}:
+[:, :, 1] =
+ 1  3  5
+ 2  4  6
+
+[:, :, 2] =
+ 7   9  11
+ 8  10  12</code></pre>
 </div>
-<div class="cell fragment" data-execution_count="9">
 <div class="cell-output cell-output-stdout">
 <pre><code>10
 12</code></pre>
 </div>
 </div>
-<p>:::</p>
+</div>
 </section>
 <section id="general-arrays-and-construction" class="slide level2">
 <h2>General Arrays and Construction</h2>
 <ul>
-<li class="fragment">In Julia ranges can be created with steps like in R and are iterables but they are non-allocating (in R they create a vector). ::: fragment</li>
+<li class="fragment">In Julia ranges can be created with steps like in R and are iterables but they are non-allocating (in R they create a vector).</li>
 </ul>
-<div class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1"></a>a <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">50</span><span class="op">:</span><span class="fl">300</span></span>
-<span id="cb19-2"><a href="#cb19-2"></a><span class="fu">println</span>(a[<span class="fl">4</span>])</span>
-<span id="cb19-3"><a href="#cb19-3"></a><span class="fu">println</span>(a)</span>
-<span id="cb19-4"><a href="#cb19-4"></a><span class="fu">println</span>(<span class="fu">typeof</span>(a))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell fragment" data-execution_count="10">
+<div class="fragment">
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1"></a>a <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">50</span><span class="op">:</span><span class="fl">300</span></span>
+<span id="cb24-2"><a href="#cb24-2"></a><span class="fu">println</span>(a[<span class="fl">4</span>])</span>
+<span id="cb24-3"><a href="#cb24-3"></a><span class="fu">println</span>(a)</span>
+<span id="cb24-4"><a href="#cb24-4"></a><span class="fu">println</span>(<span class="fu">typeof</span>(a))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>152
 2:50:252
 StepRange{Int64, Int64}</code></pre>
 </div>
 </div>
-<p>:::</p>
+</div>
 </section>
 <section id="collect" class="slide level2">
 <h2>Collect</h2>
 <ul>
-<li class="fragment">Vectors can be created with the <code>collect</code> function which works on any iterable collection. ::: fragment</li>
+<li class="fragment">Vectors can be created with the <code>collect</code> function which works on any iterable collection.</li>
 </ul>
-<div class="cell" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1"></a>a <span class="op">=</span> <span class="fu">collect</span>(<span class="fl">2</span><span class="op">:</span><span class="fl">50</span><span class="op">:</span><span class="fl">300</span>)</span>
-<span id="cb21-2"><a href="#cb21-2"></a><span class="fu">println</span>(a)</span>
-<span id="cb21-3"><a href="#cb21-3"></a><span class="fu">println</span>(<span class="fu">typeof</span>(a))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell fragment" data-execution_count="11">
+<div class="fragment">
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1"></a>a <span class="op">=</span> <span class="fu">collect</span>(<span class="fl">2</span><span class="op">:</span><span class="fl">50</span><span class="op">:</span><span class="fl">300</span>)</span>
+<span id="cb26-2"><a href="#cb26-2"></a><span class="fu">println</span>(a)</span>
+<span id="cb26-3"><a href="#cb26-3"></a><span class="fu">println</span>(<span class="fu">typeof</span>(a))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[2, 52, 102, 152, 202, 252]
 Vector{Int64}</code></pre>
 </div>
 </div>
-<p>:::</p>
+</div>
 </section>
 <section id="preallocation" class="slide level2">
 <h2>Preallocation</h2>
@@ -732,11 +758,11 @@ Vector{Int64}</code></pre>
 <li class="fragment">Preallocation can be done with <code>ones(dims...)</code> and <code>zeros(dims..)</code></li>
 </ul>
 <div class="fragment">
-<div class="cell" data-output-location="fragment" data-execution_count="12">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1"></a>a <span class="op">=</span> <span class="fu">ones</span>(<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">5</span>)</span>
-<span id="cb23-2"><a href="#cb23-2"></a>b <span class="op">=</span> <span class="fu">zeros</span>(<span class="fl">4</span>,<span class="fl">4</span>)</span>
-<span id="cb23-3"><a href="#cb23-3"></a><span class="fu">display</span>(a)</span>
-<span id="cb23-4"><a href="#cb23-4"></a><span class="fu">display</span>(b)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb28-1"><a href="#cb28-1"></a>a <span class="op">=</span> <span class="fu">ones</span>(<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">5</span>)</span>
+<span id="cb28-2"><a href="#cb28-2"></a>b <span class="op">=</span> <span class="fu">zeros</span>(<span class="fl">4</span>,<span class="fl">4</span>)</span>
+<span id="cb28-3"><a href="#cb28-3"></a><span class="fu">display</span>(a)</span>
+<span id="cb28-4"><a href="#cb28-4"></a><span class="fu">display</span>(b)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <pre><code>2×3×5 Array{Float64, 3}:
 [:, :, 1] =
@@ -777,11 +803,11 @@ Vector{Int64}</code></pre>
 <li class="fragment"><p>Vertical concatentation is through using <code>vcat(arrays...)</code>.</p></li>
 </ul>
 <div class="fragment">
-<div class="cell" data-output-location="fragment" data-execution_count="13">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1"></a>a <span class="op">=</span> <span class="fu">ones</span>(<span class="fl">3</span>,<span class="fl">3</span>);</span>
-<span id="cb26-2"><a href="#cb26-2"></a>b <span class="op">=</span> <span class="fu">zeros</span>(<span class="fl">3</span>,<span class="fl">3</span>);</span>
-<span id="cb26-3"><a href="#cb26-3"></a><span class="fu">display</span>(<span class="fu">hcat</span>(a,b))</span>
-<span id="cb26-4"><a href="#cb26-4"></a><span class="fu">display</span>(<span class="fu">vcat</span>(a,b))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb31-1"><a href="#cb31-1"></a>a <span class="op">=</span> <span class="fu">ones</span>(<span class="fl">3</span>,<span class="fl">3</span>);</span>
+<span id="cb31-2"><a href="#cb31-2"></a>b <span class="op">=</span> <span class="fu">zeros</span>(<span class="fl">3</span>,<span class="fl">3</span>);</span>
+<span id="cb31-3"><a href="#cb31-3"></a><span class="fu">display</span>(<span class="fu">hcat</span>(a,b))</span>
+<span id="cb31-4"><a href="#cb31-4"></a><span class="fu">display</span>(<span class="fu">vcat</span>(a,b))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <pre><code>3×6 Matrix{Float64}:
  1.0  1.0  1.0  0.0  0.0  0.0
@@ -808,9 +834,9 @@ Vector{Int64}</code></pre>
 <li class="fragment"><p>Triple double quotes allow some flexibility which can be useful in writing internal scripts:</p></li>
 </ul>
 <div class="fragment">
-<div class="cell" data-output-location="fragment" data-execution_count="14">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb29-1"><a href="#cb29-1"></a><span class="st">"""The triple quotes allow for "quotes" to be embedded into a string."""</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="135">
+<div class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb34-1"><a href="#cb34-1"></a><span class="st">"""The triple quotes allow for "quotes" to be embedded into a string."""</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="16">
 <pre><code>"The triple quotes allow for \"quotes\" to be embedded into a string."</code></pre>
 </div>
 </div>
@@ -822,9 +848,9 @@ Vector{Int64}</code></pre>
 <li class="fragment">Strings can be indexed in Julia like in R and unlike R are not decoded into a character vector</li>
 </ul>
 <div class="fragment">
-<div class="cell" data-output-location="fragment" data-execution_count="15">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb31-1"><a href="#cb31-1"></a>a <span class="op">=</span> <span class="st">"A very long string"</span></span>
-<span id="cb31-2"><a href="#cb31-2"></a><span class="fu">println</span>(a[<span class="fl">2</span><span class="op">:</span><span class="fl">2</span><span class="op">:</span><span class="fl">10</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb36-1"><a href="#cb36-1"></a>a <span class="op">=</span> <span class="st">"A very long string"</span></span>
+<span id="cb36-2"><a href="#cb36-2"></a><span class="fu">println</span>(a[<span class="fl">2</span><span class="op">:</span><span class="fl">2</span><span class="op">:</span><span class="fl">10</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> eyln</code></pre>
 </div>
@@ -839,10 +865,10 @@ Vector{Int64}</code></pre>
 <li class="fragment"><p>Control flow blocks always have an <code>end</code> to terminate them. They are initiated with a special keyword. They don’t usually have curly braces like in R.</p></li>
 </ul>
 <div class="fragment">
-<div class="cell" data-output-location="fragment" data-execution_count="16">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb33-1"><a href="#cb33-1"></a><span class="fu">println</span>(<span class="cn">true</span> <span class="op">==</span> <span class="cn">false</span>)</span>
-<span id="cb33-2"><a href="#cb33-2"></a><span class="fu">println</span>(<span class="cn">true</span> <span class="op">==</span> <span class="fl">1</span>)</span>
-<span id="cb33-3"><a href="#cb33-3"></a><span class="fu">println</span>(<span class="cn">false</span> <span class="op">==</span> <span class="fl">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb38-1"><a href="#cb38-1"></a><span class="fu">println</span>(<span class="cn">true</span> <span class="op">==</span> <span class="cn">false</span>)</span>
+<span id="cb38-2"><a href="#cb38-2"></a><span class="fu">println</span>(<span class="cn">true</span> <span class="op">==</span> <span class="fl">1</span>)</span>
+<span id="cb38-3"><a href="#cb38-3"></a><span class="fu">println</span>(<span class="cn">false</span> <span class="op">==</span> <span class="fl">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>false
 true
@@ -854,31 +880,30 @@ true</code></pre>
 <section id="if-else-and-elseif" class="slide level2">
 <h2>If, else, and elseif</h2>
 <ul>
-<li class="fragment">If blocks can have optional <code>elseif</code> and <code>else</code> keywords inside the block: ::: fragment</li>
+<li class="fragment">If blocks can have optional <code>elseif</code> and <code>else</code> keywords inside the block:</li>
 </ul>
-<div class="cell" data-execution_count="17">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb35-1"><a href="#cb35-1"></a>cond <span class="op">=</span> <span class="cn">true</span></span>
-<span id="cb35-2"><a href="#cb35-2"></a><span class="cf">if</span> cond</span>
-<span id="cb35-3"><a href="#cb35-3"></a>    <span class="fu">println</span>(<span class="st">"If this wasn't true, nothing would happen"</span>)</span>
-<span id="cb35-4"><a href="#cb35-4"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell fragment" data-execution_count="17">
+<div class="fragment">
+<div class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb40-1"><a href="#cb40-1"></a>cond <span class="op">=</span> <span class="cn">true</span></span>
+<span id="cb40-2"><a href="#cb40-2"></a><span class="cf">if</span> cond</span>
+<span id="cb40-3"><a href="#cb40-3"></a>    <span class="fu">println</span>(<span class="st">"If this wasn't true, nothing would happen"</span>)</span>
+<span id="cb40-4"><a href="#cb40-4"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>If this wasn't true, nothing would happen</code></pre>
 </div>
 </div>
-<p>:::</p>
+</div>
 </section>
 <section class="slide level2">
 
 <div class="fragment">
-<div class="cell" data-output-location="fragment" data-execution_count="18">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb37-1"><a href="#cb37-1"></a>condelse <span class="op">=</span> <span class="fl">1</span></span>
-<span id="cb37-2"><a href="#cb37-2"></a><span class="cf">if</span> condelse<span class="op">==</span><span class="fl">2</span></span>
-<span id="cb37-3"><a href="#cb37-3"></a>    <span class="fu">println</span>(<span class="st">"It's an even prime!"</span>)</span>
-<span id="cb37-4"><a href="#cb37-4"></a><span class="cf">else</span></span>
-<span id="cb37-5"><a href="#cb37-5"></a>    <span class="fu">println</span>(<span class="st">"It wasn't true. The else block executed"</span>)</span>
-<span id="cb37-6"><a href="#cb37-6"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb42-1"><a href="#cb42-1"></a>condelse <span class="op">=</span> <span class="fl">1</span></span>
+<span id="cb42-2"><a href="#cb42-2"></a><span class="cf">if</span> condelse<span class="op">==</span><span class="fl">2</span></span>
+<span id="cb42-3"><a href="#cb42-3"></a>    <span class="fu">println</span>(<span class="st">"It's an even prime!"</span>)</span>
+<span id="cb42-4"><a href="#cb42-4"></a><span class="cf">else</span></span>
+<span id="cb42-5"><a href="#cb42-5"></a>    <span class="fu">println</span>(<span class="st">"It wasn't true. The else block executed"</span>)</span>
+<span id="cb42-6"><a href="#cb42-6"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>It wasn't true. The else block executed</code></pre>
 </div>
@@ -888,16 +913,16 @@ true</code></pre>
 <section class="slide level2">
 
 <div class="fragment">
-<div class="cell" data-output-location="fragment" data-execution_count="19">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb39-1"><a href="#cb39-1"></a>condif <span class="op">=</span> <span class="cn">false</span>  </span>
-<span id="cb39-2"><a href="#cb39-2"></a>condelse <span class="op">=</span> <span class="st">"three"</span></span>
-<span id="cb39-3"><a href="#cb39-3"></a><span class="cf">if</span> condif <span class="op">==</span> <span class="fl">1</span></span>
-<span id="cb39-4"><a href="#cb39-4"></a>    <span class="fu">println</span>(<span class="st">"We miss this one"</span>)</span>
-<span id="cb39-5"><a href="#cb39-5"></a><span class="cf">elseif</span> condelse <span class="op">==</span> <span class="st">"three"</span></span>
-<span id="cb39-6"><a href="#cb39-6"></a>    <span class="fu">println</span>(<span class="st">"The elseif block executes"</span>)</span>
-<span id="cb39-7"><a href="#cb39-7"></a><span class="cf">else</span></span>
-<span id="cb39-8"><a href="#cb39-8"></a>    <span class="fu">println</span>(<span class="st">"The else block doesn't"</span>)</span>
-<span id="cb39-9"><a href="#cb39-9"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb44-1"><a href="#cb44-1"></a>condif <span class="op">=</span> <span class="cn">false</span>  </span>
+<span id="cb44-2"><a href="#cb44-2"></a>condelse <span class="op">=</span> <span class="st">"three"</span></span>
+<span id="cb44-3"><a href="#cb44-3"></a><span class="cf">if</span> condif <span class="op">==</span> <span class="fl">1</span></span>
+<span id="cb44-4"><a href="#cb44-4"></a>    <span class="fu">println</span>(<span class="st">"We miss this one"</span>)</span>
+<span id="cb44-5"><a href="#cb44-5"></a><span class="cf">elseif</span> condelse <span class="op">==</span> <span class="st">"three"</span></span>
+<span id="cb44-6"><a href="#cb44-6"></a>    <span class="fu">println</span>(<span class="st">"The elseif block executes"</span>)</span>
+<span id="cb44-7"><a href="#cb44-7"></a><span class="cf">else</span></span>
+<span id="cb44-8"><a href="#cb44-8"></a>    <span class="fu">println</span>(<span class="st">"The else block doesn't"</span>)</span>
+<span id="cb44-9"><a href="#cb44-9"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>The elseif block executes</code></pre>
 </div>
@@ -910,9 +935,9 @@ true</code></pre>
 <li class="fragment">The ternary operator can execute if one-liners: <code>conditional_expression ? iftrue_code_execute : else_code_execute</code>.</li>
 </ul>
 <div class="fragment">
-<div class="cell" data-output-location="fragment" data-execution_count="20">
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb41-1"><a href="#cb41-1"></a>res <span class="op">=</span> (<span class="fl">8</span> <span class="op">&lt;</span> <span class="fl">4</span>) ? <span class="st">"Maths broke."</span> <span class="op">:</span> <span class="st">"Situation Normal"</span></span>
-<span id="cb41-2"><a href="#cb41-2"></a><span class="fu">println</span>(res)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb46-1"><a href="#cb46-1"></a>res <span class="op">=</span> (<span class="fl">8</span> <span class="op">&lt;</span> <span class="fl">4</span>) ? <span class="st">"Maths broke."</span> <span class="op">:</span> <span class="st">"Situation Normal"</span></span>
+<span id="cb46-2"><a href="#cb46-2"></a><span class="fu">println</span>(res)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Situation Normal</code></pre>
 </div>
@@ -922,17 +947,16 @@ true</code></pre>
 <section id="while" class="slide level2">
 <h2>While</h2>
 <ul>
-<li class="fragment">While statements are also executed when a conditional expression evaluates as true. They can be useful in loops: ::: fragment</li>
+<li class="fragment">While statements are also executed when a conditional expression evaluates as true. They can be useful in loops:</li>
 </ul>
-<div class="cell" data-execution_count="21">
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb43-1"><a href="#cb43-1"></a>i <span class="op">=</span> <span class="fl">0</span></span>
-<span id="cb43-2"><a href="#cb43-2"></a><span class="cf">while</span> i <span class="op">&lt;</span> <span class="fl">10</span></span>
-<span id="cb43-3"><a href="#cb43-3"></a>    i<span class="op">+=</span><span class="fl">1</span></span>
-<span id="cb43-4"><a href="#cb43-4"></a>    <span class="fu">println</span>(<span class="st">"Not done yet.."</span>)</span>
-<span id="cb43-5"><a href="#cb43-5"></a><span class="cf">end</span></span>
-<span id="cb43-6"><a href="#cb43-6"></a><span class="fu">println</span>(<span class="st">"Done"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell fragment" data-execution_count="21">
+<div class="fragment">
+<div class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb48-1"><a href="#cb48-1"></a>i <span class="op">=</span> <span class="fl">0</span></span>
+<span id="cb48-2"><a href="#cb48-2"></a><span class="cf">while</span> i <span class="op">&lt;</span> <span class="fl">10</span></span>
+<span id="cb48-3"><a href="#cb48-3"></a>    i<span class="op">+=</span><span class="fl">1</span></span>
+<span id="cb48-4"><a href="#cb48-4"></a>    <span class="fu">println</span>(<span class="st">"Not done yet.."</span>)</span>
+<span id="cb48-5"><a href="#cb48-5"></a><span class="cf">end</span></span>
+<span id="cb48-6"><a href="#cb48-6"></a><span class="fu">println</span>(<span class="st">"Done"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Not done yet..
 Not done yet..
@@ -947,25 +971,24 @@ Not done yet..
 Done</code></pre>
 </div>
 </div>
-<p>:::</p>
+</div>
 </section>
 <section id="for-loops" class="slide level2">
 <h2>For Loops</h2>
 <ul>
 <li class="fragment"><p>For loops operate in the same way as R with the <code>for var in collection</code> structure.</p></li>
 <li class="fragment"><p>They can operate over any abstract collection or vector.</p></li>
-<li class="fragment"><p>The <code>in</code> operator can be replaced with <code>=</code>. ::: fragment</p></li>
+<li class="fragment"><p>The <code>in</code> operator can be replaced with <code>=</code>.</p></li>
 </ul>
-<div class="cell" data-execution_count="22">
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb45-1"><a href="#cb45-1"></a><span class="cf">for</span> i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span></span>
-<span id="cb45-2"><a href="#cb45-2"></a>    <span class="fu">println</span>(i)</span>
-<span id="cb45-3"><a href="#cb45-3"></a><span class="cf">end</span></span>
-<span id="cb45-4"><a href="#cb45-4"></a><span class="fu">println</span>()</span>
-<span id="cb45-5"><a href="#cb45-5"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="fl">20</span><span class="op">:</span><span class="fl">22</span></span>
-<span id="cb45-6"><a href="#cb45-6"></a>    <span class="fu">println</span>(i)</span>
-<span id="cb45-7"><a href="#cb45-7"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell fragment" data-execution_count="22">
+<div class="fragment">
+<div class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb50-1"><a href="#cb50-1"></a><span class="cf">for</span> i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span></span>
+<span id="cb50-2"><a href="#cb50-2"></a>    <span class="fu">println</span>(i)</span>
+<span id="cb50-3"><a href="#cb50-3"></a><span class="cf">end</span></span>
+<span id="cb50-4"><a href="#cb50-4"></a><span class="fu">println</span>()</span>
+<span id="cb50-5"><a href="#cb50-5"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="fl">20</span><span class="op">:</span><span class="fl">22</span></span>
+<span id="cb50-6"><a href="#cb50-6"></a>    <span class="fu">println</span>(i)</span>
+<span id="cb50-7"><a href="#cb50-7"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>1
 2
@@ -975,7 +998,7 @@ Done</code></pre>
 22</code></pre>
 </div>
 </div>
-<p>:::</p>
+</div>
 </section>
 <section id="list-comprehension" class="slide level2">
 <h2>List Comprehension</h2>
@@ -983,9 +1006,9 @@ Done</code></pre>
 <li class="fragment">Julia supports list comprehension: <code>[ expression(i) for i in collection]</code> generates a vector with objects specified by expression i.</li>
 </ul>
 <div class="fragment">
-<div class="cell" data-output-location="fragment" data-execution_count="23">
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb47-1"><a href="#cb47-1"></a>vec <span class="op">=</span> [i<span class="op">^</span><span class="fl">2</span> for i <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">:</span><span class="fl">33</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="144">
+<div class="cell" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb52-1"><a href="#cb52-1"></a>vec <span class="op">=</span> [i<span class="op">^</span><span class="fl">2</span> for i <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">:</span><span class="fl">33</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="25">
 <pre><code>9-element Vector{Int64}:
     1
    25
@@ -1011,12 +1034,12 @@ Done</code></pre>
 <section class="slide level2">
 
 <div class="fragment">
-<div class="cell" data-output-location="fragment" data-execution_count="24">
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb49-1"><a href="#cb49-1"></a><span class="kw">function</span> <span class="fu">complex_modulus1</span>(x, iy)</span>
-<span id="cb49-2"><a href="#cb49-2"></a>    tmp <span class="op">=</span> x<span class="op">^</span><span class="fl">2</span> <span class="op">+</span> iy<span class="op">^</span><span class="fl">2</span></span>
-<span id="cb49-3"><a href="#cb49-3"></a>    <span class="cf">return</span> <span class="fu">sqrt</span>(tmp)</span>
-<span id="cb49-4"><a href="#cb49-4"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="145">
+<div class="cell" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb54-1"><a href="#cb54-1"></a><span class="kw">function</span> <span class="fu">complex_modulus1</span>(x, iy)</span>
+<span id="cb54-2"><a href="#cb54-2"></a>    tmp <span class="op">=</span> x<span class="op">^</span><span class="fl">2</span> <span class="op">+</span> iy<span class="op">^</span><span class="fl">2</span></span>
+<span id="cb54-3"><a href="#cb54-3"></a>    <span class="cf">return</span> <span class="fu">sqrt</span>(tmp)</span>
+<span id="cb54-4"><a href="#cb54-4"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="26">
 <pre><code>complex_modulus1 (generic function with 1 method)</code></pre>
 </div>
 </div>
@@ -1031,9 +1054,9 @@ Done</code></pre>
 <li class="fragment">Functions can be written in one line in a mathematical format.</li>
 </ul>
 <div class="fragment">
-<div class="cell" data-output-location="fragment" data-execution_count="25">
-<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb51-1"><a href="#cb51-1"></a><span class="fu">complex_modulus</span>(x, iy) <span class="op">=</span> <span class="fu">sqrt</span>(x<span class="op">^</span><span class="fl">2</span> <span class="op">+</span> iy<span class="op">^</span><span class="fl">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="146">
+<div class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb56-1"><a href="#cb56-1"></a><span class="fu">complex_modulus</span>(x, iy) <span class="op">=</span> <span class="fu">sqrt</span>(x<span class="op">^</span><span class="fl">2</span> <span class="op">+</span> iy<span class="op">^</span><span class="fl">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="27">
 <pre><code>complex_modulus (generic function with 1 method)</code></pre>
 </div>
 </div>
@@ -1049,14 +1072,13 @@ Done</code></pre>
 <li class="fragment"><p>Can be used in function definition.</p></li>
 </ul>
 <div class="fragment">
-<div class="cell" data-output-location="fragment" data-execution_count="26">
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb53-1"><a href="#cb53-1"></a><span class="kw">function</span> <span class="fu">g</span>(x<span class="op">...</span>)</span>
-<span id="cb53-2"><a href="#cb53-2"></a>    <span class="cf">return</span> x</span>
-<span id="cb53-3"><a href="#cb53-3"></a><span class="kw">end</span></span>
-<span id="cb53-4"><a href="#cb53-4"></a>gvec <span class="op">=</span> [<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="st">"EOL"</span>]</span>
-<span id="cb53-5"><a href="#cb53-5"></a><span class="fu">println</span>(<span class="fu">g</span>(gvec))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="27">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb58-1"><a href="#cb58-1"></a><span class="kw">function</span> <span class="fu">g</span>(x<span class="op">...</span>)</span>
+<span id="cb58-2"><a href="#cb58-2"></a>    <span class="cf">return</span> x[<span class="kw">end</span>]</span>
+<span id="cb58-3"><a href="#cb58-3"></a><span class="kw">end</span></span>
+<span id="cb58-4"><a href="#cb58-4"></a><span class="fu">println</span>(<span class="fu">g</span>(<span class="fl">4</span>,<span class="fl">5</span>,<span class="fl">6</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>(Any[1, 2, 3, "EOL"],)</code></pre>
+<pre><code>6</code></pre>
 </div>
 </div>
 </div>
@@ -1067,14 +1089,14 @@ Done</code></pre>
 <li class="fragment">Splatting can also be used in calls to functions with multiple arguments.</li>
 </ul>
 <div class="fragment">
-<div class="cell" data-output-location="fragment" data-execution_count="27">
-<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb55-1"><a href="#cb55-1"></a><span class="kw">function</span> <span class="fu">f</span>(x1, x2, x3)</span>
-<span id="cb55-2"><a href="#cb55-2"></a>    <span class="cf">return</span> [x1, x2, x3]</span>
-<span id="cb55-3"><a href="#cb55-3"></a><span class="kw">end</span></span>
-<span id="cb55-4"><a href="#cb55-4"></a>fvec <span class="op">=</span> [<span class="fl">5</span>,<span class="st">"a"</span>,<span class="fl">1.0</span>]</span>
-<span id="cb55-5"><a href="#cb55-5"></a><span class="fu">println</span>(<span class="fu">f</span>(fvec<span class="op">...</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="28">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb60-1"><a href="#cb60-1"></a><span class="kw">function</span> <span class="fu">f</span>(x1, x2, x3)</span>
+<span id="cb60-2"><a href="#cb60-2"></a>    <span class="cf">return</span> (x1<span class="op">*</span>x2)<span class="op">-</span>x3</span>
+<span id="cb60-3"><a href="#cb60-3"></a><span class="kw">end</span></span>
+<span id="cb60-4"><a href="#cb60-4"></a>fvec <span class="op">=</span> [<span class="fl">5</span>,<span class="fl">4</span>,<span class="fl">1.0</span>];</span>
+<span id="cb60-5"><a href="#cb60-5"></a><span class="fu">println</span>(<span class="fu">f</span>(fvec<span class="op">...</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Any[5, "a", 1.0]</code></pre>
+<pre><code>19.0</code></pre>
 </div>
 </div>
 </div>
@@ -1086,18 +1108,17 @@ Done</code></pre>
 <h2>Anonymous Functions</h2>
 <ul>
 <li class="fragment">Anonymous functions in Julia are given using the <code>-&gt;</code> operator. This is <em>assignment</em> in R as opposed to the <code>function(x) exp_x</code> syntax in R.</li>
-<li class="fragment">Functions are first class objects in Julia so these may be assigned variable names or exist as standalones ::: fragment</li>
+<li class="fragment">Functions are first class objects in Julia so these may be assigned variable names or exist as standalones</li>
 </ul>
-<div class="cell" data-execution_count="28">
-<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb57-1"><a href="#cb57-1"></a>F <span class="op">=</span> x <span class="op">-&gt;</span> x<span class="op">^</span><span class="fl">2</span></span>
-<span id="cb57-2"><a href="#cb57-2"></a><span class="fu">println</span>(<span class="fu">F</span>(<span class="fl">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell fragment" data-execution_count="28">
+<div class="fragment">
+<div class="cell" data-execution_count="29">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb62-1"><a href="#cb62-1"></a>F <span class="op">=</span> x <span class="op">-&gt;</span> x<span class="op">^</span><span class="fl">2</span></span>
+<span id="cb62-2"><a href="#cb62-2"></a><span class="fu">println</span>(<span class="fu">F</span>(<span class="fl">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>4</code></pre>
 </div>
 </div>
-<p>:::</p>
+</div>
 <div class="footer footer-default">
 
 </div>
@@ -1261,14 +1282,14 @@ Done</code></pre>
         previewLinks: false,
 
         // Transition style (none/fade/slide/convex/concave/zoom)
-        transition: 'concave',
+        transition: 'none',
 
         // Transition speed (default/fast/slow)
         transitionSpeed: 'default',
 
         // Transition style for full page slide backgrounds
         // (none/fade/slide/convex/concave/zoom)
-        backgroundTransition: 'convex',
+        backgroundTransition: 'none',
 
         // Number of slides away from the current that are visible
         viewDistance: 3,
