@@ -234,7 +234,9 @@ println(a[1:2, 2:3])
 
 * Multidimensional indexes extend the rules for vectors and matrices:
   `[dim1, dim2, dim3...]`
-  
+
+---
+
 ::: fragment
 ```{julia} 
 a = [1; 2;; 3; 4;; 5; 6;;;
@@ -291,6 +293,8 @@ display(b)
 * Horizontal concatentation is through `hcat(array1, array2, ...)` 
 
 * Vertical concatentation is through using `vcat(arrays...)`. 
+
+---
 
 ::: fragment
 ```{julia}
