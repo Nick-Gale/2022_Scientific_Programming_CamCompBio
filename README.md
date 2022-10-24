@@ -6,6 +6,6 @@ Course Materials for the Computational Biology M.Phil @ Cambridge
 
 Getting started.
 [HTML](https://Nick-Gale.github.io/2022_Scientific_Programming_CamCompBio/Lectures/lecture1.html)
-[PDF](lecture1.pdf)
+[PDF](Lectures/lecture1.pdf)
 
 
