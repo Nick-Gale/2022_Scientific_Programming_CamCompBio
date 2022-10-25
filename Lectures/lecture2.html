@@ -7,7 +7,7 @@
 <link href="lecture2_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="lecture2_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="lecture2_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.2.242">
+  <meta name="generator" content="quarto-1.1.251">
 
   <meta name="author" content="Nicholas Gale &amp; Stephen Eglen">
   <title>Scientific Programming in Julia</title>
@@ -389,19 +389,12 @@
   <div class="reveal">
     <div class="slides">
 
-<section id="title-slide" class="quarto-title-block center">
+<section id="title-slide" class="center">
   <h1 class="title">Scientific Programming in Julia</h1>
   <p class="subtitle">Package Management, Advanced Concepts, and Worflows</p>
-
-<div class="quarto-title-authors">
-<div class="quarto-title-author">
-<div class="quarto-title-author-name">
-Nicholas Gale &amp; Stephen Eglen 
-</div>
-</div>
-</div>
-
+  <p class="author">Nicholas Gale &amp; Stephen Eglen</p>
 </section>
+
 <section id="types-and-hierarchy" class="slide level2">
 <h2>Types and Hierarchy</h2>
 <ul>
@@ -484,7 +477,7 @@ false</code></pre>
 <div class="fragment">
 <div class="cell" data-execution_count="6">
 <div class="cell-output cell-output-stdout">
-<pre><code>StatsGenerator[StatsGenerator(0.903, 0.735, 1.182), StatsGenerator(0.928, 1.18, 6.729), StatsGenerator(1.04, 1.098, 4.158)]</code></pre>
+<pre><code>StatsGenerator[StatsGenerator(1.141, 1.118, 4.821), StatsGenerator(1.22, 1.301, 2.36), StatsGenerator(1.048, 1.042, 4.498)]</code></pre>
 </div>
 </div>
 </div>
@@ -509,10 +502,7 @@ false</code></pre>
 <div class="fragment">
 <div class="cell" data-execution_count="8">
 <div class="cell-output cell-output-stdout">
-<pre><code>Any[Any[</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>"a", 2], Any[2, 3], Any[3, 4], Any[4, 5]]</code></pre>
+<pre><code>Any[Any["a", 2], Any[2, 3], Any[3, 4], Any[4, 5]]</code></pre>
 </div>
 </div>
 </div>
@@ -521,12 +511,12 @@ false</code></pre>
 
 <div class="fragment">
 <div class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1"></a><span class="co">## shallow copy (first layer mutations don't change original object)</span></span>
-<span id="cb10-2"><a href="#cb10-2"></a>b2 <span class="op">=</span> <span class="fu">copy</span>(a)</span>
-<span id="cb10-3"><a href="#cb10-3"></a><span class="fu">println</span>(b2 <span class="op">===</span> a)</span>
-<span id="cb10-4"><a href="#cb10-4"></a>b2[<span class="fl">1</span>] <span class="op">=</span> [<span class="st">"A"</span>,<span class="fl">2</span>]</span>
-<span id="cb10-5"><a href="#cb10-5"></a>b2[<span class="fl">2</span>][<span class="fl">1</span>] <span class="op">=</span> <span class="st">"b"</span></span>
-<span id="cb10-6"><a href="#cb10-6"></a><span class="fu">println</span>(a)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1"></a><span class="co">## shallow copy (first layer mutations don't change original object)</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a>b2 <span class="op">=</span> <span class="fu">copy</span>(a)</span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="fu">println</span>(b2 <span class="op">===</span> a)</span>
+<span id="cb9-4"><a href="#cb9-4"></a>b2[<span class="fl">1</span>] <span class="op">=</span> [<span class="st">"A"</span>,<span class="fl">2</span>]</span>
+<span id="cb9-5"><a href="#cb9-5"></a>b2[<span class="fl">2</span>][<span class="fl">1</span>] <span class="op">=</span> <span class="st">"b"</span></span>
+<span id="cb9-6"><a href="#cb9-6"></a><span class="fu">println</span>(a)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
@@ -542,11 +532,11 @@ Any[Any["a", 2], Any["b", 3], Any[3, 4], Any[4, 5]]</code></pre>
 
 <div class="fragment">
 <div class="cell" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1"></a><span class="co">## deep copy (object is completely indistinguishable)</span></span>
-<span id="cb12-2"><a href="#cb12-2"></a>b3 <span class="op">=</span> <span class="fu">deepcopy</span>(a)</span>
-<span id="cb12-3"><a href="#cb12-3"></a><span class="fu">println</span>(b3 <span class="op">===</span> a)</span>
-<span id="cb12-4"><a href="#cb12-4"></a>b3[<span class="fl">3</span>][<span class="fl">1</span>] <span class="op">=</span> <span class="st">"c"</span></span>
-<span id="cb12-5"><a href="#cb12-5"></a><span class="fu">println</span>(a)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1"></a><span class="co">## deep copy (object is completely indistinguishable)</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a>b3 <span class="op">=</span> <span class="fu">deepcopy</span>(a)</span>
+<span id="cb11-3"><a href="#cb11-3"></a><span class="fu">println</span>(b3 <span class="op">===</span> a)</span>
+<span id="cb11-4"><a href="#cb11-4"></a>b3[<span class="fl">3</span>][<span class="fl">1</span>] <span class="op">=</span> <span class="st">"c"</span></span>
+<span id="cb11-5"><a href="#cb11-5"></a><span class="fu">println</span>(a)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
@@ -604,19 +594,19 @@ f(x)
 </ul>
 <div class="fragment">
 <div class="cell" data-execution_count="14">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1"></a>x <span class="op">=</span> <span class="fu">randperm</span>(<span class="fl">5</span>)<span class="ch">'</span></span>
-<span id="cb17-2"><a href="#cb17-2"></a><span class="fu">println</span>(x)</span>
-<span id="cb17-3"><a href="#cb17-3"></a><span class="fu">sort!</span>(x; dims<span class="op">=</span><span class="fl">1</span>)</span>
-<span id="cb17-4"><a href="#cb17-4"></a><span class="fu">println</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1"></a>x <span class="op">=</span> <span class="fu">randperm</span>(<span class="fl">5</span>)<span class="ch">'</span></span>
+<span id="cb16-2"><a href="#cb16-2"></a><span class="fu">println</span>(x)</span>
+<span id="cb16-3"><a href="#cb16-3"></a><span class="fu">sort!</span>(x; dims<span class="op">=</span><span class="fl">1</span>)</span>
+<span id="cb16-4"><a href="#cb16-4"></a><span class="fu">println</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
 <div class="cell" data-execution_count="15">
 <div class="cell-output cell-output-stdout">
-<pre><code>[1 4 3 2 5]</code></pre>
+<pre><code>[5 3 2 4 1]</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1 4 3 2 5]</code></pre>
+<pre><code>[5 3 2 4 1]</code></pre>
 </div>
 </div>
 </div>
@@ -629,26 +619,27 @@ f(x)
 </ul>
 <div class="fragment">
 <div class="cell" data-execution_count="16">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1"></a><span class="kw">function</span> <span class="fu">custom_modulus</span>(x<span class="op">::</span><span class="dt">Real</span>)</span>
-<span id="cb20-2"><a href="#cb20-2"></a>    <span class="cf">return</span> <span class="fu">abs</span>(x)</span>
-<span id="cb20-3"><a href="#cb20-3"></a><span class="kw">end</span></span>
-<span id="cb20-4"><a href="#cb20-4"></a></span>
-<span id="cb20-5"><a href="#cb20-5"></a><span class="kw">function</span> <span class="fu">custom_modulus</span>(x<span class="op">::</span><span class="dt">Complex</span>)</span>
-<span id="cb20-6"><a href="#cb20-6"></a>    res<span class="op">::</span><span class="dt">Complex </span><span class="op">=</span> <span class="fu">sqrt</span>(x.re<span class="op">^</span><span class="fl">2</span> <span class="op">+</span> x.<span class="cn">im</span><span class="op">^</span><span class="fl">2</span>)</span>
-<span id="cb20-7"><a href="#cb20-7"></a>    <span class="cf">return</span> res</span>
-<span id="cb20-8"><a href="#cb20-8"></a><span class="kw">end</span></span>
-<span id="cb20-9"><a href="#cb20-9"></a></span>
-<span id="cb20-10"><a href="#cb20-10"></a><span class="fu">println</span>([<span class="fu">custom_modulus</span>(<span class="op">-</span><span class="fl">2</span>), <span class="fu">typeof</span>(<span class="fu">custom_modulus</span>(<span class="op">-</span><span class="fl">2</span>))])</span>
-<span id="cb20-11"><a href="#cb20-11"></a><span class="fu">println</span>([<span class="fu">custom_modulus</span>(<span class="op">-</span><span class="fl">2</span><span class="op">+</span><span class="fl">1im</span>), <span class="fu">typeof</span>(<span class="fu">custom_modulus</span>(<span class="op">-</span><span class="fl">2</span><span class="op">+</span><span class="fl">1im</span>))])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1"></a><span class="kw">function</span> <span class="fu">custom_modulus</span>(x<span class="op">::</span><span class="dt">Real</span>)</span>
+<span id="cb19-2"><a href="#cb19-2"></a>    <span class="cf">return</span> <span class="fu">abs</span>(x)</span>
+<span id="cb19-3"><a href="#cb19-3"></a><span class="kw">end</span></span>
+<span id="cb19-4"><a href="#cb19-4"></a></span>
+<span id="cb19-5"><a href="#cb19-5"></a><span class="kw">function</span> <span class="fu">custom_modulus</span>(x<span class="op">::</span><span class="dt">Complex</span>)</span>
+<span id="cb19-6"><a href="#cb19-6"></a>    res<span class="op">::</span><span class="dt">Complex </span><span class="op">=</span> <span class="fu">sqrt</span>(x.re<span class="op">^</span><span class="fl">2</span> <span class="op">+</span> x.<span class="cn">im</span><span class="op">^</span><span class="fl">2</span>)</span>
+<span id="cb19-7"><a href="#cb19-7"></a>    <span class="cf">return</span> res</span>
+<span id="cb19-8"><a href="#cb19-8"></a><span class="kw">end</span></span>
+<span id="cb19-9"><a href="#cb19-9"></a></span>
+<span id="cb19-10"><a href="#cb19-10"></a><span class="fu">println</span>([<span class="fu">custom_modulus</span>(<span class="op">-</span><span class="fl">2</span>), <span class="fu">typeof</span>(<span class="fu">custom_modulus</span>(<span class="op">-</span><span class="fl">2</span>))])</span>
+<span id="cb19-11"><a href="#cb19-11"></a><span class="fu">println</span>([<span class="fu">custom_modulus</span>(<span class="op">-</span><span class="fl">2</span><span class="op">+</span><span class="fl">1im</span>), <span class="fu">typeof</span>(<span class="fu">custom_modulus</span>(<span class="op">-</span><span class="fl">2</span><span class="op">+</span><span class="fl">1im</span>))])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
 <div class="cell" data-execution_count="17">
 <div class="cell-output cell-output-stdout">
-<pre><code>Any[2, Int64]</code></pre>
+<pre><code>Any[2, Int64]
+Any[</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Any[2.23606797749979 + 0.0im, ComplexF64]</code></pre>
+<pre><code>2.23606797749979 + 0.0im, ComplexF64]</code></pre>
 </div>
 </div>
 </div>
@@ -681,16 +672,16 @@ f(x)
 </ul>
 <div class="fragment">
 <div class="cell" data-execution_count="18">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1"></a><span class="im">using</span> <span class="bu">StatsBase</span></span>
-<span id="cb23-2"><a href="#cb23-2"></a>samples <span class="op">=</span> [<span class="fu">rand</span>(<span class="fl">100</span>)<span class="op">*</span>i for i <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>]</span>
-<span id="cb23-3"><a href="#cb23-3"></a>variances <span class="op">=</span> <span class="fu">var</span>.(samples)</span>
-<span id="cb23-4"><a href="#cb23-4"></a><span class="fu">println</span>(variances)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1"></a><span class="im">using</span> <span class="bu">StatsBase</span></span>
+<span id="cb22-2"><a href="#cb22-2"></a>samples <span class="op">=</span> [<span class="fu">rand</span>(<span class="fl">100</span>)<span class="op">*</span>i for i <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>]</span>
+<span id="cb22-3"><a href="#cb22-3"></a>variances <span class="op">=</span> <span class="fu">var</span>.(samples)</span>
+<span id="cb22-4"><a href="#cb22-4"></a><span class="fu">println</span>(variances)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
 <div class="cell" data-execution_count="19">
 <div class="cell-output cell-output-stdout">
-<pre><code>[0.0795582513740695, 0.3076534154639079, 0.7247195336123156, 1.2208430306974967, 2.281914024965167]</code></pre>
+<pre><code>[0.09265683040172733, 0.304100964691918, 0.7111395723552325, 1.4930234740411779, 1.6931035229284153]</code></pre>
 </div>
 </div>
 </div>
@@ -711,19 +702,19 @@ f(x)
 </ul>
 <div class="fragment">
 <div class="cell" data-execution_count="20">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1"></a><span class="im">using</span> <span class="bu">Random</span></span>
-<span id="cb25-2"><a href="#cb25-2"></a><span class="fu">randperm</span>(<span class="fl">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1"></a><span class="im">using</span> <span class="bu">Random</span></span>
+<span id="cb24-2"><a href="#cb24-2"></a><span class="fu">randperm</span>(<span class="fl">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
 <div class="cell" data-execution_count="21">
 <div class="cell-output cell-output-display" data-execution_count="12">
 <pre><code>5-element Vector{Int64}:
+ 5
  4
  3
- 2
  1
- 5</code></pre>
+ 2</code></pre>
 </div>
 </div>
 </div>
@@ -735,9 +726,9 @@ f(x)
 </ul>
 <div class="fragment">
 <div class="cell" data-execution_count="22">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb27-1"><a href="#cb27-1"></a><span class="im">using</span> <span class="bu">StatsBase</span>, <span class="bu">Random</span></span>
-<span id="cb27-2"><a href="#cb27-2"></a>vec <span class="op">=</span> <span class="bu">Random</span>.<span class="fu">randperm</span>(<span class="fl">100</span>)</span>
-<span id="cb27-3"><a href="#cb27-3"></a>stdv100 <span class="op">=</span> <span class="fu">std</span>(vec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1"></a><span class="im">using</span> <span class="bu">StatsBase</span>, <span class="bu">Random</span></span>
+<span id="cb26-2"><a href="#cb26-2"></a>vec <span class="op">=</span> <span class="bu">Random</span>.<span class="fu">randperm</span>(<span class="fl">100</span>)</span>
+<span id="cb26-3"><a href="#cb26-3"></a>stdv100 <span class="op">=</span> <span class="fu">std</span>(vec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
@@ -766,16 +757,16 @@ f(x)
 </ul>
 <div class="fragment">
 <div class="cell" data-execution_count="24">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb29-1"><a href="#cb29-1"></a>x <span class="op">=</span> <span class="fl">0</span></span>
-<span id="cb29-2"><a href="#cb29-2"></a><span class="pp">@time</span> <span class="cf">for</span> i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">100000</span></span>
-<span id="cb29-3"><a href="#cb29-3"></a>x <span class="op">*=</span> x<span class="op">^</span>i</span>
-<span id="cb29-4"><a href="#cb29-4"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb28-1"><a href="#cb28-1"></a>x <span class="op">=</span> <span class="fl">0</span></span>
+<span id="cb28-2"><a href="#cb28-2"></a><span class="pp">@time</span> <span class="cf">for</span> i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">100000</span></span>
+<span id="cb28-3"><a href="#cb28-3"></a>x <span class="op">*=</span> x<span class="op">^</span>i</span>
+<span id="cb28-4"><a href="#cb28-4"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
 <div class="cell" data-execution_count="25">
 <div class="cell-output cell-output-stdout">
-<pre><code>  0.017820 seconds (99.50 k allocations: 1.519 MiB, 17.77% compilation time)</code></pre>
+<pre><code>  0.010708 seconds (99.50 k allocations: 1.519 MiB, 15.14% compilation time)</code></pre>
 </div>
 </div>
 </div>
@@ -822,12 +813,12 @@ f(x)
 </ul>
 <div class="fragment">
 <div class="cell" data-execution_count="26">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb31-1"><a href="#cb31-1"></a><span class="kw">module</span> BasicStats</span>
-<span id="cb31-2"><a href="#cb31-2"></a><span class="kw">export</span> std</span>
-<span id="cb31-3"><a href="#cb31-3"></a><span class="fu">mean</span>(x) <span class="op">=</span> <span class="fu">sum</span>(x)<span class="op">/</span><span class="fu">length</span>(x)</span>
-<span id="cb31-4"><a href="#cb31-4"></a><span class="fu">std</span>(x) <span class="op">=</span> <span class="fu">sqrt</span>(<span class="fu">sum</span>((x <span class="op">.-</span> <span class="fu">mean</span>(x))<span class="op">.^</span><span class="fl">2</span>)<span class="op">/</span><span class="fu">length</span>(x))</span>
-<span id="cb31-5"><a href="#cb31-5"></a><span class="kw">end</span></span>
-<span id="cb31-6"><a href="#cb31-6"></a><span class="im">using</span> <span class="bu">.BasicStats</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1"></a><span class="kw">module</span> BasicStats</span>
+<span id="cb30-2"><a href="#cb30-2"></a><span class="kw">export</span> std</span>
+<span id="cb30-3"><a href="#cb30-3"></a><span class="fu">mean</span>(x) <span class="op">=</span> <span class="fu">sum</span>(x)<span class="op">/</span><span class="fu">length</span>(x)</span>
+<span id="cb30-4"><a href="#cb30-4"></a><span class="fu">std</span>(x) <span class="op">=</span> <span class="fu">sqrt</span>(<span class="fu">sum</span>((x <span class="op">.-</span> <span class="fu">mean</span>(x))<span class="op">.^</span><span class="fl">2</span>)<span class="op">/</span><span class="fu">length</span>(x))</span>
+<span id="cb30-5"><a href="#cb30-5"></a><span class="kw">end</span></span>
+<span id="cb30-6"><a href="#cb30-6"></a><span class="im">using</span> <span class="bu">.BasicStats</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </section>
@@ -1036,14 +1027,14 @@ f(x)
         previewLinks: false,
 
         // Transition style (none/fade/slide/convex/concave/zoom)
-        transition: 'concave',
+        transition: 'none',
 
         // Transition speed (default/fast/slow)
         transitionSpeed: 'default',
 
         // Transition style for full page slide backgrounds
         // (none/fade/slide/convex/concave/zoom)
-        backgroundTransition: 'convex',
+        backgroundTransition: 'none',
 
         // Number of slides away from the current that are visible
         viewDistance: 3,
@@ -1131,24 +1122,7 @@ f(x)
         button.classList.add('code-copy-button-checked');
         var currentTitle = button.getAttribute("title");
         button.setAttribute("title", "Copied!");
-        let tooltip;
-        if (window.bootstrap) {
-          button.setAttribute("data-bs-toggle", "tooltip");
-          button.setAttribute("data-bs-placement", "left");
-          button.setAttribute("data-bs-title", "Copied!");
-          tooltip = new bootstrap.Tooltip(button, 
-            { trigger: "manual", 
-              customClass: "code-copy-button-tooltip",
-              offset: [0, -8]});
-          tooltip.show();    
-        }
         setTimeout(function() {
-          if (tooltip) {
-            tooltip.hide();
-            button.removeAttribute("data-bs-title");
-            button.removeAttribute("data-bs-toggle");
-            button.removeAttribute("data-bs-placement");
-          }
           button.setAttribute("title", currentTitle);
           button.classList.remove('code-copy-button-checked');
         }, 1000);
@@ -1186,42 +1160,24 @@ f(x)
           return note.innerHTML;
         });
       }
-      const findCites = (el) => {
-        const parentEl = el.parentElement;
-        if (parentEl) {
-          const cites = parentEl.dataset.cites;
-          if (cites) {
-            return {
-              el,
-              cites: cites.split(' ')
-            };
-          } else {
-            return findCites(el.parentElement)
-          }
-        } else {
-          return undefined;
-        }
-      };
       var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
       for (var i=0; i<bibliorefs.length; i++) {
         const ref = bibliorefs[i];
-        const citeInfo = findCites(ref);
-        if (citeInfo) {
-          tippyHover(citeInfo.el, function() {
-            var popup = window.document.createElement('div');
-            citeInfo.cites.forEach(function(cite) {
-              var citeDiv = window.document.createElement('div');
-              citeDiv.classList.add('hanging-indent');
-              citeDiv.classList.add('csl-entry');
-              var biblioDiv = window.document.getElementById('ref-' + cite);
-              if (biblioDiv) {
-                citeDiv.innerHTML = biblioDiv.innerHTML;
-              }
-              popup.appendChild(citeDiv);
-            });
-            return popup.innerHTML;
+        const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+        tippyHover(ref, function() {
+          var popup = window.document.createElement('div');
+          cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
           });
-        }
+          return popup.innerHTML;
+        });
       }
     });
     </script>
