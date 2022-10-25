@@ -7,8 +7,6 @@ format:
     slide-number: true
     theme: serif
     chalkboard: true 
-    transition: concave
-    background-transition: convex
     incremental: true
     background-image: julia_background.png
 ---
@@ -23,6 +21,17 @@ format:
 ::: fragment 
 ```{julia}
 #| echo: true
+#| eval: false
+println(Int64 <: Real)
+println(Float64 <: Real)
+println(Int64 <: Float64)
+```
+:::
+
+::: fragment 
+```{julia}
+#| echo: false
+#| eval: true
 println(Int64 <: Real)
 println(Float64 <: Real)
 println(Int64 <: Float64)
@@ -40,6 +49,20 @@ println(Int64 <: Float64)
 ::: fragment 
 ```{julia}
 #| echo: true
+#| eval: false
+struct Stats
+	xbar::Real
+	xsig::Real
+	xkur::Real
+end
+Stats(4,0.4,0.1)
+```
+:::
+
+::: fragment 
+```{julia}
+#| echo: false
+#| eval: true
 struct Stats
 	xbar::Real
 	xsig::Real
@@ -65,6 +88,30 @@ Stats(4,0.4,0.1)
 ::: fragment 
 ```{julia}
 #| echo: true
+#| eval: false
+using StatsBase, Random
+struct StatsGenerator
+	xmean::Real
+	xvar::Real
+	xkur::Real
+	function StatsGenerator(n::Int)
+		# take a sample of n draws
+		sample = randexp(n)
+		av = round(mean(sample), digits=3)
+		v = round(var(sample), digits=3)
+		k = round(kurtosis(sample), digits=3)
+		new(av, v, k)
+	end
+end
+
+println([StatsGenerator(100), StatsGenerator(100), StatsGenerator(1000)])
+```
+:::
+
+::: fragment 
+```{julia}
+#| echo: false
+#| eval: true
 using StatsBase, Random
 struct StatsGenerator
 	xmean::Real
@@ -96,6 +143,19 @@ println([StatsGenerator(100), StatsGenerator(100), StatsGenerator(1000)])
 ::: fragment 
 ```{julia}
 #| echo: true
+#| eval: false
+a = Any[Any[1,2], Any[2,3], Any[3,4], Any[4,5]]
+## reference
+b1 = a
+b1[1] = ["a",2]
+println(a)
+```
+:::
+
+::: fragment 
+```{julia}
+#| echo: false
+#| eval: true
 a = Any[Any[1,2], Any[2,3], Any[3,4], Any[4,5]]
 ## reference
 b1 = a
@@ -109,6 +169,20 @@ println(a)
 ::: fragment
 ```{julia}
 #| echo: true
+#| eval: false
+## shallow copy (first layer mutations don't change original object)
+b2 = copy(a)
+println(b2 === a)
+b2[1] = ["A",2]
+b2[2][1] = "b"
+println(a)
+```
+:::
+
+::: fragment
+```{julia}
+#| echo: false
+#| eval: true
 ## shallow copy (first layer mutations don't change original object)
 b2 = copy(a)
 println(b2 === a)
@@ -123,6 +197,19 @@ println(a)
 ::: fragment
 ```{julia}
 #| echo: true
+#| eval: false
+## deep copy (object is completely indistinguishable)
+b3 = deepcopy(a)
+println(b3 === a)
+b3[3][1] = "c"
+println(a)
+```
+:::
+
+::: fragment
+```{julia}
+#| echo: false
+#| eval: true
 ## deep copy (object is completely indistinguishable)
 b3 = deepcopy(a)
 println(b3 === a)
@@ -153,11 +240,23 @@ f(x)
 ```
 :::
 
+::: fragment
+```
+#| echo: false
+#| eval: false
+x <- c(1,2,3,4)
+f <- function(x){x[1] = 10}
+f(x)
+# x is unchanged.
+```
+:::
+
 * Julia Code
 
 ::: fragment 
 ```{julia}
-#| echo: true
+#| echo: false
+#| eval: true
 x = [1,2,3,4]
 function f(x)
 	x[1] = 10
@@ -174,6 +273,18 @@ println(x)
 ::: fragment 
 ```{julia}
 #| echo: true
+#| eval: false
+x = randperm(5)'
+println(x)
+sort!(x; dims=1)
+println(x)
+```
+:::
+
+::: fragment 
+```{julia}
+#| echo: false
+#| eval: true
 x = randperm(5)'
 println(x)
 sort!(x; dims=1)
@@ -189,6 +300,25 @@ println(x)
 ::: fragment 
 ```{julia}
 #| echo: true
+#| eval: false
+function custom_modulus(x::Real)
+	return abs(x)
+end
+
+function custom_modulus(x::Complex)
+	res::Complex = sqrt(x.re^2 + x.im^2)
+	return res
+end
+
+println([custom_modulus(-2), typeof(custom_modulus(-2))])
+println([custom_modulus(-2+1im), typeof(custom_modulus(-2+1im))])
+```
+:::
+
+::: fragment 
+```{julia}
+#| echo: false
+#| eval: true
 function custom_modulus(x::Real)
 	return abs(x)
 end
@@ -221,6 +351,18 @@ println([custom_modulus(-2+1im), typeof(custom_modulus(-2+1im))])
 ::: fragment 
 ```{julia}
 #| echo: true
+#| eval: false
+using StatsBase
+samples = [rand(100)*i for i in 1:5]
+variances = var.(samples)
+println(variances)
+```
+:::
+
+::: fragment 
+```{julia}
+#| echo: false
+#| eval: true
 using StatsBase
 samples = [rand(100)*i for i in 1:5]
 variances = var.(samples)
@@ -245,6 +387,16 @@ println(variances)
 ::: fragment 
 ```{julia}
 #| echo: true
+#| eval: false
+using Random
+randperm(5)
+```
+:::
+
+::: fragment 
+```{julia}
+#| echo: false
+#| eval: true
 using Random
 randperm(5)
 ```
@@ -255,6 +407,17 @@ randperm(5)
 ::: fragment 
 ```{julia}
 #| echo: true
+#| eval: false
+using StatsBase, Random
+vec = Random.randperm(100)
+stdv100 = std(vec)
+```
+:::
+
+::: fragment 
+```{julia}
+#| echo: false
+#| eval: true
 using StatsBase, Random
 vec = Random.randperm(100)
 stdv100 = std(vec)
@@ -284,6 +447,18 @@ stdv100 = std(vec)
 ::: fragment 
 ```{julia}
 #| echo: true
+#| eval: false
+x = 0
+@time for i = 1:100000
+x *= x^i
+end
+```
+:::
+
+::: fragment 
+```{julia}
+#| echo: false
+#| eval: true
 x = 0
 @time for i = 1:100000
 x *= x^i
@@ -327,6 +502,8 @@ end
 
 ::: fragment
 ```{julia}
+#| echo: true
+#| eval: true
 module BasicStats
 export std
 mean(x) = sum(x)/length(x)
