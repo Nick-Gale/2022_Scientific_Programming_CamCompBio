@@ -2,6 +2,9 @@
 title: "Scientific Programming in Julia"
 subtitle: "Package Management, Advanced Concepts, and Worflows"
 author: "Nicholas Gale & Stephen Eglen"
+execute:
+  echo: true
+  output-location: fragment  
 format:
   revealjs:
     slide-number: true
@@ -20,18 +23,6 @@ format:
 
 ::: fragment 
 ```{julia}
-#| echo: true
-#| eval: false
-println(Int64 <: Real)
-println(Float64 <: Real)
-println(Int64 <: Float64)
-```
-:::
-
-::: fragment 
-```{julia}
-#| echo: false
-#| eval: true
 println(Int64 <: Real)
 println(Float64 <: Real)
 println(Int64 <: Float64)
@@ -48,8 +39,6 @@ println(Int64 <: Float64)
 
 ::: fragment 
 ```{julia}
-#| echo: true
-#| eval: false
 struct Stats
 	xbar::Real
 	xsig::Real
@@ -59,23 +48,11 @@ Stats(4,0.4,0.1)
 ```
 :::
 
-::: fragment 
-```{julia}
-#| echo: false
-#| eval: true
-struct Stats
-	xbar::Real
-	xsig::Real
-	xkur::Real
-end
-Stats(4,0.4,0.1)
-```
-:::
+
 
 ## Type Constructors
 
-::::{.columns}
-
+:::::{.columns}
 :::{.column width="50%"}
 * An object is created by calling the struct name with fields.
 
@@ -87,31 +64,6 @@ Stats(4,0.4,0.1)
 :::{.column width="50%"}
 ::: fragment 
 ```{julia}
-#| echo: true
-#| eval: false
-using StatsBase, Random
-struct StatsGenerator
-	xmean::Real
-	xvar::Real
-	xkur::Real
-	function StatsGenerator(n::Int)
-		# take a sample of n draws
-		sample = randexp(n)
-		av = round(mean(sample), digits=3)
-		v = round(var(sample), digits=3)
-		k = round(kurtosis(sample), digits=3)
-		new(av, v, k)
-	end
-end
-
-println([StatsGenerator(100), StatsGenerator(100), StatsGenerator(1000)])
-```
-:::
-
-::: fragment 
-```{julia}
-#| echo: false
-#| eval: true
 using StatsBase, Random
 struct StatsGenerator
 	xmean::Real
@@ -132,7 +84,7 @@ println([StatsGenerator(100), StatsGenerator(100), StatsGenerator(1000)])
 :::
 :::
 
-::::
+:::::
 
 ## Changing Objects
 
@@ -142,24 +94,10 @@ println([StatsGenerator(100), StatsGenerator(100), StatsGenerator(1000)])
 
 ::: fragment 
 ```{julia}
-#| echo: true
-#| eval: false
-a = Any[Any[1,2], Any[2,3], Any[3,4], Any[4,5]]
+a = Any[Any[1,0], Any[2,0], Any[3,0], Any[4,0]]
 ## reference
 b1 = a
-b1[1] = ["a",2]
-println(a)
-```
-:::
-
-::: fragment 
-```{julia}
-#| echo: false
-#| eval: true
-a = Any[Any[1,2], Any[2,3], Any[3,4], Any[4,5]]
-## reference
-b1 = a
-b1[1] = ["a",2]
+b1[1] = ["*",2]
 println(a)
 ```
 :::
@@ -168,21 +106,6 @@ println(a)
 
 ::: fragment
 ```{julia}
-#| echo: true
-#| eval: false
-## shallow copy (first layer mutations don't change original object)
-b2 = copy(a)
-println(b2 === a)
-b2[1] = ["A",2]
-b2[2][1] = "b"
-println(a)
-```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
 ## shallow copy (first layer mutations don't change original object)
 b2 = copy(a)
 println(b2 === a)
@@ -196,8 +119,6 @@ println(a)
 
 ::: fragment
 ```{julia}
-#| echo: true
-#| eval: false
 ## deep copy (object is completely indistinguishable)
 b3 = deepcopy(a)
 println(b3 === a)
@@ -206,23 +127,12 @@ println(a)
 ```
 :::
 
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
-## deep copy (object is completely indistinguishable)
-b3 = deepcopy(a)
-println(b3 === a)
-b3[3][1] = "c"
-println(a)
-```
-:::
 
 ## Functions by reference
 
 * This applies to objects passed to functions whereas in R they are passed by *value*.
 
-* In R a copy of an objects data is used by the functions local environment, in Julia it is the object itself.
+* In R a copy of an object's data is used by the functions local environment, in Julia it is the object itself.
 
 
 ---
@@ -231,7 +141,6 @@ println(a)
 
 ::: fragment
 ```
-#| echo: true
 #| eval: false
 x <- c(1,2,3,4)
 f <- function(x){x[1] = 10}
@@ -240,23 +149,11 @@ f(x)
 ```
 :::
 
-::: fragment
-```
-#| echo: false
-#| eval: false
-x <- c(1,2,3,4)
-f <- function(x){x[1] = 10}
-f(x)
-# x is unchanged.
-```
-:::
 
 * Julia Code
 
 ::: fragment 
 ```{julia}
-#| echo: false
-#| eval: true
 x = [1,2,3,4]
 function f(x)
 	x[1] = 10
@@ -266,31 +163,18 @@ println(x)
 ```
 :::
 
----
 
 * Functions that mutate their objects are usually denoted by a bang operator.
 
 ::: fragment 
 ```{julia}
-#| echo: true
-#| eval: false
-x = randperm(5)'
-println(x)
-sort!(x; dims=1)
+x = [5.0, 1.8, 2.1, 3.7, 4.1]
+sort!(x)
 println(x)
 ```
 :::
 
-::: fragment 
-```{julia}
-#| echo: false
-#| eval: true
-x = randperm(5)'
-println(x)
-sort!(x; dims=1)
-println(x)
-```
-:::
+
 ## Multiple Dispatch
 
 * Functions in Julia may be overloaded with multiple definitions; Packages often do this.
@@ -299,8 +183,6 @@ println(x)
 
 ::: fragment 
 ```{julia}
-#| echo: true
-#| eval: false
 function custom_modulus(x::Real)
 	return abs(x)
 end
@@ -310,28 +192,13 @@ function custom_modulus(x::Complex)
 	return res
 end
 
-println([custom_modulus(-2), typeof(custom_modulus(-2))])
-println([custom_modulus(-2+1im), typeof(custom_modulus(-2+1im))])
+a = custom_modulus(-2)
+b = custom_modulus(-2+1im)
+println([a, typeof(a)])
+println([b, typeof(b)])
 ```
 :::
 
-::: fragment 
-```{julia}
-#| echo: false
-#| eval: true
-function custom_modulus(x::Real)
-	return abs(x)
-end
-
-function custom_modulus(x::Complex)
-	res::Complex = sqrt(x.re^2 + x.im^2)
-	return res
-end
-
-println([custom_modulus(-2), typeof(custom_modulus(-2))])
-println([custom_modulus(-2+1im), typeof(custom_modulus(-2+1im))])
-```
-:::
 
 ::: {.notes}
 * This allows for 
@@ -344,25 +211,12 @@ println([custom_modulus(-2+1im), typeof(custom_modulus(-2+1im))])
 
 * Broadcasting is done with the `@broadcast` macro, or the `.` notation.
 
-* Using the`.` notation any function can be broadcast onto an array.
+* Using the `.` notation any function can be broadcast onto an array.
 
 * This is native vectorisation as you might expect in R.
 
 ::: fragment 
 ```{julia}
-#| echo: true
-#| eval: false
-using StatsBase
-samples = [rand(100)*i for i in 1:5]
-variances = var.(samples)
-println(variances)
-```
-:::
-
-::: fragment 
-```{julia}
-#| echo: false
-#| eval: true
 using StatsBase
 samples = [rand(100)*i for i in 1:5]
 variances = var.(samples)
@@ -378,51 +232,35 @@ println(variances)
 
 * *Don't* spend time posing the problem in linear algebra format unless it make sense.
 
-## Packages
+# Packages
+
+## Introduction to Packages
 
 * Packages are a collection of function and type defintions.
 
+* About 7,400 packages registered (October 2022).
+  <https://julialang.org/packages/> has several methods to navigate the
+  ecosystem.
+  
 * Packages in Julia are loaded with the `using` keyword. Some are included in the base installation.
 
 ::: fragment 
 ```{julia}
-#| echo: true
-#| eval: false
 using Random
-randperm(5)
+randperm(5)'
 ```
 :::
 
-::: fragment 
-```{julia}
-#| echo: false
-#| eval: true
-using Random
-randperm(5)
-```
-:::
----
 * Package functions are imported into the namespace; and can also be accessed using `PkgName.function`.
 
 ::: fragment 
 ```{julia}
-#| echo: true
-#| eval: false
 using StatsBase, Random
 vec = Random.randperm(100)
 stdv100 = std(vec)
 ```
 :::
 
-::: fragment 
-```{julia}
-#| echo: false
-#| eval: true
-using StatsBase, Random
-vec = Random.randperm(100)
-stdv100 = std(vec)
-```
-:::
 
 ## Package manager
 
@@ -435,9 +273,11 @@ stdv100 = std(vec)
 * Alternatively Pkg.add("PkgName"). Equivalently: `Pkg.remove`, `Pkg.build`.
 
 
+# Macros
+
 ## Macros
 
-* Macros are useful shorthands for blocks of code; often packages export there own macros
+* Macros are useful shorthands for blocks of code; often packages export their own macros
 
 * Macros are used with the `@macro` syntax placed before a code block.
 
@@ -446,22 +286,9 @@ stdv100 = std(vec)
 
 ::: fragment 
 ```{julia}
-#| echo: true
-#| eval: false
 x = 0
 @time for i = 1:100000
-x *= x^i
-end
-```
-:::
-
-::: fragment 
-```{julia}
-#| echo: false
-#| eval: true
-x = 0
-@time for i = 1:100000
-x *= x^i
+    x *= x^i
 end
 ```
 :::
@@ -498,18 +325,17 @@ end
 
 * Definitions are exported using the `export` keyword.
 
-* A module is included in a script with `include("path/to/module")` and using .PackagName` or `using Main.PackageName`.
+* A module is included in a script with `include("path/to/module")` and `using .PackagName` or `using Main.PackageName`.
 
 ::: fragment
 ```{julia}
-#| echo: true
-#| eval: true
 module BasicStats
 export std
 mean(x) = sum(x)/length(x)
 std(x) = sqrt(sum((x .- mean(x)).^2)/length(x))
 end
 using .BasicStats
+std([1.0, 2.0, 3.0])
 ```
 :::
 
@@ -525,9 +351,9 @@ using .BasicStats
 
 ## Workflow: Environments
 
-* An environment is a version controlled local version of Julia.
+* An environment is a version-controlled local version of Julia.
 
-* It includes a Project.toml, and Manifest.toml which list pacakge dependencies.
+* It includes a Project.toml, and Manifest.toml which list package dependencies.
 
 * They are good for reproducible code.
 
