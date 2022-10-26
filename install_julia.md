@@ -1,0 +1,86 @@
+# Notes for installing and running Julia notebooks
+
+These notes should help you install necessary software on your laptop,
+or to use subliminal.
+
+
+# Prerequisites
+
+This assumes you have already a copy of Python3 in your path.  Simply
+run `python3` to check what version you have.
+
+
+# Install julia
+
+Julia can be installed from <https://julialang.org/downloads/>.  Mac
+users might prefer to use the [homebrew](https://brew.sh) which makes
+installation as simple as:
+
+```
+brew install julia
+```
+
+# Install jupyter
+
+
+Jupyter is the engine underlying the notebook format.  It is a python
+package that you can install for yourself using.
+
+```
+pip3 install --user jupyter
+```
+
+After it is installed, check that you can run it using
+```
+which jupyter
+```
+which should show that it installed in `~/.local/bin/`.  If it can't
+be found, you may need to add the following to your 
+`~/.bashrc` file (or .zshrc on macs).
+
+```
+export PATH="~/.local/bin:$PATH"
+```
+
+and then reload your init file using
+```
+source ~/.bashrc
+```
+
+
+# Install IJulia kernel
+
+The [IJulia kernel](https://github.com/JuliaLang/IJulia.jl) is used by
+Jupyter to communicate with Julia.  It can be installed from the shell
+with:
+
+```
+julia -e 'using Pkg; Pkg.add("IJulia")'
+```
+
+
+# Download the workbooks
+
+The workbooks can be downloaded into your home directory using:
+
+```
+cd ~
+git clone https://github.com/Nick-Gale/2022_Scientific_Programming_CamCompBio/
+```
+
+# Start Jupyter notebook
+# Subliminal
+
+You can run jupyter remotely on subliminal and just use a web-browser
+on your laptop to connect to the jupyter session.  This is analagous
+to running rstudio through your web-browser, although not quiet as easy.
+
+On subliminal, you should find that python3 is installed in
+/usr/bin/python, and julia (version 1.5) is in /alt/bin/julia .
+
+You will need to install jupyter and the jupyter kernel as above.
+
+
+
+
+
