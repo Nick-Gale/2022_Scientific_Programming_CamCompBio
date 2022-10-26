@@ -406,15 +406,13 @@
 <div class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">println</span>(<span class="dt">Int64</span> <span class="op">&lt;:</span><span class="dt"> Real</span>)</span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="fu">println</span>(<span class="dt">Float64</span> <span class="op">&lt;:</span><span class="dt"> Real</span>)</span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">println</span>(<span class="dt">Int64</span> <span class="op">&lt;:</span><span class="dt"> Float64</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<div class="fragment">
-<div class="cell" data-execution_count="2">
+<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">println</span>(<span class="dt">Int64</span> <span class="op">&lt;:</span><span class="dt"> Float64</span>)</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="fu">println</span>(<span class="fu">subtypes</span>(<span class="dt">Number</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>true
 true
-false</code></pre>
+false
+Any[Complex, Real]</code></pre>
 </div>
 </div>
 </div>
@@ -427,18 +425,14 @@ false</code></pre>
 <li class="fragment"><p>An object is called using the name of the <code>struct</code></p></li>
 </ul>
 <div class="fragment">
-<div class="cell" data-execution_count="3">
+<div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">struct</span> Stats</span>
 <span id="cb3-2"><a href="#cb3-2"></a>    xbar<span class="op">::</span><span class="dt">Real</span></span>
 <span id="cb3-3"><a href="#cb3-3"></a>    xsig<span class="op">::</span><span class="dt">Real</span></span>
 <span id="cb3-4"><a href="#cb3-4"></a>    xkur<span class="op">::</span><span class="dt">Real</span></span>
 <span id="cb3-5"><a href="#cb3-5"></a><span class="kw">end</span></span>
 <span id="cb3-6"><a href="#cb3-6"></a><span class="fu">Stats</span>(<span class="fl">4</span>,<span class="fl">0.4</span>,<span class="fl">0.1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<div class="fragment">
-<div class="cell" data-execution_count="4">
-<div class="cell-output cell-output-display" data-execution_count="3">
+<div class="cell-output cell-output-display" data-execution_count="19">
 <pre><code>Stats(4, 0.4, 0.1)</code></pre>
 </div>
 </div>
@@ -455,7 +449,7 @@ false</code></pre>
 </ul>
 </div><div class="column" style="width:50%;">
 <div class="fragment">
-<div class="cell" data-execution_count="5">
+<div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1"></a><span class="im">using</span> <span class="bu">StatsBase</span>, <span class="bu">Random</span></span>
 <span id="cb5-2"><a href="#cb5-2"></a><span class="kw">struct</span> StatsGenerator</span>
 <span id="cb5-3"><a href="#cb5-3"></a>    xmean<span class="op">::</span><span class="dt">Real</span></span>
@@ -472,12 +466,8 @@ false</code></pre>
 <span id="cb5-14"><a href="#cb5-14"></a><span class="kw">end</span></span>
 <span id="cb5-15"><a href="#cb5-15"></a></span>
 <span id="cb5-16"><a href="#cb5-16"></a><span class="fu">println</span>([<span class="fu">StatsGenerator</span>(<span class="fl">100</span>), <span class="fu">StatsGenerator</span>(<span class="fl">100</span>), <span class="fu">StatsGenerator</span>(<span class="fl">1000</span>)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<div class="fragment">
-<div class="cell" data-execution_count="6">
 <div class="cell-output cell-output-stdout">
-<pre><code>StatsGenerator[StatsGenerator(1.141, 1.118, 4.821), StatsGenerator(1.22, 1.301, 2.36), StatsGenerator(1.048, 1.042, 4.498)]</code></pre>
+<pre><code>StatsGenerator[StatsGenerator(1.249, 1.213, 1.652), StatsGenerator(1.042, 1.102, 4.03), StatsGenerator(1.073, 1.18, 3.531)]</code></pre>
 </div>
 </div>
 </div>
@@ -487,72 +477,62 @@ false</code></pre>
 <section id="changing-objects" class="slide level2">
 <h2>Changing Objects</h2>
 <ul>
-<li class="fragment"><p>Julia passes objects by reference - be careful with copying mutable types.</p></li>
-<li class="fragment"><p><code>copy</code> deferences the first layer. <code>deepcopy</code> recursively copies.</p></li>
+<li class="fragment">Julia passes objects by reference - be careful with copying mutable types.</li>
 </ul>
 <div class="fragment">
-<div class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1"></a>a <span class="op">=</span> <span class="dt">Any</span>[<span class="dt">Any</span>[<span class="fl">1</span>,<span class="fl">2</span>], <span class="dt">Any</span>[<span class="fl">2</span>,<span class="fl">3</span>], <span class="dt">Any</span>[<span class="fl">3</span>,<span class="fl">4</span>], <span class="dt">Any</span>[<span class="fl">4</span>,<span class="fl">5</span>]]</span>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1"></a>a <span class="op">=</span> <span class="dt">Any</span>[<span class="dt">Any</span>[<span class="fl">1</span>,<span class="fl">0</span>], <span class="dt">Any</span>[<span class="fl">2</span>,<span class="fl">0</span>], <span class="dt">Any</span>[<span class="fl">3</span>,<span class="fl">0</span>], <span class="dt">Any</span>[<span class="fl">4</span>,<span class="fl">0</span>]]</span>
 <span id="cb7-2"><a href="#cb7-2"></a><span class="co">## reference</span></span>
 <span id="cb7-3"><a href="#cb7-3"></a>b1 <span class="op">=</span> a</span>
-<span id="cb7-4"><a href="#cb7-4"></a>b1[<span class="fl">1</span>] <span class="op">=</span> [<span class="st">"a"</span>,<span class="fl">2</span>]</span>
+<span id="cb7-4"><a href="#cb7-4"></a>b1[<span class="fl">1</span>] <span class="op">=</span> [<span class="st">"*"</span>,<span class="fl">2</span>]</span>
 <span id="cb7-5"><a href="#cb7-5"></a><span class="fu">println</span>(a)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<div class="fragment">
-<div class="cell" data-execution_count="8">
 <div class="cell-output cell-output-stdout">
-<pre><code>Any[Any["a", 2], Any[2, 3], Any[3, 4], Any[4, 5]]</code></pre>
+<pre><code>Any[Any["*", 2], Any[2, 0], Any[3, 0], Any[4, 0]]</code></pre>
 </div>
 </div>
 </div>
 </section>
 <section class="slide level2">
 
+<ul>
+<li class="fragment"><code>copy</code> deferences the first layer.</li>
+</ul>
 <div class="fragment">
-<div class="cell" data-execution_count="9">
+<div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1"></a><span class="co">## shallow copy (first layer mutations don't change original object)</span></span>
 <span id="cb9-2"><a href="#cb9-2"></a>b2 <span class="op">=</span> <span class="fu">copy</span>(a)</span>
 <span id="cb9-3"><a href="#cb9-3"></a><span class="fu">println</span>(b2 <span class="op">===</span> a)</span>
 <span id="cb9-4"><a href="#cb9-4"></a>b2[<span class="fl">1</span>] <span class="op">=</span> [<span class="st">"A"</span>,<span class="fl">2</span>]</span>
 <span id="cb9-5"><a href="#cb9-5"></a>b2[<span class="fl">2</span>][<span class="fl">1</span>] <span class="op">=</span> <span class="st">"b"</span></span>
 <span id="cb9-6"><a href="#cb9-6"></a><span class="fu">println</span>(a)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<div class="fragment">
-<div class="cell" data-execution_count="10">
 <div class="cell-output cell-output-stdout">
 <pre><code>false
-Any[Any["a", 2], Any["b", 3], Any[3, 4], Any[4, 5]]</code></pre>
+Any[Any["*", 2], Any["b", 0], Any[3, 0], Any[4, 0]]</code></pre>
 </div>
 </div>
 </div>
-</section>
-<section class="slide level2">
-
+<ul>
+<li class="fragment"><code>deepcopy</code> recursively copies.</li>
+</ul>
 <div class="fragment">
-<div class="cell" data-execution_count="11">
+<div class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1"></a><span class="co">## deep copy (object is completely indistinguishable)</span></span>
 <span id="cb11-2"><a href="#cb11-2"></a>b3 <span class="op">=</span> <span class="fu">deepcopy</span>(a)</span>
 <span id="cb11-3"><a href="#cb11-3"></a><span class="fu">println</span>(b3 <span class="op">===</span> a)</span>
 <span id="cb11-4"><a href="#cb11-4"></a>b3[<span class="fl">3</span>][<span class="fl">1</span>] <span class="op">=</span> <span class="st">"c"</span></span>
 <span id="cb11-5"><a href="#cb11-5"></a><span class="fu">println</span>(a)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<div class="fragment">
-<div class="cell" data-execution_count="12">
 <div class="cell-output cell-output-stdout">
 <pre><code>false
-Any[Any["a", 2], Any["b", 3], Any[3, 4], Any[4, 5]]</code></pre>
+Any[Any["*", 2], Any["b", 0], Any[3, 0], Any[4, 0]]</code></pre>
 </div>
 </div>
 </div>
 </section>
-<section id="functions-by-reference" class="slide level2">
-<h2>Functions by reference</h2>
+<section id="pass-by-reference" class="slide level2">
+<h2>Pass by reference</h2>
 <ul>
 <li class="fragment"><p>This applies to objects passed to functions whereas in R they are passed by <em>value</em>.</p></li>
-<li class="fragment"><p>In R a copy of an objects data is used by the functions local environment, in Julia it is the object itself.</p></li>
+<li class="fragment"><p>In R a copy of an object’s data is used by the functions local environment, in Julia it is the object itself.</p></li>
 </ul>
 </section>
 <section class="slide level2">
@@ -561,16 +541,7 @@ Any[Any["a", 2], Any["b", 3], Any[3, 4], Any[4, 5]]</code></pre>
 <li class="fragment">R Code</li>
 </ul>
 <div class="fragment">
-<pre><code>#| echo: true
-#| eval: false
-x &lt;- c(1,2,3,4)
-f &lt;- function(x){x[1] = 10}
-f(x)
-# x is unchanged.</code></pre>
-</div>
-<div class="fragment">
-<pre><code>#| echo: false
-#| eval: false
+<pre><code>#| eval: false
 x &lt;- c(1,2,3,4)
 f &lt;- function(x){x[1] = 10}
 f(x)
@@ -580,33 +551,28 @@ f(x)
 <li class="fragment">Julia Code</li>
 </ul>
 <div class="fragment">
-<div class="cell" data-execution_count="13">
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1"></a>x <span class="op">=</span> [<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span>]</span>
+<span id="cb14-2"><a href="#cb14-2"></a><span class="kw">function</span> <span class="fu">f</span>(x)</span>
+<span id="cb14-3"><a href="#cb14-3"></a>    x[<span class="fl">1</span>] <span class="op">=</span> <span class="fl">10</span></span>
+<span id="cb14-4"><a href="#cb14-4"></a><span class="kw">end</span></span>
+<span id="cb14-5"><a href="#cb14-5"></a><span class="fu">f</span>(x)</span>
+<span id="cb14-6"><a href="#cb14-6"></a><span class="fu">println</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[10, 2, 3, 4]</code></pre>
 </div>
 </div>
 </div>
-</section>
-<section class="slide level2">
-
 <ul>
 <li class="fragment">Functions that mutate their objects are usually denoted by a bang operator.</li>
 </ul>
 <div class="fragment">
-<div class="cell" data-execution_count="14">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1"></a>x <span class="op">=</span> <span class="fu">randperm</span>(<span class="fl">5</span>)<span class="ch">'</span></span>
-<span id="cb16-2"><a href="#cb16-2"></a><span class="fu">println</span>(x)</span>
-<span id="cb16-3"><a href="#cb16-3"></a><span class="fu">sort!</span>(x; dims<span class="op">=</span><span class="fl">1</span>)</span>
-<span id="cb16-4"><a href="#cb16-4"></a><span class="fu">println</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<div class="fragment">
-<div class="cell" data-execution_count="15">
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1"></a>x <span class="op">=</span> [<span class="fl">5.0</span>, <span class="fl">1.8</span>, <span class="fl">2.1</span>, <span class="fl">3.7</span>, <span class="fl">4.1</span>]</span>
+<span id="cb16-2"><a href="#cb16-2"></a><span class="fu">sort!</span>(x)</span>
+<span id="cb16-3"><a href="#cb16-3"></a><span class="fu">println</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[5 3 2 4 1]</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[5 3 2 4 1]</code></pre>
+<pre><code>[1.8, 2.1, 3.7, 4.1, 5.0]</code></pre>
 </div>
 </div>
 </div>
@@ -618,28 +584,23 @@ f(x)
 <li class="fragment"><p>The compiler decides which definition to use based on type inference.</p></li>
 </ul>
 <div class="fragment">
-<div class="cell" data-execution_count="16">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1"></a><span class="kw">function</span> <span class="fu">custom_modulus</span>(x<span class="op">::</span><span class="dt">Real</span>)</span>
-<span id="cb19-2"><a href="#cb19-2"></a>    <span class="cf">return</span> <span class="fu">abs</span>(x)</span>
-<span id="cb19-3"><a href="#cb19-3"></a><span class="kw">end</span></span>
-<span id="cb19-4"><a href="#cb19-4"></a></span>
-<span id="cb19-5"><a href="#cb19-5"></a><span class="kw">function</span> <span class="fu">custom_modulus</span>(x<span class="op">::</span><span class="dt">Complex</span>)</span>
-<span id="cb19-6"><a href="#cb19-6"></a>    res<span class="op">::</span><span class="dt">Complex </span><span class="op">=</span> <span class="fu">sqrt</span>(x.re<span class="op">^</span><span class="fl">2</span> <span class="op">+</span> x.<span class="cn">im</span><span class="op">^</span><span class="fl">2</span>)</span>
-<span id="cb19-7"><a href="#cb19-7"></a>    <span class="cf">return</span> res</span>
-<span id="cb19-8"><a href="#cb19-8"></a><span class="kw">end</span></span>
-<span id="cb19-9"><a href="#cb19-9"></a></span>
-<span id="cb19-10"><a href="#cb19-10"></a><span class="fu">println</span>([<span class="fu">custom_modulus</span>(<span class="op">-</span><span class="fl">2</span>), <span class="fu">typeof</span>(<span class="fu">custom_modulus</span>(<span class="op">-</span><span class="fl">2</span>))])</span>
-<span id="cb19-11"><a href="#cb19-11"></a><span class="fu">println</span>([<span class="fu">custom_modulus</span>(<span class="op">-</span><span class="fl">2</span><span class="op">+</span><span class="fl">1im</span>), <span class="fu">typeof</span>(<span class="fu">custom_modulus</span>(<span class="op">-</span><span class="fl">2</span><span class="op">+</span><span class="fl">1im</span>))])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<div class="fragment">
-<div class="cell" data-execution_count="17">
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1"></a><span class="kw">function</span> <span class="fu">custom_modulus</span>(x<span class="op">::</span><span class="dt">Real</span>)</span>
+<span id="cb18-2"><a href="#cb18-2"></a>    <span class="cf">return</span> <span class="fu">abs</span>(x)</span>
+<span id="cb18-3"><a href="#cb18-3"></a><span class="kw">end</span></span>
+<span id="cb18-4"><a href="#cb18-4"></a></span>
+<span id="cb18-5"><a href="#cb18-5"></a><span class="kw">function</span> <span class="fu">custom_modulus</span>(x<span class="op">::</span><span class="dt">Complex</span>)</span>
+<span id="cb18-6"><a href="#cb18-6"></a>    res<span class="op">::</span><span class="dt">Complex </span><span class="op">=</span> <span class="fu">sqrt</span>(x.re<span class="op">^</span><span class="fl">2</span> <span class="op">+</span> x.<span class="cn">im</span><span class="op">^</span><span class="fl">2</span>)</span>
+<span id="cb18-7"><a href="#cb18-7"></a>    <span class="cf">return</span> res</span>
+<span id="cb18-8"><a href="#cb18-8"></a><span class="kw">end</span></span>
+<span id="cb18-9"><a href="#cb18-9"></a></span>
+<span id="cb18-10"><a href="#cb18-10"></a>a <span class="op">=</span> <span class="fu">custom_modulus</span>(<span class="op">-</span><span class="fl">2</span>)</span>
+<span id="cb18-11"><a href="#cb18-11"></a>b <span class="op">=</span> <span class="fu">custom_modulus</span>(<span class="op">-</span><span class="fl">2</span><span class="op">+</span><span class="fl">1im</span>)</span>
+<span id="cb18-12"><a href="#cb18-12"></a><span class="fu">println</span>([a, <span class="fu">typeof</span>(a)])</span>
+<span id="cb18-13"><a href="#cb18-13"></a><span class="fu">println</span>([b, <span class="fu">typeof</span>(b)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Any[2, Int64]
-Any[</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>2.23606797749979 + 0.0im, ComplexF64]</code></pre>
+Any[2.23606797749979 + 0.0im, ComplexF64]</code></pre>
 </div>
 </div>
 </div>
@@ -667,21 +628,17 @@ Any[</code></pre>
 <h2>Functions: Broadcasting</h2>
 <ul>
 <li class="fragment"><p>Broadcasting is done with the <code>@broadcast</code> macro, or the <code>.</code> notation.</p></li>
-<li class="fragment"><p>Using the<code>.</code> notation any function can be broadcast onto an array.</p></li>
+<li class="fragment"><p>Using the <code>.</code> notation any function can be broadcast onto an array.</p></li>
 <li class="fragment"><p>This is native vectorisation as you might expect in R.</p></li>
 </ul>
 <div class="fragment">
-<div class="cell" data-execution_count="18">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1"></a><span class="im">using</span> <span class="bu">StatsBase</span></span>
-<span id="cb22-2"><a href="#cb22-2"></a>samples <span class="op">=</span> [<span class="fu">rand</span>(<span class="fl">100</span>)<span class="op">*</span>i for i <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>]</span>
-<span id="cb22-3"><a href="#cb22-3"></a>variances <span class="op">=</span> <span class="fu">var</span>.(samples)</span>
-<span id="cb22-4"><a href="#cb22-4"></a><span class="fu">println</span>(variances)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<div class="fragment">
-<div class="cell" data-execution_count="19">
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1"></a><span class="im">using</span> <span class="bu">StatsBase</span></span>
+<span id="cb20-2"><a href="#cb20-2"></a>samples <span class="op">=</span> [<span class="fu">rand</span>(<span class="fl">100</span>)<span class="op">*</span>i for i <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>]</span>
+<span id="cb20-3"><a href="#cb20-3"></a>variances <span class="op">=</span> <span class="fu">var</span>.(samples)</span>
+<span id="cb20-4"><a href="#cb20-4"></a><span class="fu">println</span>(variances)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[0.09265683040172733, 0.304100964691918, 0.7111395723552325, 1.4930234740411779, 1.6931035229284153]</code></pre>
+<pre><code>[0.0849030739394276, 0.3376312623058097, 0.7356963876919044, 1.3445977637777424, 2.0126848131346273]</code></pre>
 </div>
 </div>
 </div>
@@ -694,46 +651,32 @@ Any[</code></pre>
 <li class="fragment"><p><em>Don’t</em> spend time posing the problem in linear algebra format unless it make sense.</p></li>
 </ul>
 </section>
-<section id="packages" class="slide level2">
-<h2>Packages</h2>
+<section id="introduction-to-packages" class="slide level2">
+<h2>Introduction to Packages</h2>
 <ul>
 <li class="fragment"><p>Packages are a collection of function and type defintions.</p></li>
+<li class="fragment"><p>About 7,400 packages registered (October 2022). <a href="https://julialang.org/packages/" class="uri">https://julialang.org/packages/</a> has several methods to navigate the ecosystem.</p></li>
 <li class="fragment"><p>Packages in Julia are loaded with the <code>using</code> keyword. Some are included in the base installation.</p></li>
 </ul>
 <div class="fragment">
-<div class="cell" data-execution_count="20">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1"></a><span class="im">using</span> <span class="bu">Random</span></span>
-<span id="cb24-2"><a href="#cb24-2"></a><span class="fu">randperm</span>(<span class="fl">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<div class="fragment">
-<div class="cell" data-execution_count="21">
-<div class="cell-output cell-output-display" data-execution_count="12">
-<pre><code>5-element Vector{Int64}:
- 5
- 4
- 3
- 1
- 2</code></pre>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1"></a><span class="im">using</span> <span class="bu">Random</span></span>
+<span id="cb22-2"><a href="#cb22-2"></a><span class="fu">randperm</span>(<span class="fl">5</span>)<span class="ch">'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="28">
+<pre><code>1×5 adjoint(::Vector{Int64}) with eltype Int64:
+ 5  3  4  1  2</code></pre>
 </div>
 </div>
 </div>
-</section>
-<section class="slide level2">
-
 <ul>
 <li class="fragment">Package functions are imported into the namespace; and can also be accessed using <code>PkgName.function</code>.</li>
 </ul>
 <div class="fragment">
-<div class="cell" data-execution_count="22">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1"></a><span class="im">using</span> <span class="bu">StatsBase</span>, <span class="bu">Random</span></span>
-<span id="cb26-2"><a href="#cb26-2"></a>vec <span class="op">=</span> <span class="bu">Random</span>.<span class="fu">randperm</span>(<span class="fl">100</span>)</span>
-<span id="cb26-3"><a href="#cb26-3"></a>stdv100 <span class="op">=</span> <span class="fu">std</span>(vec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<div class="fragment">
-<div class="cell" data-execution_count="23">
-<div class="cell-output cell-output-display" data-execution_count="13">
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1"></a><span class="im">using</span> <span class="bu">StatsBase</span>, <span class="bu">Random</span></span>
+<span id="cb24-2"><a href="#cb24-2"></a>vec <span class="op">=</span> <span class="bu">Random</span>.<span class="fu">randperm</span>(<span class="fl">100</span>)</span>
+<span id="cb24-3"><a href="#cb24-3"></a>stdv100 <span class="op">=</span> <span class="fu">std</span>(vec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="29">
 <pre><code>29.011491975882016</code></pre>
 </div>
 </div>
@@ -748,25 +691,34 @@ Any[</code></pre>
 <li class="fragment"><p>Alternatively Pkg.add(“PkgName”). Equivalently: <code>Pkg.remove</code>, <code>Pkg.build</code>.</p></li>
 </ul>
 </section>
+<section id="interesting-packages" class="slide level2">
+<h2>Interesting packages</h2>
+<ol type="1">
+<li class="fragment"><a href="https://github.com/JuliaPlots/Plots.jl">Plots.jl</a> — common interface to several plotting environments.</li>
+<li class="fragment"><a href="https://timholy.github.io/Revise.jl/stable/">Revise.jl</a> — rapid revising of your code/packages.</li>
+<li class="fragment"><a href="https://github.com/FluxML/Flux.jl">Flux.jl</a> — ‘Flux is an elegant approach to machine learning’.</li>
+<li class="fragment"><a href="https://github.com/SciML/DifferentialEquations.jl">DifferentialEquations.jl</a> — State of the art differential eqation solvers.</li>
+<li class="fragment"><a href="https://github.com/TuringLang/Turing.jl">Turing.jl</a> — Probabilistic Programming. <strong>Local!</strong></li>
+<li class="fragment"><a href="https://github.com/JuliaSymbolics/Symbolics.jl">Symbolics.jl</a> — Computer Algebra System.</li>
+<li class="fragment"><a href="https://github.com/JuliaData/DataFrames.jl">DataFrames.jl</a> —- Tabular data in Julia.</li>
+</ol>
+</section>
 <section id="macros" class="slide level2">
 <h2>Macros</h2>
 <ul>
-<li class="fragment"><p>Macros are useful shorthands for blocks of code; often packages export there own macros</p></li>
+<li class="fragment"><p>Macros are useful shorthands for blocks of code; often packages export their own macros</p></li>
 <li class="fragment"><p>Macros are used with the <code>@macro</code> syntax placed before a code block.</p></li>
 <li class="fragment"><p>Useful benchmarking macros are: <span class="citation" data-cites="time">@time</span> (Base), <span class="citation" data-cites="btime">@btime</span> &amp; <span class="citation" data-cites="benchmark">@benchmark</span> (Benchmarking Tools), <span class="citation" data-cites="profile">@profile</span> (Profile).</p></li>
+<li class="fragment"><p>Often used to do magic, e.g.&nbsp;<a href="https://docs.julialang.org/en/v1/base/math/#Base.FastMath.@fastmath"><span class="citation" data-cites="fastmath">@fastmath</span></a> <a href="https://docs.julialang.org/en/v1/base/base/#Base.@inbounds"><span class="citation" data-cites="inbounds">@inbounds</span></a></p></li>
 </ul>
 <div class="fragment">
-<div class="cell" data-execution_count="24">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb28-1"><a href="#cb28-1"></a>x <span class="op">=</span> <span class="fl">0</span></span>
-<span id="cb28-2"><a href="#cb28-2"></a><span class="pp">@time</span> <span class="cf">for</span> i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">100000</span></span>
-<span id="cb28-3"><a href="#cb28-3"></a>x <span class="op">*=</span> x<span class="op">^</span>i</span>
-<span id="cb28-4"><a href="#cb28-4"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<div class="fragment">
-<div class="cell" data-execution_count="25">
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1"></a>x <span class="op">=</span> <span class="fl">0</span></span>
+<span id="cb26-2"><a href="#cb26-2"></a><span class="pp">@time</span> <span class="cf">for</span> i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">100000</span></span>
+<span id="cb26-3"><a href="#cb26-3"></a>    x <span class="op">*=</span> x<span class="op">^</span>i</span>
+<span id="cb26-4"><a href="#cb26-4"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  0.010708 seconds (99.50 k allocations: 1.519 MiB, 15.14% compilation time)</code></pre>
+<pre><code>  0.011881 seconds (99.49 k allocations: 1.518 MiB)</code></pre>
 </div>
 </div>
 </div>
@@ -807,18 +759,22 @@ Any[</code></pre>
 <section id="creating-a-module" class="slide level2">
 <h2>Creating a Module</h2>
 <ul>
-<li class="fragment"><p>A module enviroment is created using the <code>module PackageName</code> syntax.</p></li>
+<li class="fragment"><p>A module enviroment is created using the syntax: <code>module PackageName</code>.</p></li>
 <li class="fragment"><p>Definitions are exported using the <code>export</code> keyword.</p></li>
-<li class="fragment"><p>A module is included in a script with <code>include("path/to/module")</code> and using .PackagName<code>or</code>using Main.PackageName`.</p></li>
+<li class="fragment"><p>A module is included in a script with <code>include("path/to/module")</code> and<br> <code>using .PackagName</code> or<br> <code>using Main.PackageName</code>.</p></li>
 </ul>
 <div class="fragment">
-<div class="cell" data-execution_count="26">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1"></a><span class="kw">module</span> BasicStats</span>
-<span id="cb30-2"><a href="#cb30-2"></a><span class="kw">export</span> std</span>
-<span id="cb30-3"><a href="#cb30-3"></a><span class="fu">mean</span>(x) <span class="op">=</span> <span class="fu">sum</span>(x)<span class="op">/</span><span class="fu">length</span>(x)</span>
-<span id="cb30-4"><a href="#cb30-4"></a><span class="fu">std</span>(x) <span class="op">=</span> <span class="fu">sqrt</span>(<span class="fu">sum</span>((x <span class="op">.-</span> <span class="fu">mean</span>(x))<span class="op">.^</span><span class="fl">2</span>)<span class="op">/</span><span class="fu">length</span>(x))</span>
-<span id="cb30-5"><a href="#cb30-5"></a><span class="kw">end</span></span>
-<span id="cb30-6"><a href="#cb30-6"></a><span class="im">using</span> <span class="bu">.BasicStats</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb28-1"><a href="#cb28-1"></a><span class="kw">module</span> BasicStats</span>
+<span id="cb28-2"><a href="#cb28-2"></a><span class="kw">export</span> std</span>
+<span id="cb28-3"><a href="#cb28-3"></a><span class="fu">mean</span>(x) <span class="op">=</span> <span class="fu">sum</span>(x)<span class="op">/</span><span class="fu">length</span>(x)</span>
+<span id="cb28-4"><a href="#cb28-4"></a><span class="fu">std</span>(x) <span class="op">=</span> <span class="fu">sqrt</span>(<span class="fu">sum</span>((x <span class="op">.-</span> <span class="fu">mean</span>(x))<span class="op">.^</span><span class="fl">2</span>)<span class="op">/</span><span class="fu">length</span>(x))</span>
+<span id="cb28-5"><a href="#cb28-5"></a><span class="kw">end</span></span>
+<span id="cb28-6"><a href="#cb28-6"></a><span class="im">using</span> <span class="bu">.BasicStats</span></span>
+<span id="cb28-7"><a href="#cb28-7"></a><span class="fu">std</span>([<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="31">
+<pre><code>1.0</code></pre>
+</div>
 </div>
 </div>
 </section>
@@ -834,8 +790,8 @@ Any[</code></pre>
 <section id="workflow-environments" class="slide level2">
 <h2>Workflow: Environments</h2>
 <ul>
-<li class="fragment"><p>An environment is a version controlled local version of Julia.</p></li>
-<li class="fragment"><p>It includes a Project.toml, and Manifest.toml which list pacakge dependencies.</p></li>
+<li class="fragment"><p>An environment is a version-controlled local version of Julia.</p></li>
+<li class="fragment"><p>It includes a Project.toml, and Manifest.toml which list package dependencies.</p></li>
 <li class="fragment"><p>They are good for reproducible code.</p></li>
 <li class="fragment"><p>They can be upgraded into a package easily.</p></li>
 </ul>
