@@ -66,12 +66,20 @@ The workbooks can be downloaded into your home directory using:
 ```
 cd ~
 git clone https://github.com/Nick-Gale/2022_Scientific_Programming_CamCompBio/
+cd 2022_Scientific_Programming_CamCompBio/Workbooks
 ```
 
 # Start Jupyter notebook
+
+Finally, we can start the notebook by doing:
+
+```
+jupyter notebook julia_basic.ipynb
+```
+
 # Subliminal
 
-You can run jupyter remotely on subliminal and just use a web-browser
+You can run Julia/jupyter remotely on subliminal and just use a web-browser
 on your laptop to connect to the jupyter session.  This is analagous
 to running rstudio through your web-browser, although not quiet as easy.
 
@@ -79,6 +87,38 @@ On subliminal, you should find that python3 is installed in
 /usr/bin/python, and julia (version 1.5) is in /alt/bin/julia .
 
 You will need to install jupyter and the jupyter kernel as above.
+
+This solution requires you to have ssh and be able to do port
+forwarding.
+[Source[(https://docs.anaconda.com/anaconda/user-guide/tasks/remote-jupyter-notebook/).
+
+
+First, on subliminal, type the following:
+
+```
+jupyter notebook --no-browser --port=4321
+```
+
+This runs the notebook, but will send the information to port 4321.
+Choose a unique four or five digit port number -- two people cannot
+use the same port number.
+
+
+Then, on your laptop, type:
+```
+ssh -L 8080:localhost:4321 sje30@subliminal.maths.cam.ac.uk
+```
+
+where you replace sje30 with your crsid, and 4321 with your chosen
+port.
+
+After this, on your laptop you can visit the following page:
+
+```
+open http://localhost:8080/
+```
+
+
 
 
 
