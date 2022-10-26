@@ -1,7 +1,11 @@
 # 2022_Scientific_Programming_CamCompBio
 Course Materials for the Computational Biology M.Phil @ Cambridge
 
-(Julia section)
+This repository contains the four lectures for the Julia component of
+the *Scientific Programming* course.  There are four lectures; for
+each lecture, there is an accompanying [Workbook](Workbooks) to go
+through.
+
 
 ## Lecture 1
 
@@ -17,9 +21,17 @@ Advanced concepts, packages, workflows.
 [PDF](Lectures/lecture2.pdf)
 
 
+## Lecture 3
 
-# Downloading Julia
 
-https://julialang.org/downloads
+## Lecture 4
 
-https://julialang-s3.julialang.org/bin/linux/x64/1.8/julia-1.8.2-linux-x86_64.tar.gz
+# Workbooks
+
+The workbooks are provided in .ipynb (notebook) format.  You are
+encouraged to work through these yourself.  To do this, you will need
+to install several packages.  See [install_julia.md](install_julia.md) notes,
+which should get you started on your laptop or on
+subliminal.maths.cam.ac.uk.
+
+
