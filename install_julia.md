@@ -119,4 +119,6 @@ open http://localhost:8080/
 ```
 
 At this stage, you should be running the Julia code on subliminal, and
-simply viewing the results on your laptop.
+simply viewing the results on your laptop.  WHen you have finished
+with your session, as well as closing the browser tab, you should
+quit the ssh command that you used to set up the port forwarding.
