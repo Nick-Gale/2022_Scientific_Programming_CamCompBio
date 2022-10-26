@@ -26,6 +26,7 @@ format:
 println(Int64 <: Real)
 println(Float64 <: Real)
 println(Int64 <: Float64)
+println(subtypes(Number))
 ```
 :::
 
@@ -90,8 +91,6 @@ println([StatsGenerator(100), StatsGenerator(100), StatsGenerator(1000)])
 
 * Julia passes objects by reference - be careful with copying mutable types.
 
-* ``copy`` deferences the first layer. ``deepcopy`` recursively copies. 
-
 ::: fragment 
 ```{julia}
 a = Any[Any[1,0], Any[2,0], Any[3,0], Any[4,0]]
@@ -104,6 +103,9 @@ println(a)
 
 ---
 
+* ``copy`` deferences the first layer. 
+
+
 ::: fragment
 ```{julia}
 ## shallow copy (first layer mutations don't change original object)
@@ -115,7 +117,7 @@ println(a)
 ```
 :::
 
----
+* ``deepcopy`` recursively copies. 
 
 ::: fragment
 ```{julia}
@@ -128,7 +130,7 @@ println(a)
 :::
 
 
-## Functions by reference
+## Pass by reference
 
 * This applies to objects passed to functions whereas in R they are passed by *value*.
 
@@ -232,8 +234,6 @@ println(variances)
 
 * *Don't* spend time posing the problem in linear algebra format unless it make sense.
 
-# Packages
-
 ## Introduction to Packages
 
 * Packages are a collection of function and type defintions.
@@ -272,8 +272,22 @@ stdv100 = std(vec)
 
 * Alternatively Pkg.add("PkgName"). Equivalently: `Pkg.remove`, `Pkg.build`.
 
+## Interesting packages
 
-# Macros
+1. [Plots.jl](https://github.com/JuliaPlots/Plots.jl)  --- common
+   interface to several plotting environments.
+2. [Revise.jl](https://timholy.github.io/Revise.jl/stable/) --- rapid
+   revising of your code/packages.
+3. [Flux.jl](https://github.com/FluxML/Flux.jl) --- 'Flux is an elegant approach to machine learning'.
+4. [DifferentialEquations.jl](https://github.com/SciML/DifferentialEquations.jl)
+   --- State of the art differential eqation solvers.
+5. [Turing.jl](https://github.com/TuringLang/Turing.jl) ---
+   Probabilistic Programming.  **Local!**
+6. [Symbolics.jl](https://github.com/JuliaSymbolics/Symbolics.jl) ---
+   Computer Algebra System.
+7. [DataFrames.jl](https://github.com/JuliaData/DataFrames.jl) ----
+   Tabular data in Julia.
+   
 
 ## Macros
 
@@ -283,6 +297,9 @@ stdv100 = std(vec)
 
 * Useful benchmarking macros are: @time (Base), @btime & @benchmark (Benchmarking Tools), @profile (Profile).
 
+* Often used to do magic,
+  e.g. [@fastmath](https://docs.julialang.org/en/v1/base/math/#Base.FastMath.@fastmath) 
+  [@inbounds](https://docs.julialang.org/en/v1/base/base/#Base.@inbounds)
 
 ::: fragment 
 ```{julia}
@@ -321,11 +338,14 @@ end
 
 ## Creating a Module
 
-* A module enviroment is created using the `module PackageName` syntax.
+* A module enviroment is created using the syntax: `module PackageName`.
 
 * Definitions are exported using the `export` keyword.
 
-* A module is included in a script with `include("path/to/module")` and `using .PackagName` or `using Main.PackageName`.
+* A module is included in a script with `include("path/to/module")`
+and<br>
+`using .PackagName` or<br>
+`using Main.PackageName`.
 
 ::: fragment
 ```{julia}
