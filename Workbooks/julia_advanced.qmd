@@ -1,0 +1,648 @@
+---
+jupyter: julia-1.8
+---
+
+## 1 Benchmarking and Profiling
+Assessing your own code can be very helpful. In general, there are two ways we want to do this: 1) Profiling: which gives us the opportunity to see our code structure, and 2) Benchmarking: which gives us the opportunity to assess our functions performance at runtime. We will start with Profiling.
+
+### 1.1 Profile
+Code profile is a feature offered by by many modern languages: there are excellent code profilers in R with the RStudio IDE and in MatLab. Profiling our code offers us the opportunity to pick up various errors in our code, get estimates for where our code is spending a lot of time, identify bottlenecks, and generally improve. Profiling in Julia is done through the ``@profile`` macro through the ``Profile`` package. A printout of the profile is given by ``Profile.print``. Let's write a simple function and profile it.
+
+```{julia}
+using Profile
+```
+
+```{julia}
+function my_func(n)
+    tmp = 0
+    for i = 1:n
+        tmp += rand()
+    end
+    return tmp
+end
+```
+
+```{julia}
+@profile my_func(10)
+Profile.print()
+```
+
+The standard output of the print function gives a nested tree dump. This can be very useful as we can visualise the function calls. It can be quite overwhelming and some people prefer it to be flattened. To do this we use the keyword ``format=:flat``.
+
+```{julia}
+Profile.print(format=:flat)
+```
+
+This is not a particularly complicated function. Let's write something that might be a little more complicated.
+
+```{julia}
+function fsum(x)
+    v = zeros(length(x))
+    for i = 1:length(x)
+        for j = 1:i
+            v[i] += abs(sqrt.(x[i] + x[j]))
+        end
+    end    
+    return v
+end
+
+function matwork(A::Array{Float64, 2})
+    sz = size(A)
+    for j = 1:sz[2]
+        for i = 1:sz[2]
+            new_vec = A[:,j]
+            temp_vec = fsum(new_vec)
+            A[i, :] .+= temp_vec
+        end
+    end
+    return A
+end
+```
+
+```{julia}
+A = rand(200, 200)
+@time matwork(A);
+```
+
+That was quite a complicated function, but several seconds seems very long to handle a measly 200x200 matrix. Wasn't Julia meant to be quick?! This is an ideal time to profile our code!
+
+```{julia}
+Profile.clear()
+@profile matwork(A)
+Profile.print(format=:flat, sortedby=:count)
+```
+
+There seems to a lot of calls in ``fsum`` and many calls to materialise. What is going on? On closer inspection it seems that we calling ``fsum`` for every value of ``i`` but it accepts inputs that change only dependent on ``j``. On top of that we allocate a new vector every time we do this! That is a lot of wasted computation! Let's fix these things and see what happens:
+
+```{julia}
+function fsum_prof(x)
+    v = zeros(length(x))
+    for i = 1:length(x)
+        for j = 1:i
+            v[i] += abs(sqrt.(x[i] + x[j]))
+        end
+    end    
+    return v
+end
+
+function matwork_prof(A::Array{Float64, 2})
+    sz = size(A)
+    temp_vec = zeros(sz[2])
+    for j = 1:sz[2]
+        temp_vec .= fsum(A[:,j])
+        for i = 1:sz[2]
+            A[i, :] .+= temp_vec
+        end
+    end
+    return A
+end
+```
+
+```{julia}
+Profile.clear()
+@profile matwork_prof(A);
+Profile.print(format=:flat, sortedby=:count)
+```
+
+That is certainly looking a lot cleaner! We have gotten rid of almost all the materialise calls and reduced the amount of time spent in ``fsum``. It would be reasonable to suspect that this function runs a lot faster! Let's confirm those suspicions.
+
+```{julia}
+@time matwork_prof(A);
+```
+
+That's much better! Profiling can be complicated but is a very powerful tool!
+
+### 1.2 Benchmarking
+
+Another powerful tool we have to evaluate our code performance is benchmarking which can tell us about time, allocation, and memory requirements of our program. This might seem odd because we already have the ``@time`` and ``@elapsed`` macros which tell us the wall time. These are useful, but they can change based on specifics of the function call, what else the computer is doing at the time, how much memory has been allocated and required, and a host of other factors. It is better to run a series of function calls and examine the statistics of these runs. For this we use the ``BenchmarkTools`` package with ``@benchmark`` macro. It gives us a lot of information including the estimated memory required for the program and the time spent in garbage collection (freeing up unused memory). To properly benchmark we want to interpolate any symbols that we don't want to be included in the calculation with a ``$``; generally this means variables like our ``A`` matrix but we can find more details in the [documentation](https://github.com/JuliaCI/BenchmarkTools.jl). Let's try it out on our two functions:
+
+```{julia}
+using BenchmarkTools
+```
+
+```{julia}
+@benchmark matwork($A)
+```
+
+```{julia}
+@benchmark matwork_prof($A)
+```
+
+Immediately, we can see that something is quite off with the first function. It has vastly higher memory and allocation requirements and somehow spends less time (percentage wise) in garbage collection. This might lead us to supsect the problems we found by profiling fairly quickly. The ``BenchmarkTools`` also provides the ``@btime`` and ``@belapsed`` macros as benchmarked analogues to the ``@time`` and ``@elapsed`` macros.
+
+## 2 Advanced Workflow: Modules, Revise, and Environments
+
+Hopefully by now you have had the chance to interact with notebooks, the REPL, and even will have written your own scripts. Scripts are useful because they don't require you to remember the code commands that you entered, or force you to execute multiple cells. You may find, however, that you are writing multiple scripts which recycle functions or your scripts are getting very long with multiple function definitions that are necessary, but greatly distract from readability. In this case you might want to write a Module.
+
+### 2.1 Modules
+A Module in Julia is a file that is a code block using the keyword ``module ModuleName`` and functions similarly to a package. It can store multiple local definitions and export a select few using the ``export`` keyword. When the file is included into a workspace the exported function definitions can be added with the ``using`` keyword and the "package" name is the module name appended to ``Main`` or prepended with a dot i.e. ``using Main.ModuleName`` or ``using .ModuleName``. Let's create a simple module that exports some basic statistical functions:
+
+```{julia}
+module SimpleStats
+    # let's specifiy the functions we want to export
+    export average
+    export sdev
+
+    # let's define the functions in the module
+    function average(x::Vector{Float64})
+        tot = sum(x)
+        L = length(x)
+        return tot/L
+    end
+
+    function variance(x::Vector{Float64})
+        sqdiff = (x .- average(x)) .^2
+        L = length(x)
+        return sum(sqdiff/L)
+    end
+
+    function sdev(x::Vector{Float64})
+        return sqrt(variance(x))
+    end
+end
+```
+
+```{julia}
+using .SimpleStats
+```
+
+Now that we have included the Module we can access exported functions in the regular fashion for accessing from packages. Importantly, we cannot access non-exported functions even though exported functions may depend on them. To access functions inside the Module (or package) that have not been exported we need to use the Module identifier (name).
+
+```{julia}
+x = rand(100);
+
+average(x)
+```
+
+```{julia}
+SimpleStats.sdev(x)
+```
+
+```{julia}
+#| eval: false
+variance(x)
+```
+
+```{julia}
+SimpleStats.variance(x)
+```
+
+### 2.2 Revise Workflow
+
+Often we find ourselves first in a notebook, or the REPL, working on some project. It then becomes sufficiently large or sufficiently well defined that we migrate to a script which we execute in the REPL using the code ``include("path/to/script.jl")``. Eventually, we find that we are reusing a lot of functions in the script and they have many dependencies on each other which are distracting us from the main problem. We then move these functions into a module file using the structure defined above. Now we include the module file using the command ``include("path/to/module.jl")`` and in our script we include the line ``using .ModuleName``. This works great the first time we do it! Let's try and include a module file in the resources directory:
+
+```{julia}
+include("resources/testmodule.jl")
+```
+
+```{julia}
+using .OurModule
+```
+
+```{julia}
+module_function(3)
+```
+
+That's a pretty useless function! Let's go to the file and edit the module function to print the first ``n`` squares. After we are done, we will save the file and try and run it again.
+
+```{julia}
+module_function(3)
+```
+
+Nothing happened. We could include the module file again and import all the functions. However, this would result in a naming conflict! We could also abort the Julia session and reload everything, but this would incur the large precompilation times and its not really how we like to script in Julia. To get around this problem we use the ``Revise`` package. The ``Revise`` package lets us track changes in a file and immediately loads in the new changes making it ideal for scripting and working on a module (or any file, really) simulatenously. To track a file we use the function ``includet('path/to/file')``. Let's try it out:
+
+```{julia}
+using Revise
+includet("resources/testmodule.jl")
+```
+
+Now go back and edit the file again. Save it and see what happens.
+
+```{julia}
+module_function(3)
+```
+
+That's much better!
+
+### 2.3 Environments
+
+An environment is an excellent way to manage code. It allows us to create mini-packages (or large ones) that can be exported later. The easiest way to do this is to nagivate to the directory level you want to create a package in, enter the package manager using ``]`` and type the code ``generate PackageName`` where PackageName is the name of the package. This will generate a Project file, Manifest file, and an src folder with the module in it. Activating the package may done by navigating to the ``dir/PackageName`` directory and in terminal typing ``julia --project=.``. Alternatively, in the package manager with ``activate .``. Now, any packages that are added in the package manager will be added and precompiled into this package and the version saved so that we wont have any dependencies moving forward. Furthermore, we can use this package (and all the functions in the src/PackageName) file by the command ``using PackageName``. Notice that there is now no dot or reference to ``Main``. Finally, Revise will apply to all files in this directory so we can file manage how we wish with functions spread over multiple directories and files. Once activated, this environment behaves precisely like a normal package making it ideal for use with Git and regular package development mindsets.  
+
+## 3 Advanced Types:
+In the previous section we covered some basic types that we might expect to see. These included primitives such as Float32 and Int64, Arrays such as Array{::Type,dim} and their aliases Vector{::Type} and Matrix{::Type}, and some more abstract types such as Array{Array{::Type, dimx},dimn}. We also learnt some common construction methods for intialising and inputing data. All of these where, hopefully, quite intuitive. Julia's basic types are very mathematically inclined and we likely had some notion of them going into the exercise.
+
+### 3.1 Composite Types
+Suppose that we wanted to create our own custom type. In Julia this is known as a *composite type*. A composite type is essentially just a collection of field and is called an object in other programming language. To create them in Julia we use the ``struct`` keyword. Let's work with something that we are already familiar with and create our own composite type for complex number:
+
+```{julia}
+struct CustomComplex
+    real::Float64
+    imag::Float64
+end
+```
+
+To use our type we simply need to instantiate objects called as a function. Note that we insisted real have the primitive type ``::Float64`` and any number we use will be promoted to this type.
+
+```{julia}
+c1 = CustomComplex(1.2, 1.3)
+```
+
+```{julia}
+c1.real
+```
+
+```{julia}
+c2 = CustomComplex(1f0, 1f0)
+```
+
+We can begin to make custom functions that operate specifically on our types. This may seem superfluous at first because we can do this all with arrays and indexing. It does however provide a certain level of abstraction to your code. Supposing that you have a certain type with its own algebra or special operation rules, defining it explicitly and giving it a special set of functions allows you to abstract away the code and think in terms of the more natural algebra or ruleset asscociated with it. Imagine if we had to use ``mod`` and ``for`` for *every* matrix operation we did. Defining a function to operate on a composite type is as easy as any other type in Julia. Let's write a modulus function for our ``CustomComplex`` type:
+
+```{julia}
+custom_modulus(x::CustomComplex) = (x.real^2 + x.imag^2)^0.5
+```
+
+```{julia}
+custom_modulus(c1)
+```
+
+```{julia}
+#| eval: false
+custom_modulus(1 + 1im)
+```
+
+### 3.2 Custom Construction Methods
+
+It can be useful for numbers to instantiate types by simply typing in their fields. However, for more complicated types it can be useful to define a constructor method. The type name itself is already a constructor method but to make it more generic we add a function inside the structure and call the ``new`` function to fill the fields. For example, suppose that we want to have a type that tells us the mean and variance of a sample of a distribution. We really only want to feed it one number, the number of samples. Then, we want something to happen in the background and we are given the mean and variance. Let's use a composite type ``MyStats`` to perform this task on the uniform distribution:
+
+```{julia}
+struct SimpleUniformStats
+    mean
+    variance
+    function SimpleUniformStats(n::Int)
+        sample = rand(n)
+        av = average(sample)
+        std = sdev(sample)
+        var = std^2
+        new(av, var)
+    end
+end
+```
+
+```{julia}
+trial1 = SimpleUniformStats(100)
+println("The first trial returned mean and variance: $([trial1.mean, trial1.variance])")
+```
+
+### 3.4 Mutable Types
+Composite types are immutable: we can't change the fields of the object once they are set. Sometimes we would like our types to have mutable properties and behave like objects that can be modified. There are differences in allocation between mutable and immutable types but we wont worry about these: focus on what is most appropriate to make code *understandable* before *performant*. Let's suppose that we want to create an object that can be modified e.g. the location of a cell centre in a frame with multiple cells. Each cell could be idenitified with its own object and the object updated frame-by-frame in a video. To do this we use the ``mutable`` keyword:
+
+```{julia}
+mutable struct CellCentre
+    x::Float32
+    y::Float32
+    z::Float32
+end
+
+cell1 = CellCentre(0, 0, 0)
+cell2 = CellCentre(0, 0, 0)
+```
+
+Now we can try mutating it:
+
+```{julia}
+cell1.x = 1.0
+cell1
+```
+
+```{julia}
+for t = 0:0.01:1
+    cell1.x = round(t, digits=2)
+    cell1.y = t^2
+    cell1.z = t^3 + t^2
+    
+    cell2.x = t + 1
+    cell2.y = t^2
+    cell2.z = 0.5 * t
+    print("At time t = $t: Cell 1 [$(cell1.x), $(cell1.y), $(cell1.z)] || Cell 2 [$(cell2.x), $(cell2.y), $(cell2.z)] \r")
+    sleep(0.1)
+    flush(stdout) 
+end
+```
+
+Occasionally, we want to mutate only part of the mutable structure. To do this we specify which fields are constant with the ``const`` keyword. Let's return to our statistical example. We may want to make a note if the mean and standard deviation look perculiar for a particular sample. Let's write a mutable structure that allows for this without changing the actual measurements.
+
+```{julia}
+mutable struct NotableUniformStats
+    const mean
+    const std
+    const sample_size
+    note::String
+    function NotableUniformStats(n::Int)
+        sample = rand(n)
+        av = average(sample)
+        std = sdev(sample)
+        new(av, std, n, "")
+    end
+end
+
+simpleSample = NotableUniformStats(10);
+simpleSample.note = "This looks fine.";
+simpleSample
+```
+
+```{julia}
+#| eval: false
+simpleSample.mean = 1
+```
+
+```{julia}
+samples = [NotableUniformStats(rand(1000:10000)) for i = 1:200]
+
+fishy_indexes = Int64[]
+for i = 1:length(samples)
+    if abs((samples[i].mean - 0.5) / (samples[i].std / sqrt(samples[i].sample_size))) > 1.96
+        append!(fishy_indexes, i)
+        samples[i].note = "This sample is fishy at the 95% confidence interval. The sample size is $(samples[i].sample_size))."
+    end
+end
+
+println("There are $(length(fishy_indexes)) fishy samples")
+for i in fishy_indexes
+    println(samples[i].note)
+end
+```
+
+### 3.5 AutoDifferentiation: A useful example
+
+So far our types have been rather contrived and it would be difficult to see a use case for them outside of this notebook. This convenient type system and Julia's remarkable baseline performance has set us up to code something very wonderful: an auto-differentation system.
+
+As a reminder: the derivative of a function $f(x)$ is defined as $ f^{\prime}(x) = \lim_{h\rightarrow0} \frac{f(x + h) - f(x)}{h} $. We might remember this definition from high school and remember drawing tangent lines to the curve of $f(x) = x^2$ for ever smaller $h$ to convince ourselves that $f'(x) = 2x$. That useful exercise is actually precisely how we calculated derivates that we didn't know numerically and this is known as *numerical differentiation*. A numerical differentation routine might look something like this:
+
+```{julia}
+df(f, x, h) = (f.(x .+ h) .- f.(x)) ./ h
+```
+
+```{julia}
+for p = 0:-1:-4
+    h = 10.0^p
+    println(df(x -> x^2, 1, h))
+end
+```
+
+That looks pretty good. We are certainly getting closer and closer to the correct answer. Furthemore, the function will clearly generalise to all broadcastable functions ``f``. 
+
+However, we clearly desire some level of precision (taking ``h = 1`` is simply too inaccurate!). How do we choose which precision we need and wouldn't it be better to have it at the same precision as our function call so that we dont have to worry about numerical instability? Well, we can certainly have it at arbitrary precision, we already know the derivative. We could just hard-code $ df(x) = 2x $. This is known as *symbolic* differentation. It is employed extensively in Computer Algebra Systems such as Mathematica and Maple. However, this can also be slow as with complicated functions they need to apply a long list of rules to reduce the symbols to their final form. The amount of symbols can also blow up making this an unfeasible option.
+
+However, almost all functions we deal with (however complicated) are typically just compositions of a few simple primitive functions. We know the differentation rules for these simple types and we also know how to deal with compositions using the Chain rule! It feels as though we can design an algebra around these. Let's consider the Taylor series of a function $f$:
+
+$f(x+h) = f(x) + hf^\prime(x) + h^2f^{\prime \prime}(x) + ...$
+
+we know that when the $h$ becomes very small we can disregard all the higher terms $h^2$ and above because these will have virtually no contribution. However, $h$ itself is infitesimally small (just above 0) so why don't we consider it to be it's own new special type of number. Now let's look at the Taylor series again we have an $x + h$ and a $f(x) + hf^\prime(x)$ so these both take the form of this new type of number. This looks like a good candidate for a new type! Let's define our type ``Dual`` with two fields: 
+
+```{julia}
+struct Dual <: Number
+    n::Float64 # the regular number
+    d::Float64 # the infinitesimal number 
+end
+```
+
+We also want to make sure that our Duals work well with other numbers. Therefore we are going to define the promote rule to promote any numbers to Duals when required, and extend the convert rule so that when we encounter a rogue real number it gets promoted to a dual with a 0 value infinitesimal.
+
+```{julia}
+import Base.promote_rule, Base.convert
+promote_rule(::Type{Dual}, ::Type{<:Number}) = Dual
+convert(::Type{Dual}, x::Real) = Dual(x, 0)
+```
+
+Now we want to encode our differentation rules. They are fairly simple:
+
+$(f+g)'(x) = f'(x) + g'(x)$
+
+$(f-g)'(x) = f'(x) + g'(x)$
+
+$(f*g)'(x) = f(x)*g'(x) + f'(x)*g(x)$
+
+$(f/g)'(x) = (f'(x)*g(x) - f(x)*g'(x))/g(x)^2$
+
+To translate into our Dual numbers we look back at the Taylor expansion and see that when we apply a function to a number the regular part of its Dual number is the function value and the infinitesmial part is the the derivative of the function at that point. Therefore, to translate these we simply need to overload the operators for our +, -, \*, and / functions.
+
+```{julia}
+import Base.+, Base.-, Base.*, Base./;
++(x::Dual, y::Dual) = Dual(x.n + y.n, x.d + y.d);
+-(x::Dual, y::Dual) = Dual(x.n - y.n, x.d - y.d);
+*(x::Dual, y::Dual) = Dual(x.n * y.n, x.d * y.n + y.d * x.n);
+/(x::Dual, y::Dual) = Dual(x.n / y.n, (x.d * y.n - y.d * x.n) / y.n^2);
+```
+
+Those rules look very similar to the differentation rules outlined above (and painstakingly derived) many years ago. Let's see if it works. Let's define the function $f(x) = x^2$ and pass it a dual number:
+
+```{julia}
+f(x) = x * x
+f(Dual(2.0, 1.0)).d
+```
+
+Wow! That worked really well. However, that was a perculiar way to define the square function especially when the power operator exists in the Julia language. Let's try defining the function as we normally would.
+
+```{julia}
+f2(x) = x^2
+f2(Dual(2.0, 1.0)).d
+```
+
+Almost too good to be true! Let's define the ``sin`` function using a Taylor series recalling that the derivative of ``sin`` is ``cos``. First we will check that our approximation of ``sin`` works by regularly sampling in the range [0,pi] and checking against the Julia implementation to see if it is within machine precision.
+
+```{julia}
+function sin_taylor(x)
+    res = 0
+    for n = 1:2:20
+        p = mod((n - 1) / 2, 2)
+        res += (-1)^p * x^n / factorial(n)
+    end
+    return res
+end
+
+all(sin_taylor.(0:0.01:pi/2) .- sin.(0:0.01:pi/2) .< 10^-14)
+```
+
+That worked pretty well, so our Taylor series is working accurately. Now, let's see what happens if we pass a dual number to it and inspect the derivative:
+
+```{julia}
+sin_taylor(Dual(pi/4,1)).d
+```
+
+That looks very close to the expected value of $\frac{\sqrt{2}}{2}$. Let's check the against the standard result across an entire range.
+
+```{julia}
+all(getfield.(sin_taylor.(Dual.(0:0.01:pi/2,1)), :d) .- cos.(0:0.01:pi/2).< 10^-14)
+```
+
+Remarkably, we have gotten the derivative *for free*. We didn't really need to define any special code, we simply needed to define the rules of differentation to the dual numbers. Those differentation rules can be extended to include the analytical functions: ``sin``, ``cos``, and ``exp``. They can also be extended to include any special function provided we know how differentiation works. It can then be guarenteed to work on *any* composite function automatically. This method of differentation is known as *automatic differentation*. What is remarkable about it is that it gives arbitrary precision (i.e. the *correct* derivative) for any function that we can define with standard operations (which is basically all of them, for scientific purposes) in the time it takes to run the function itself. It is therefore as accurate as symbolic differentation and as quick as numeric differentation.
+
+This remarkable result has been the backbone of efficient gradient calculation and has been tremendously useful in the field of machine learning: it allows us to compute derivatives for *extremely* complicated functions very efficiently. There are technically two methods of automatic differentation: forward mode and reverse mode. We exmained forward mode and it was coded in about 8 lines of Julia! 
+
+## 4 Performant Code
+
+Generally, Julia is flexible enough that our code will compile provided it makes sense. For most cases, examples are small enough and Julia performant enough that programmers dont need to apply "tricks" to make it run faster. However, in scientific programming we often find ourselves working with long running algorithms (think constructing a genome *de novo* or running an MCMC simulation) and it would benefit us to write our code in a way that is beneficial to the compiler. Doing so can save a lot of time.
+
+
+### 4.1 Quick performance: @simd and @inbounds
+
+In the first notebook we compared the difference between vectorised code and a simple ``for`` loop for perfoming a matrix calculation. We found that there wasn't a significant difference and oftentimes, for flexibility (and perhaps readability), it is better to use the ``for`` loop (note: this isn't always the case, a vectorised format lends itself *very* well to readability in Linear Algebra tasks). Let's remind ourselves of that code.
+
+```{julia}
+using BenchmarkTools
+vec_a = rand(100)
+mat_a = rand(100, 100)
+
+function matmul_test(mat, vec)
+    tmp = zeros(size(mat)[1])
+    for j = 1:size(mat)[1]
+        for i = 1:size(mat)[2]
+            tmp[i] += vec[j] * mat[i, j]
+        end
+    end
+    return tmp
+end
+
+# check they give the same result to within machine precision
+println(sum(mat_a * vec_a - matmul_test(mat_a, vec_a)) < 1e-7)
+
+@btime mat_a * vec_a;
+@btime matmul_test(mat_a, vec_a);
+```
+
+#### @simd
+First, a note on "vectorisation": in computer science application vectorisation doesn't necessarily refer to vectors. Often it refers to a SIMD routine: single instruction multiple data. At a low processing level this means that if the data is arranged in a list a single clock cycle can operate on multiple elements of the list simultaneously offering a speed up. In vectorised code this is naturally the case and languages like R exploit these SIMD routines to off a speed up. In Julia we can activate SIMD routines with the ``@simd`` macro. Let's see what it does for our ``matmul_test`` code:
+
+```{julia}
+function matmul_test_simd(mat, vec)
+    tmp = zeros(size(mat)[1])
+    @simd for j = 1:size(mat)[1]
+        for i = 1:size(mat)[2]
+            tmp[i] += vec[j] * mat[i, j]
+        end
+    end
+    return tmp
+end
+@btime matmul_test(mat_a, vec_a);
+@btime matmul_test_simd(mat_a, vec_a);
+```
+
+There is a performance increase! Although, it's quite marginal. SIMD routines may offer more or less peformance in different code settings and are actually not desirable in some instances. This is because they work by reordering some operations and at a very low level even mathematically commutative operations will have different results when reordered due to numerical considerations. These concerns may affect high performance numerically unstable code and so it is good to be aware of - for most basic codes they are not a concern.
+
+#### @inbounds
+In the ``for`` loop implementation we found ourselves accessing into data with an index. Julia acts like an interpreted language at the high level and helps us out by doing bounds-checks: it will tell us when we try and access an index that is outside of the arrays memory. More performant languages like C will not provide this convenience and will compile the code anyway - even though it will definitely give the wrong answer. Let's see what happens when we accidentally go out of bounds: 
+
+```{julia}
+#| eval: false
+function matmul_test_oob(mat, vec)
+    tmp = zeros(size(mat)[1])
+    for j = 1:(size(mat)[1]+1)
+        for i = 1:size(mat)[2]
+            tmp[i] += vec[j] * mat[i, j]
+        end
+    end
+    return tmp
+end
+matmul_test_oob(mat_a, vec_a)
+```
+
+Julia gives us a nice BoundsError with an error message telling us precisely what went wrong. This is an easy fix! This bounds checking is more work for the compiler and adds a significant overhead to compile time. Sometimes we are confident that we *are* in bounds and would like to let the compiler know to not do all that additional work. For this we use the ``@inbounds`` macro. It is applied to the outermost loop and immediately gets pushed through any inner loops, but it only applies to a single loop block. Let's try it out on the original code.
+
+```{julia}
+function matmul_test_inbounds(mat, vec)
+    tmp = zeros(size(mat)[1])
+    @inbounds for j = 1:size(mat)[1]
+        for i = 1:size(mat)[2]
+            tmp[i] += vec[j] * mat[i, j]
+        end
+    end
+    return tmp
+end
+@btime matmul_test(mat_a, vec_a);
+@btime matmul_test_inbounds(mat_a, vec_a);
+```
+
+That is a substantial performance gain! In fact, the gain is so large that we might be tempted to *always* use the @inbounds macro. This is generally not recommended because it is very easy to make mistakes in development. Just as with insisting on specific data types to avoid mutation, it is better to write high level code without performance macros and activate them when we are confident that everything is working. For example, the following code is wrong but "looks fine" and with ``@inbounds`` will compile. Good luck spotting this error in a codebase with 1000s of lines!
+
+```{julia}
+function matmul_test_oob_unsafe(mat, vec)
+    tmp = zeros(size(mat)[1])
+    L = size(mat)[1] + 1
+    @inbounds for j = 1:L
+        for i = 1:L
+            tmp[i] += vec[j] * mat[i, j]
+        end
+    end
+    return tmp
+end
+matmul_test_oob_unsafe(mat_a, vec_a);
+```
+
+Finally, the ``@simd`` and ``@inbounds`` macros can be combined for maximum peformance. The ``@simd`` macro should be applied before the ``@inbounds`` macro. Let's compare this optimised code against our original implementations and see a substantial increase even beating out the vectorised code (and creaming R and Python).
+
+```{julia}
+function matmul_test_unsafe_fast(mat, vec)
+    tmp = zeros(size(mat)[1])
+    @inbounds for j = 1:size(mat)[1]
+        @simd for i = 1:size(mat)[2]
+            tmp[i] += vec[j] * mat[i, j]
+        end
+    end
+    return tmp
+end
+@btime mat_a * vec_a;
+@btime matmul_test(mat_a, vec_a);
+@btime matmul_test_unsafe_fast(mat_a, vec_a);
+```
+
+## 4.2 Data Access Patterns
+
+Something that is not often thought about is how data is laid out in memory. In general, random access memory is linear while matrices are two dimensional: how do we decide which memory address each matrix element (and indeed higher order tensor elements) goes to? It turns out that different languages choose different conventions. In C and Python each of the *rows* is laid out contiguously so for column elements from the same row are found next to each other in memory:
+
+`` (row-major) mat_addresses: [ 1 2 3
+                              4 5 6 ]
+``
+
+Julia (and most scientific languages such as R, MatLab, and Fortran) lays out memory in *columns* so that row elements in the same column are found next to each other in memory:
+
+`` (column-major) mat_addresses: [ 1 3 5
+                                 2 4 6]
+``
+
+We say that Julia is a *column-major* ordered language while C is a *row-major* ordered language. There is endless debate about which is better but both have their advantages and disadvantages. Why do we need to be aware of these differences? For the computation result it doesn't matter if you access rows first or columns first, but for the computation time it can have a serious impact. This is because if you leave the fastest varying index on the columns in a column major language the memory access becomes difficult: we have to make strides in memory locations to find the data we are looking for. Therefore, it is better to fix the column and vary through the rows because these are all close to each other. This would be the reverse in a row-major language. Compare the following two functions: one accesses an entire column at a time, the other an entire row.
+
+```{julia}
+function column_access(a);
+    res = 0;
+    for j = 1:size(a)[2]
+        res += sum(a[:,j] * j)
+    end
+    return res
+end
+
+function row_access(a);
+    res = 0;
+    for i = 1:size(a)[1]
+        res += sum(a[i,:] * i)
+    end
+    return res
+end
+
+a = ones(10000, 10000);
+
+@btime row_access(a);
+@btime column_access(a);
+# Check that they are the same result
+row_access(a) == column_access(a)
+```
+
+They both computed the same result, but one was substantially faster than the other. The general best-practice data access pattern is to take the slow-varying index in the outer-most loop and the fast-varying index in the inner-most loop. The pattern for Julia, therefore, is to access our columns in the outer for loop, and the rows in the inner for loop.
+
+### 4.3 Global vs Local Workspaces
+
+Julia has two notions of workspace. A global workspace and a local workspace. The global workspace is any variable and function definition in the REPL or (more usually) in your script and not wrapped by a function. Local workspaces are those in functions and modules. The global workspace has some penalty performances asscociated with it and good working practice is to put all of your code into functions. This saves you time in two ways: 1) development time by making it more readable, organised, and easier to come back to, 2) compilation time.
+
+# Moving Forward
+
+By now we have a fairly advanced idea about what Julia is, what its capabilities are and why we may use it preferrentially, how to interact with it, and some advanced ideas to make our code flexible and performant. We are capable Julians when it comes to writing generic Julia code! There are still some basic concepts that would greatly benefit us as Data Scientists and these have been arranged into several notebooks: plotting, data and statistics, and high performance computing.
+
