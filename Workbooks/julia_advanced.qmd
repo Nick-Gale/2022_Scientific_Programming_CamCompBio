@@ -180,6 +180,7 @@ SimpleStats.sdev(x)
 
 ```{julia}
 #| eval: false
+# This will not work
 variance(x)
 ```
 
@@ -329,7 +330,7 @@ for t = 0:0.01:1
 end
 ```
 
-Occasionally, we want to mutate only part of the mutable structure. To do this we specify which fields are constant with the ``const`` keyword. Let's return to our statistical example. We may want to make a note if the mean and standard deviation look perculiar for a particular sample. Let's write a mutable structure that allows for this without changing the actual measurements.
+Occasionally, we want to mutate only part of the mutable structure. To do this we specify which fields are constant with the ``const`` keyword. Let's return to our statistical example. We may want to make a note if the mean and standard deviation look peculiar for a particular sample. Let's write a mutable structure that allows for this without changing the actual measurements.
 
 ```{julia}
 mutable struct NotableUniformStats
@@ -352,6 +353,7 @@ simpleSample
 
 ```{julia}
 #| eval: false
+#This won't work as mean is a const.
 simpleSample.mean = 1
 ```
 
@@ -376,7 +378,7 @@ end
 
 So far our types have been rather contrived and it would be difficult to see a use case for them outside of this notebook. This convenient type system and Julia's remarkable baseline performance has set us up to code something very wonderful: an auto-differentation system.
 
-As a reminder: the derivative of a function $f(x)$ is defined as $ f^{\prime}(x) = \lim_{h\rightarrow0} \frac{f(x + h) - f(x)}{h} $. We might remember this definition from high school and remember drawing tangent lines to the curve of $f(x) = x^2$ for ever smaller $h$ to convince ourselves that $f'(x) = 2x$. That useful exercise is actually precisely how we calculated derivates that we didn't know numerically and this is known as *numerical differentiation*. A numerical differentation routine might look something like this:
+As a reminder: the derivative of a function $f(x)$ is defined as $f^{\prime}(x) = \lim_{h\rightarrow0} \frac{f(x + h) - f(x)}{h}$. We might remember this definition from high school and remember drawing tangent lines to the curve of $f(x) = x^2$ for ever smaller $h$ to convince ourselves that $f'(x) = 2x$. That useful exercise is actually precisely how we calculated derivates that we didn't know numerically and this is known as *numerical differentiation*. A numerical differentation routine might look something like this:
 
 ```{julia}
 df(f, x, h) = (f.(x .+ h) .- f.(x)) ./ h
@@ -391,7 +393,7 @@ end
 
 That looks pretty good. We are certainly getting closer and closer to the correct answer. Furthemore, the function will clearly generalise to all broadcastable functions ``f``. 
 
-However, we clearly desire some level of precision (taking ``h = 1`` is simply too inaccurate!). How do we choose which precision we need and wouldn't it be better to have it at the same precision as our function call so that we dont have to worry about numerical instability? Well, we can certainly have it at arbitrary precision, we already know the derivative. We could just hard-code $ df(x) = 2x $. This is known as *symbolic* differentation. It is employed extensively in Computer Algebra Systems such as Mathematica and Maple. However, this can also be slow as with complicated functions they need to apply a long list of rules to reduce the symbols to their final form. The amount of symbols can also blow up making this an unfeasible option.
+However, we clearly desire some level of precision (taking ``h = 1`` is simply too inaccurate!). How do we choose which precision we need and wouldn't it be better to have it at the same precision as our function call so that we dont have to worry about numerical instability? Well, we can certainly have it at arbitrary precision, we already know the derivative. We could just hard-code $df(x) = 2x$. This is known as *symbolic* differentation. It is employed extensively in Computer Algebra Systems such as Mathematica and Maple. However, this can also be slow as with complicated functions they need to apply a long list of rules to reduce the symbols to their final form. The amount of symbols can also blow up making this an unfeasible option.
 
 However, almost all functions we deal with (however complicated) are typically just compositions of a few simple primitive functions. We know the differentation rules for these simple types and we also know how to deal with compositions using the Chain rule! It feels as though we can design an algebra around these. Let's consider the Taylor series of a function $f$:
 
@@ -418,7 +420,7 @@ Now we want to encode our differentation rules. They are fairly simple:
 
 $(f+g)'(x) = f'(x) + g'(x)$
 
-$(f-g)'(x) = f'(x) + g'(x)$
+$(f-g)'(x) = f'(x) - g'(x)$
 
 $(f*g)'(x) = f(x)*g'(x) + f'(x)*g(x)$
 
@@ -441,7 +443,7 @@ f(x) = x * x
 f(Dual(2.0, 1.0)).d
 ```
 
-Wow! That worked really well. However, that was a perculiar way to define the square function especially when the power operator exists in the Julia language. Let's try defining the function as we normally would.
+Wow! That worked really well. However, that was a peculiar way to define the square function especially when the power operator exists in the Julia language. Let's try defining the function as we normally would.
 
 ```{julia}
 f2(x) = x^2
