@@ -90,7 +90,7 @@ You will need to install jupyter and the jupyter kernel as above.
 
 This solution requires you to have ssh and be able to do port
 forwarding.
-[Source[(https://docs.anaconda.com/anaconda/user-guide/tasks/remote-jupyter-notebook/).
+[Source](https://docs.anaconda.com/anaconda/user-guide/tasks/remote-jupyter-notebook/).
 
 
 First, on subliminal, type the following:
@@ -118,9 +118,5 @@ After this, on your laptop you can visit the following page:
 open http://localhost:8080/
 ```
 
-
-
-
-
-
-
+At this stage, you should be running the Julia code on subliminal, and
+simply viewing the results on your laptop.
