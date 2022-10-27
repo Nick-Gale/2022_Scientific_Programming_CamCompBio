@@ -4,14 +4,17 @@ subtitle: "Package Management, Advanced Concepts, and Worflows"
 author: "Nicholas Gale & Stephen Eglen"
 execute:
   echo: true
-  output-location: fragment  
 format:
-  revealjs:
-    slide-number: true
-    theme: serif
-    chalkboard: true 
-    incremental: true
-    background-image: julia_background.png
+  beamer:
+    keep-tex: true
+    monofont: "JuliaMono"
+    header-includes: |
+      \makeatletter
+      \setbeamertemplate{footline}
+      {
+      \tikz[overlay]{\node at(12,.25){\thepage};}
+      }
+      \makeatother
 ---
 ## Types and Hierarchy 
 
@@ -21,14 +24,14 @@ format:
 
 * Sub/super type can be checked with `<:`.
 
-::: fragment 
+
 ```{julia}
 println(Int64 <: Real)
 println(Float64 <: Real)
 println(Int64 <: Float64)
 println(subtypes(Number))
 ```
-:::
+
 
 ## Custom Types
 
@@ -38,7 +41,7 @@ println(subtypes(Number))
 
 * An object is called using the name of the `struct`
 
-::: fragment 
+
 ```{julia}
 struct Stats
 	xbar::Real
@@ -47,7 +50,7 @@ struct Stats
 end
 Stats(4,0.4,0.1)
 ```
-:::
+
 
 
 
@@ -63,7 +66,7 @@ Stats(4,0.4,0.1)
 :::
 
 :::{.column width="50%"}
-::: fragment 
+
 ```{julia}
 using StatsBase, Random
 struct StatsGenerator
@@ -83,7 +86,6 @@ end
 println([StatsGenerator(100), StatsGenerator(100), StatsGenerator(1000)])
 ```
 :::
-:::
 
 :::::
 
@@ -91,7 +93,7 @@ println([StatsGenerator(100), StatsGenerator(100), StatsGenerator(1000)])
 
 * Julia passes objects by reference - be careful with copying mutable types.
 
-::: fragment 
+
 ```{julia}
 a = Any[Any[1,0], Any[2,0], Any[3,0], Any[4,0]]
 ## reference
@@ -99,14 +101,14 @@ b1 = a
 b1[1] = ["*",2]
 println(a)
 ```
-:::
+
 
 ---
 
 * ``copy`` deferences the first layer. 
 
 
-::: fragment
+
 ```{julia}
 ## shallow copy (first layer mutations don't change original object)
 b2 = copy(a)
@@ -115,11 +117,11 @@ b2[1] = ["A",2]
 b2[2][1] = "b"
 println(a)
 ```
-:::
+
 
 * ``deepcopy`` recursively copies. 
 
-::: fragment
+
 ```{julia}
 ## deep copy (object is completely indistinguishable)
 b3 = deepcopy(a)
@@ -127,7 +129,7 @@ println(b3 === a)
 b3[3][1] = "c"
 println(a)
 ```
-:::
+
 
 
 ## Pass by reference
@@ -141,7 +143,7 @@ println(a)
 
 * R Code
 
-::: fragment
+
 ```
 #| eval: false
 x <- c(1,2,3,4)
@@ -149,12 +151,12 @@ f <- function(x){x[1] = 10}
 f(x)
 # x is unchanged.
 ```
-:::
+
 
 
 * Julia Code
 
-::: fragment 
+
 ```{julia}
 x = [1,2,3,4]
 function f(x)
@@ -163,18 +165,18 @@ end
 f(x)
 println(x)
 ```
-:::
+
 
 
 * Functions that mutate their objects are usually denoted by a bang operator.
 
-::: fragment 
+
 ```{julia}
 x = [5.0, 1.8, 2.1, 3.7, 4.1]
 sort!(x)
 println(x)
 ```
-:::
+
 
 
 ## Multiple Dispatch
@@ -183,7 +185,7 @@ println(x)
 
 * The compiler decides which definition to use based on type inference.
 
-::: fragment 
+
 ```{julia}
 function custom_modulus(x::Real)
 	return abs(x)
@@ -199,7 +201,7 @@ b = custom_modulus(-2+1im)
 println([a, typeof(a)])
 println([b, typeof(b)])
 ```
-:::
+
 
 
 ::: {.notes}
@@ -217,14 +219,14 @@ println([b, typeof(b)])
 
 * This is native vectorisation as you might expect in R.
 
-::: fragment 
+
 ```{julia}
 using StatsBase
 samples = [rand(100)*i for i in 1:5]
 variances = var.(samples)
 println(variances)
 ```
-:::
+
 
 ## Functions: Vectorisation
 
@@ -244,22 +246,22 @@ println(variances)
   
 * Packages in Julia are loaded with the `using` keyword. Some are included in the base installation.
 
-::: fragment 
+
 ```{julia}
 using Random
 randperm(5)'
 ```
-:::
+
 
 * Package functions are imported into the namespace; and can also be accessed using `PkgName.function`.
 
-::: fragment 
+
 ```{julia}
 using StatsBase, Random
 vec = Random.randperm(100)
 stdv100 = std(vec)
 ```
-:::
+
 
 
 ## Package manager
@@ -301,14 +303,14 @@ stdv100 = std(vec)
   e.g. [@fastmath](https://docs.julialang.org/en/v1/base/math/#Base.FastMath.@fastmath) 
   [@inbounds](https://docs.julialang.org/en/v1/base/base/#Base.@inbounds)
 
-::: fragment 
+
 ```{julia}
 x = 0
 @time for i = 1:100000
     x *= x^i
 end
 ```
-:::
+
 
 ## Data I/O
 
@@ -347,7 +349,7 @@ and<br>
 `using .PackagName` or<br>
 `using Main.PackageName`.
 
-::: fragment
+
 ```{julia}
 module BasicStats
 export std
@@ -357,7 +359,7 @@ end
 using .BasicStats
 std([1.0, 2.0, 3.0])
 ```
-:::
+
 
 ## Workflow: Revise
 
