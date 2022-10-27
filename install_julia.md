@@ -96,20 +96,21 @@ forwarding.
 First, on subliminal, type the following:
 
 ```
-jupyter notebook --no-browser --port=4321
+jupyter notebook --no-browser
 ```
 
-This runs the notebook, but will send the information to port 4321.
-Choose a unique four or five digit port number -- two people cannot
-use the same port number.
+This runs the notebook, and will automatically allocate a port (it
+will tell you e.g. the notebook is running at http://localhost:8888/
+-- 8888 is the port number here on subliminal.
+
 
 
 Then, on your laptop, type:
 ```
-ssh -L 8080:localhost:4321 sje30@subliminal.maths.cam.ac.uk
+ssh -L 8080:localhost:8888 sje30@subliminal.maths.cam.ac.uk
 ```
 
-where you replace sje30 with your crsid, and 4321 with your chosen
+where you replace sje30 with your crsid, and 8888 with your allocated
 port.
 
 After this, on your laptop you can visit the following page:
