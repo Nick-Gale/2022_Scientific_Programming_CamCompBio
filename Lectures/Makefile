@@ -1,11 +1,6 @@
-all: lecture1.html lecture2.html
+all: lecture1.pdf
 
-## use the export function to save pdf from chrome.  Found some issues with CLI 
-##allpdf: lecture1.pdf lecture2.pdf
-##%.pdf: %.html
-##	Rscript -e "pagedown::chrome_print('$^')"
-
-%.html: %.qmd
+%.pdf: %.qmd
 	quarto render $^
 
 
