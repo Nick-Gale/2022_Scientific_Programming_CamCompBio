@@ -9,6 +9,13 @@ format:
   beamer:
     keep-tex: true
     monofont: "JuliaMono"
+    header-includes: |
+      \makeatletter
+      \setbeamertemplate{footline}
+      {
+      \tikz[overlay]{\node at(12,.25){\thepage};}
+      }
+      \makeatother
 ---
 
 ## Course Objectives
@@ -502,3 +509,5 @@ F = x -> x^2
 println(F(2))
 ```
 
+
+<!-- https://tex.stackexchange.com/questions/32812/beamer-footer-with-current-slide-number-but-not-total-slide-number -->
