@@ -70,11 +70,11 @@ In this course we will cover:
 ## REPL
 * The REPL can execute basic commands or run scripts with the include function:
 
-::: fragment
+
 ```{julia} 
 include("my_first_script.jl")
 ```
-:::
+
 
 * Scripting in the REPL is costly *once*. Scripting from terminal is costly *everytime*.
 
@@ -95,14 +95,14 @@ include("my_first_script.jl")
 * Variable assignment is done through the `=` operator, equality is tested through the `==` operator, and indistinguishability through the `===` operator. This is different to R which uses the `<-` assignment operator and the ``identical(a,b)`` function for indistinguishability.
 
 
-::: fragment
+
 ```{julia} 
 a = 1.0
 b = 1
 println(a == b)
 println(a === b)
 ```
-:::
+
 
 
 ::: {.notes}
@@ -126,23 +126,23 @@ println(a === b)
 
 * Infix operators modifiy a variable in-place and can be very useful e.g. loops:
 
-::: fragment
+
 ```{julia} 
 a = 7
 a += 1
 a
 ```
-:::
+
 
 ## Vectors
 
 * A vector is created with square brackets and is column delimited as opposed to R's `c(tuple...)`:
 
-::: fragment
+
 ```{julia} 
 a = [1, 2, 4.0, 1]
 ```
-:::
+
 
 ---
 
@@ -150,14 +150,12 @@ a = [1, 2, 4.0, 1]
 
 * Logical indexes must be the same size as the array, unlike in R.
 
-::: fragment
 ```{julia} 
 println(a[2])
 println(a[[true, false, true, false]])
 println(a[CartesianIndex(1)])
 println(a[2:4])
 ```
-:::
 
 ---
 
@@ -165,12 +163,10 @@ println(a[2:4])
 
 * It does have a keyword `end` which references the end of a vector and can be combined with arithmetics to create consistent negative indexing
 
-::: fragment
 ```{julia} 
 a = [1,2,3,4,5,6,7]
 println(a[2:2:(end-1)])
 ```
-:::
 
 
 ## Attention to detail
@@ -198,18 +194,17 @@ This is an example of an iterator.
 
 * A matrix is created with semi-colons to delimit rows and spaces (or ``;;``) to delimit columns.
 
-::: fragment
+
 ```{julia} 
 a =	 [1 2 3;
 	8 9 10;
 	4 -30 0]
 ```
-:::
+
 ---
 
 * Matrices are column ordered so a linear index will access elements in the column first.
 
-::: fragment
 ```{julia} 
 a = [1 2 3; 8 9 10; 4 -30 0];
 println(a)
@@ -218,7 +213,6 @@ println(a[CartesianIndex(2,1)])
 println(a[2, 3])
 println(a[1:2, 2:3])
 ```
-:::
  
 
 ## Multi Dimensional Arrays
@@ -232,7 +226,6 @@ println(a[1:2, 2:3])
 
 ---
 
-::: fragment
 ```{julia} 
 a = [1; 2;; 3; 4;; 5; 6;;;
         7; 8;; 9; 10;; 11; 12]
@@ -240,34 +233,30 @@ display(a)
 println(a[10])
 println(a[CartesianIndex(2, 3, 2)])
 ```
-:::
+
 
 ## General Arrays and Construction
 
 * In Julia ranges can be created with steps like in R and are
   iterables but they are non-allocating (in R they create a vector). 
   
-::: fragment
 ```{julia} 
 a = 2:50:300
 println(a[4])
 println(a)
 println(typeof(a))
 ```
-:::
 
 ## Collect
 
 * Vectors can be created with the `collect` function which works on
   any iterable collection.
   
-::: fragment
 ```{julia} 
 a = collect(2:50:300)
 println(a)
 println(typeof(a))
 ```
-:::
 
 ## Preallocation
 
@@ -303,14 +292,12 @@ display(b)
 
 ---
 
-::: fragment
 ```{julia}
 a = ones(3,3);
 b = zeros(3,3);
 display(hcat(a,b))
 display(vcat(a,b))
 ```
-::: 
 
 ## Strings
 
@@ -320,25 +307,21 @@ display(vcat(a,b))
 
 * Triple double quotes allow some flexibility which can be useful in writing internal scripts:
 
-::: fragment
 ```{julia} 
 """triple quotes allow "quotes" to be
 embedded.
 Multiple lines.
 """
 ```
-:::
 
 ## String Indexing
 
 * Strings can be indexed in Julia like in R and unlike R are not decoded into a character vector
 
-::: fragment
 ```{julia} 
 a = "A very long string"
 println(a[2:2:10])
 ```
-:::
 
 ## Control Flow
 
@@ -348,31 +331,26 @@ println(a[2:2:10])
 
 * Control flow blocks always have an `end` to terminate them. They are initiated with a special keyword. They don't usually have curly braces like in R.
 
-::: fragment
 ```{julia}
 println(true == false)
 println(true == 1)
 println(false == 0)
 ```
-:::
 
 ## If, else, and elseif
 
 * If blocks can have optional `elseif` and `else` keywords inside the
   block:
   
-::: fragment
 ```{julia} 
 cond = true
 if cond
 	println("If this was false, nothing would happen")
 end
 ```
-:::
 
 ---
 
-::: fragment
 ```{julia} 
 condelse = 1
 if condelse==2
@@ -381,11 +359,9 @@ else
 	println("It wasn't true. The else block executed")
 end
 ```
-:::
 
 ---
 
-::: fragment
 ```{julia} 
 condif = false	
 condelse = "three"
@@ -399,35 +375,31 @@ else
 	println("The else block executes")
 end
 ```
-:::
+
 ## Ternary Operator
 
 * The ternary operator can execute if one-liners: 
 
 ``conditional ? iftrue_code : else_code ``.
 
-::: fragment
 ```{julia}
 res = (8 < 4) ? "Maths broke." : "Situation Normal"
 println(res)
 ```
-:::
 
 ## While
 
 * While statements are also executed when a conditional expression
   evaluates as true. They can be useful in loops:
   
-::: fragment
 ```{julia} 
 i = 0
 while i < 10
 	i += 2
-	println("Not done yet..")
+	println("$(i) Not done yet..")
 end
 println("Done")
 ```
-:::
 
 ## For Loops
 * For loops operate in the same way as R with the `for var in collection` structure.
@@ -481,11 +453,9 @@ end
 
 * Functions can be written in one line in a mathematical format.
 
-::: fragment
 ```{julia} 
 complex_modulus(x, iy) = sqrt(x^2 + iy^2)
 ```
-:::
 
 * The recommended structure is to use a function block with a return keyword.
 
@@ -495,20 +465,17 @@ complex_modulus(x, iy) = sqrt(x^2 + iy^2)
 
 * Can be used in function definition. 
 
-::: fragment
 ```{julia} 
 function g(x...)
 	return x[end]
 end
 println(g(4,5,6))
 ```
-:::
 
 ---
 
 * Splatting can also be used in calls to functions with multiple arguments.
 
-::: fragment
 ```{julia}
 function f(x1, x2, x3)
 	return (x1*x2)-x3
@@ -516,9 +483,6 @@ end
 fvec = [5,4,1.0];
 println(f(fvec...))
 ```
-:::
-
-
 
 * Unlike R `...` must be attached to a variable name
 
