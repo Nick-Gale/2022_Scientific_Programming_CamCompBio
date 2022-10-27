@@ -93,6 +93,9 @@ forwarding.
 [Source](https://docs.anaconda.com/anaconda/user-guide/tasks/remote-jupyter-notebook/).
 
 
+You will need two separate terminals to login to subliminal: (1) to
+start the notebook (2) to do port forwarding.
+
 First, on subliminal, type the following:
 
 ```
@@ -120,6 +123,7 @@ open http://localhost:8080/
 ```
 
 At this stage, you should be running the Julia code on subliminal, and
-simply viewing the results on your laptop.  WHen you have finished
-with your session, as well as closing the browser tab, you should
-quit the ssh command that you used to set up the port forwarding.
+simply viewing the results on your laptop.  When you have finished
+with your session, as well as closing the browser tab and quitting the
+notebook command, you should quit the ssh command that you used to set
+up the port forwarding into subliminal.
