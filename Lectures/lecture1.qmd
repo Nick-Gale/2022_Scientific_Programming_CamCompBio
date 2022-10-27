@@ -74,17 +74,7 @@ In this course we will cover:
 * The REPL can execute basic commands or run scripts with the include function:
 
 ::: fragment
-```{julia}
-#| echo: true
-#| eval: false 
-include("my_first_script.jl")
-```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true 
+```{julia} 
 include("my_first_script.jl")
 ```
 :::
@@ -94,8 +84,6 @@ include("my_first_script.jl")
 * `println(arg)` is the method for printing (print works, but doesn't generate a new line).
 
 * `display(arg)` creates a user-friendly readout in the REPL.
-<!-- SJE: is something missing here? -->
-<!-- :::L. -->
 
 ::: {.notes}
 * The REPL  also lets you run quick commands between script being called.
@@ -111,20 +99,7 @@ include("my_first_script.jl")
 
 
 ::: fragment
-```{julia}
-#| echo: true
-#| eval: false 
-a = 1.0
-b = 1
-println(a == b)
-println(a === b)
-```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true 
+```{julia} 
 a = 1.0
 b = 1
 println(a == b)
@@ -155,19 +130,7 @@ println(a === b)
 * Infix operators modifiy a variable in-place and can be very useful e.g. loops:
 
 ::: fragment
-```{julia}
-#| echo: true
-#| eval: false 
-a = 7
-a += 1
-a
-```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true 
+```{julia} 
 a = 7
 a += 1
 a
@@ -179,17 +142,7 @@ a
 * A vector is created with square brackets and is column delimited as opposed to R's `c(tuple...)`:
 
 ::: fragment
-```{julia}
-#| echo: true
-#| eval: false 
-a = [1, 2, 4.0, 1]
-```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true 
+```{julia} 
 a = [1, 2, 4.0, 1]
 ```
 :::
@@ -201,20 +154,7 @@ a = [1, 2, 4.0, 1]
 * Logical indexes must be the same size as the array, unlike in R.
 
 ::: fragment
-```{julia}
-#| echo: true
-#| eval: false 
-println(a[2])
-println(a[[true, false, true, false]])
-println(a[CartesianIndex(1)])
-println(a[2:4])
-```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true 
+```{julia} 
 println(a[2])
 println(a[[true, false, true, false]])
 println(a[CartesianIndex(1)])
@@ -229,18 +169,7 @@ println(a[2:4])
 * It does have a keyword `end` which references the end of a vector and can be combined with arithmetics to create consistent negative indexing
 
 ::: fragment
-```{julia}
-#| echo: true
-#| eval: false 
-a = [1,2,3,4,5,6,7]
-println(a[2:2:(end-1)])
-```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true 
+```{julia} 
 a = [1,2,3,4,5,6,7]
 println(a[2:2:(end-1)])
 ```
@@ -261,8 +190,6 @@ will say the object is 3.8Mb.
 whereas in Julia
 
 ```{julia}
-#| echo: true
-#| eval: true
 x = 1:1e6
 sizeof(x)
 ```
@@ -275,19 +202,7 @@ This is an example of an iterator.
 * A matrix is created with semi-colons to delimit rows and spaces (or ``;;``) to delimit columns.
 
 ::: fragment
-```{julia}
-#| echo: true
-#| eval: false 
-a =	 [1 2 3;
-	8 9 10;
-	4 -30 0]
-```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true 
+```{julia} 
 a =	 [1 2 3;
 	8 9 10;
 	4 -30 0]
@@ -298,22 +213,7 @@ a =	 [1 2 3;
 * Matrices are column ordered so a linear index will access elements in the column first.
 
 ::: fragment
-```{julia}
-#| echo: true
-#| eval: false 
-a = [1 2 3; 8 9 10; 4 -30 0];
-println(a)
-println(a[4])
-println(a[CartesianIndex(2,1)])
-println(a[2, 3])
-println(a[1:2, 2:3])
-```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true 
+```{julia} 
 a = [1 2 3; 8 9 10; 4 -30 0];
 println(a)
 println(a[4])
@@ -336,21 +236,7 @@ println(a[1:2, 2:3])
 ---
 
 ::: fragment
-```{julia}
-#| echo: true
-#| eval: false 
-a = [1; 2;; 3; 4;; 5; 6;;;
-        7; 8;; 9; 10;; 11; 12]
-display(a)
-println(a[10])
-println(a[CartesianIndex(2, 3, 2)])
-```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true 
+```{julia} 
 a = [1; 2;; 3; 4;; 5; 6;;;
         7; 8;; 9; 10;; 11; 12]
 display(a)
@@ -365,20 +251,7 @@ println(a[CartesianIndex(2, 3, 2)])
   iterables but they are non-allocating (in R they create a vector). 
   
 ::: fragment
-```{julia}
-#| echo: true
-#| eval: false 
-a = 2:50:300
-println(a[4])
-println(a)
-println(typeof(a))
-```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true 
+```{julia} 
 a = 2:50:300
 println(a[4])
 println(a)
@@ -392,19 +265,7 @@ println(typeof(a))
   any iterable collection.
   
 ::: fragment
-```{julia}
-#| echo: true
-#| eval: false 
-a = collect(2:50:300)
-println(a)
-println(typeof(a))
-```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true 
+```{julia} 
 a = collect(2:50:300)
 println(a)
 println(typeof(a))
@@ -416,20 +277,7 @@ println(typeof(a))
 * Preallocation can be done with `ones(dims...)` and `zeros(dims..)`
 
 ::: fragment
-```{julia}
-#| echo: true
-#| eval: false 
-a = ones(2,3,5)
-b = zeros(4,4)
-display(a)
-display(b)
-```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true 
+```{julia} 
 a = ones(2,3,5)
 b = zeros(4,4)
 display(a)
@@ -448,19 +296,6 @@ display(b)
 
 ::: fragment
 ```{julia}
-#| echo: true
-#| eval: false
-a = ones(3,3);
-b = zeros(3,3);
-display(hcat(a,b))
-display(vcat(a,b))
-```
-::: 
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
 a = ones(3,3);
 b = zeros(3,3);
 display(hcat(a,b))
@@ -477,17 +312,7 @@ display(vcat(a,b))
 * Triple double quotes allow some flexibility which can be useful in writing internal scripts:
 
 ::: fragment
-```{julia}
-#| echo: true
-#| eval: false 
-"""The triple quotes allow for "quotes" to be embedded into a string."""
-```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true 
+```{julia} 
 """The triple quotes allow for "quotes" to be embedded into a string."""
 ```
 :::
@@ -497,18 +322,7 @@ display(vcat(a,b))
 * Strings can be indexed in Julia like in R and unlike R are not decoded into a character vector
 
 ::: fragment
-```{julia}
-#| echo: true
-#| eval: false 
-a = "A very long string"
-println(a[2:2:10])
-```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true 
+```{julia} 
 a = "A very long string"
 println(a[2:2:10])
 ```
@@ -524,18 +338,6 @@ println(a[2:2:10])
 
 ::: fragment
 ```{julia}
-#| echo: true
-#| eval: false
-println(true == false)
-println(true == 1)
-println(false == 0)
-```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
 println(true == false)
 println(true == 1)
 println(false == 0)
@@ -548,20 +350,7 @@ println(false == 0)
   block:
   
 ::: fragment
-```{julia}
-#| echo: true
-#| eval: false 
-cond = true
-if cond
-	println("If this wasn't true, nothing would happen")
-end
-```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true 
+```{julia} 
 cond = true
 if cond
 	println("If this wasn't true, nothing would happen")
@@ -572,22 +361,7 @@ end
 ---
 
 ::: fragment
-```{julia}
-#| echo: true
-#| eval: false 
-condelse = 1
-if condelse==2
-	println("It's an even prime!")
-else
-	println("It wasn't true. The else block executed")
-end
-```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true 
+```{julia} 
 condelse = 1
 if condelse==2
 	println("It's an even prime!")
@@ -600,25 +374,7 @@ end
 ---
 
 ::: fragment
-```{julia}
-#| echo: true
-#| eval: false 
-condif = false	
-condelse = "three"
-if condif == 1
-	println("We miss this one")
-elseif condelse == "three"
-	println("The elseif block executes")
-else
-	println("The else block doesn't")
-end
-```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true 
+```{julia} 
 condif = false	
 condelse = "three"
 if condif == 1
@@ -636,17 +392,6 @@ end
 
 ::: fragment
 ```{julia}
-#| echo: true
-#| eval: false
-res = (8 < 4) ? "Maths broke." : "Situation Normal"
-println(res)
-```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
 res = (8 < 4) ? "Maths broke." : "Situation Normal"
 println(res)
 ```
@@ -658,22 +403,7 @@ println(res)
   evaluates as true. They can be useful in loops:
   
 ::: fragment
-```{julia}
-#| echo: true
-#| eval: false 
-i = 0
-while i < 10
-	i+=1
-	println("Not done yet..")
-end
-println("Done")
-```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true 
+```{julia} 
 i = 0
 while i < 10
 	i+=1
@@ -691,23 +421,7 @@ println("Done")
 * The `in` operator can be replaced with `=`.
 
 ::: fragment
-```{julia}
-#| echo: true
-#| eval: false 
-for i = 1:2
-	println(i)
-end
-println()
-for i in 20:22
-	println(i)
-end
-```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true 
+```{julia} 
 for i = 1:2
 	println(i)
 end
@@ -723,17 +437,7 @@ end
 * Julia supports list comprehension: `[ expression(i) for i in collection]` generates a vector with objects specified by expression i.
 
 ::: fragment
-```{julia}
-#| echo: true
-#| eval: false 
-vec = [i^2 for i in 1:4:33]
-```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true 
+```{julia} 
 vec = [i^2 for i in 1:4:33]
 ```
 :::
@@ -749,20 +453,7 @@ vec = [i^2 for i in 1:4:33]
 ---
 
 ::: fragment
-```{julia}
-#| echo: true
-#| eval: false 
-function complex_modulus1(x, iy)
-	tmp = x^2 + iy^2
-	return sqrt(tmp)
-end
-```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true 
+```{julia} 
 function complex_modulus1(x, iy)
 	tmp = x^2 + iy^2
 	return sqrt(tmp)
@@ -777,17 +468,7 @@ end
 * Functions can be written in one line in a mathematical format.
 
 ::: fragment
-```{julia}
-#| echo: true
-#| eval: false 
-complex_modulus(x, iy) = sqrt(x^2 + iy^2)
-```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true 
+```{julia} 
 complex_modulus(x, iy) = sqrt(x^2 + iy^2)
 ```
 :::
@@ -801,20 +482,7 @@ complex_modulus(x, iy) = sqrt(x^2 + iy^2)
 * Can be used in function definition. 
 
 ::: fragment
-```{julia}
-#| echo: true
-#| eval: false 
-function g(x...)
-	return x[end]
-end
-println(g(4,5,6))
-```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true 
+```{julia} 
 function g(x...)
 	return x[end]
 end
@@ -828,20 +496,6 @@ println(g(4,5,6))
 
 ::: fragment
 ```{julia}
-#| echo: true
-#| eval: false
-function f(x1, x2, x3)
-	return (x1*x2)-x3
-end
-fvec = [5,4,1.0];
-println(f(fvec...))
-```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
 function f(x1, x2, x3)
 	return (x1*x2)-x3
 end
@@ -862,17 +516,6 @@ println(f(fvec...))
   
 ::: fragment
 ```{julia}
-#| echo: true
-#| eval: false
-F = x -> x^2
-println(F(2))
-```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
 F = x -> x^2
 println(F(2))
 ```
