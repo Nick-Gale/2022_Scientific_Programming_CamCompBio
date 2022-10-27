@@ -5,15 +5,12 @@ author: "Nicholas Gale & Stephen Eglen"
 engine: jupyter
 execute:
   echo: true
-  output-location: fragment  
 format:
-  revealjs:
-    slide-number: true
-    theme: serif
-    chalkboard: true 
-    incremental: true
-    background-image: julia_background.png
+  beamer:
+    keep-tex: true
+    monofont: "JuliaMono"
 ---
+
 ## Course Objectives
 
 In this course we will cover:
@@ -274,16 +271,28 @@ println(typeof(a))
 
 ## Preallocation
 
-* Preallocation can be done with `ones(dims...)` and `zeros(dims..)`
+:::: {.columns}
 
-::: fragment
+::: {.column width="50%"}
+
 ```{julia} 
-a = ones(2,3,5)
-b = zeros(4,4)
+a = ones(2,3,2)
 display(a)
+```
+
+:::
+
+::: {.column width="50%"}
+
+```{julia} 
+b = zeros(Int64,4,4)
 display(b)
 ```
+
 :::
+
+::::
+
 ## Concatenation
 
 * Arrays can be abstractally contactentated using space, and semilcolons `;`, `;;`, `;;;`.
@@ -313,7 +322,10 @@ display(vcat(a,b))
 
 ::: fragment
 ```{julia} 
-"""The triple quotes allow for "quotes" to be embedded into a string."""
+"""triple quotes allow "quotes" to be
+embedded.
+Multiple lines.
+"""
 ```
 :::
 
@@ -353,7 +365,7 @@ println(false == 0)
 ```{julia} 
 cond = true
 if cond
-	println("If this wasn't true, nothing would happen")
+	println("If this was false, nothing would happen")
 end
 ```
 :::
@@ -379,16 +391,20 @@ condif = false
 condelse = "three"
 if condif == 1
 	println("We miss this one")
+elseif condelse == "two"
+	println("The first elseif block executes")
 elseif condelse == "three"
-	println("The elseif block executes")
+	println("The second elseif block executes")
 else
-	println("The else block doesn't")
+	println("The else block executes")
 end
 ```
 :::
 ## Ternary Operator
 
-* The ternary operator can execute if one-liners: `` conditional_expression ? iftrue_code_execute : else_code_execute ``.
+* The ternary operator can execute if one-liners: 
+
+``conditional ? iftrue_code : else_code ``.
 
 ::: fragment
 ```{julia}
@@ -406,7 +422,7 @@ println(res)
 ```{julia} 
 i = 0
 while i < 10
-	i+=1
+	i += 2
 	println("Not done yet..")
 end
 println("Done")
@@ -418,29 +434,27 @@ println("Done")
 
 * They can operate over any abstract collection or vector.
 
-* The `in` operator can be replaced with `=`.
+* The `in` operator can be replaced with `=` or `∈`.
 
-::: fragment
 ```{julia} 
-for i = 1:2
-	println(i)
-end
-println()
-for i in 20:22
-	println(i)
-end
+for i = 1:2 println(i) end
+for i in 10:12 println(i) end
+for i ∈ 100:102 println(i) end
 ```
-:::
+<!-- TODO: fix missing unicode -->
 
 ## List Comprehension
 
 * Julia supports list comprehension: `[ expression(i) for i in collection]` generates a vector with objects specified by expression i.
 
-::: fragment
 ```{julia} 
-vec = [i^2 for i in 1:4:33]
+v = [i^2 for i in 1:4:13]
 ```
-:::
+
+
+```{julia}
+a = [i*j for i in 1:3, j in 1:4] 
+```
 
 ## Functions
 
@@ -452,14 +466,14 @@ vec = [i^2 for i in 1:4:33]
 
 ---
 
-::: fragment
+
 ```{julia} 
 function complex_modulus1(x, iy)
 	tmp = x^2 + iy^2
 	return sqrt(tmp)
 end
 ```
-:::
+
 
 * If there is no return keyword the function will return the last line.
 
@@ -510,13 +524,17 @@ println(f(fvec...))
 
 
 ## Anonymous Functions
-* Anonymous functions in Julia are given using the `->` operator. This is *assignment* in R as opposed to the `function(x) exp_x` syntax in R.
+* Anonymous functions in Julia are given using the `->` operator
+  ('-' followed by '>'). 
 * Functions are first class objects in Julia so these may be assigned
   variable names or exist as standalones
   
-::: fragment
+
+```{julia}
+map(x->x^3, [2, 5, 4])
+```
 ```{julia}
 F = x -> x^2
 println(F(2))
 ```
-:::
+
