@@ -16,7 +16,6 @@ Getting started.
 ## Lecture 2
 
 Advanced concepts, packages, workflows.
-[HTML](https://Nick-Gale.github.io/2022_Scientific_Programming_CamCompBio/Lectures/lecture2.html)
 [PDF](Lectures/lecture2.pdf)
 
 

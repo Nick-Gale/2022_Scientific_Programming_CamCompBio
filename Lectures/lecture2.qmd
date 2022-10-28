@@ -2,6 +2,7 @@
 title: "Scientific Programming in Julia"
 subtitle: "Package Management, Advanced Concepts, and Worflows"
 author: "Nicholas Gale & Stephen Eglen"
+engine: knitr
 execute:
   echo: true
 format:
@@ -18,6 +19,9 @@ format:
 ---
 ## Types and Hierarchy 
 
+
+* `typeof(x)` will tell you the type of any object.
+
 * Julia has a hierarchy of types e.g. Int <: Real <: Number.
 
 * Function definitions can apply to all subtypes.
@@ -26,6 +30,7 @@ format:
 
 
 ```{julia}
+println(typeof(ones(3,2)))
 println(Int64 <: Real)
 println(Float64 <: Real)
 println(Int64 <: Float64)
@@ -56,25 +61,22 @@ Stats(4,0.4,0.1)
 
 ## Type Constructors
 
-:::::{.columns}
-:::{.column width="50%"}
+
 * An object is created by calling the struct name with fields.
 
-* A type constructor may also be defined in the `struct` definition and the `new` method.
+* A type constructor may also be defined in the `struct` definition and the `new(...)` method.
 
 * Objects can now be created with a function constructor.
-:::
 
-:::{.column width="50%"}
+---
 
 ```{julia}
 using StatsBase, Random
 struct StatsGenerator
 	xmean::Real
-	xvar::Real
-	xkur::Real
+    xvar::Real
+    xkur::Real
 	function StatsGenerator(n::Int)
-		# take a sample of n draws
 		sample = randexp(n)
 		av = round(mean(sample), digits=3)
 		v = round(var(sample), digits=3)
@@ -82,12 +84,8 @@ struct StatsGenerator
 		new(av, v, k)
 	end
 end
-
-println([StatsGenerator(100), StatsGenerator(100), StatsGenerator(1000)])
+println([StatsGenerator(10)])
 ```
-:::
-
-:::::
 
 ## Changing Objects
 
@@ -110,7 +108,7 @@ println(a)
 
 
 ```{julia}
-## shallow copy (first layer mutations don't change original object)
+## shallow copy (original unaffected by 1st layer mutations)
 b2 = copy(a)
 println(b2 === a)
 b2[1] = ["A",2]
@@ -141,16 +139,16 @@ println(a)
 
 ---
 
-* R Code
+<!-- * R Code -->
 
 
-```
-#| eval: false
-x <- c(1,2,3,4)
-f <- function(x){x[1] = 10}
-f(x)
-# x is unchanged.
-```
+<!-- ``` -->
+<!-- #| eval: false -->
+<!-- x <- c(1,2,3,4) -->
+<!-- f <- function(x){x[1] = 10} -->
+<!-- f(x) -->
+<!-- # x is unchanged. -->
+<!-- ``` -->
 
 
 
@@ -159,23 +157,51 @@ f(x)
 
 ```{julia}
 x = [1,2,3,4]
-function f(x)
-	x[1] = 10
-end
+f(x) = x[1] = 10
 f(x)
 println(x)
 ```
 
 
 
-* Functions that mutate their objects are usually denoted by a bang operator.
+* Functions that mutate their objects are usually denoted by a bang suffix.
 
 
 ```{julia}
 x = [5.0, 1.8, 2.1, 3.7, 4.1]
+sort(x)
+println(x)
 sort!(x)
 println(x)
 ```
+
+
+## Mutable vs Immutable
+
+Structs by default are immutable; you can't change values once
+created.  Use 'mutable' keyword to allow them.
+ 
+```{julia}
+mutable struct Person
+    name::String
+    age::Int
+end
+p1 = Person("Joe", 28)
+p1.age += 1
+p1
+```
+
+### Tuples are immutable
+
+Compare this with a "tuple", which is like a vector, but immutable;
+  entries cannot be changed.
+  
+```{julia}
+s = (5, 3)
+s[1]
+#s[1] = 4  ## will error
+```
+
 
 
 
@@ -183,19 +209,12 @@ println(x)
 
 * Functions in Julia may be overloaded with multiple definitions; Packages often do this.
 
-* The compiler decides which definition to use based on type inference.
+* The compiler use 'type inference' to select appropriate definition.
 
 
 ```{julia}
-function custom_modulus(x::Real)
-	return abs(x)
-end
-
-function custom_modulus(x::Complex)
-	res::Complex = sqrt(x.re^2 + x.im^2)
-	return res
-end
-
+custom_modulus(x::Real) = abs(x)
+custom_modulus(x::Complex) = Complex(sqrt(x.re^2 + x.im^2))
 a = custom_modulus(-2)
 b = custom_modulus(-2+1im)
 println([a, typeof(a)])
@@ -222,7 +241,7 @@ println([b, typeof(b)])
 
 ```{julia}
 using StatsBase
-samples = [rand(100)*i for i in 1:5]
+samples = [rand(100)*i for i in 1:3]
 variances = var.(samples)
 println(variances)
 ```
@@ -252,6 +271,7 @@ using Random
 randperm(5)'
 ```
 
+---
 
 * Package functions are imported into the namespace; and can also be accessed using `PkgName.function`.
 
@@ -272,7 +292,7 @@ stdv100 = std(vec)
 
 * To add/remove/build a package use the `add`/`remove`/`build` keywords in the package manager followed by the package name. 
 
-* Alternatively Pkg.add("PkgName"). Equivalently: `Pkg.remove`, `Pkg.build`.
+* Alternatively Pkg.add("PkgName"). Equivalently: `Pkg.remove()`, `Pkg.build()`.
 
 ## Interesting packages
 
@@ -287,7 +307,7 @@ stdv100 = std(vec)
    Probabilistic Programming.  **Local!**
 6. [Symbolics.jl](https://github.com/JuliaSymbolics/Symbolics.jl) ---
    Computer Algebra System.
-7. [DataFrames.jl](https://github.com/JuliaData/DataFrames.jl) ----
+7. [DataFrames.jl](https://github.com/JuliaData/DataFrames.jl) ---
    Tabular data in Julia.
    
 
@@ -306,7 +326,7 @@ stdv100 = std(vec)
 
 ```{julia}
 x = 0
-@time for i = 1:100000
+@time for i = 1:100_000
     x *= x^i
 end
 ```
@@ -316,7 +336,16 @@ end
 
 * Julia supports low level IO through `read` and `write` functions.
 
-* Julia objects can be saved through the `FileIO` package. `save("path", object, "save_name")`, and `load("path", "save_name")`.
+* JLD package provids HDF5-based format for saving/loading objects.
+  (JLD2 on its way.)
+
+* Julia objects can be saved through the `FileIO` package in many formats.
+```{julia}
+#| eval: false
+save("path", object, "save_name")
+load("path", "save_name")
+```
+
 
 * CSV is a package for CSV with readcsv with `CSV.read`, and `CVS.write` analogous to `read_csv` and `write_csv` in R. `CSV.File("path")` creates an object useful for piping.
 
@@ -399,7 +428,7 @@ std([1.0, 2.0, 3.0])
 
 * There is *no* dot.
 
-## Environements and Revise
+## Environments and Revise
 
 * In the enviroment `using Revise` will track all changes.
 
@@ -407,4 +436,51 @@ std([1.0, 2.0, 3.0])
 
 * This can be useful for organisation in large projects.
 
+## Getting help
 
+* The help system is not as structured/mature as the R help system, but most
+  base functions are documented.
+* The REPL has a help section that you get by typing '?' and then the
+  name of the function, e.g. '?save'.
+* `?text` which also report names of functions containing `text` or
+  closely matching.
+
+
+## Writing help 
+
+* `Documenter.jl` will test examples in your package.  (Remove spaces
+  between triple backticks to work.) 
+
+```{julia}
+"""
+    adder(x, y)
+
+Compute the sum of `x` and `y`.
+
+# Examples
+` ` `jldoctest
+julia> adder(5, 8)
+13
+` ` `
+"""
+function adder(x,y)
+    x + y
+end
+```
+
+## Summary
+
+1. Making your own types
+
+2. Some objects are mutable, others are immutable.
+
+3. Objects are passed by reference, so be careful when
+  copying objects or changing values within them.
+
+4. "Multiple dispatch" is a key feature of Julia.
+
+5. Broadcasting is the route to the vectorisation.
+
+6. Packaging system / modules / environments.
+
+7. Getting and writing help.
