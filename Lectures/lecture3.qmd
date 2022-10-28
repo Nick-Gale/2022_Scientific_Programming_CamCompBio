@@ -2,13 +2,20 @@
 title: "Scientific Programming in Julia"
 subtitle: "Statistics, Functional Programming, and Performance Computing"
 author: "Nicholas Gale and Stephen Eglen"
+engine: jupyter
+execute:
+  echo: true
 format:
-  revealjs:
-    slide-number: true
-    theme: serif
-    chalkboard: true 
-    incremental: true
-    background-image: julia_background.png
+  beamer:
+    keep-tex: true
+    monofont: "JuliaMono"
+    header-includes: |
+      \makeatletter
+      \setbeamertemplate{footline}
+      {
+      \tikz[overlay]{\node at(12,.25){\thepage};}
+      }
+      \makeatother
 ---
 
 ## DataFrames
@@ -28,29 +35,13 @@ format:
 
 * Any empty data frame can be initialised by empty typed data vectors.
 
-::: fragment
+
 ```{julia}
-#| echo: true
-#| eval: false
-
-
 using DataFrames
 df1 = DataFrame(x=rand(5), y=rand(5));
 df2 = DataFrame(x=Float64[], st=String[]);
 ```
-:::
 
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
-
-
-using DataFrames
-df1 = DataFrame(x=rand(5), y=rand(5));
-df2 = DataFrame(x=Float64[], st=String[]);
-```
-:::
 
 ## Accessing DataFrames
 
@@ -58,31 +49,13 @@ df2 = DataFrame(x=Float64[], st=String[]);
 
 * Entire rows can be indexed as normal with `:` or by `!`.
 
-::: fragment
+
 ```{julia}
-#| echo: true
-#| eval: false
-
-
 df = DataFrame(A=rand(4), B='a':'d', C=collect(1:4))
 println(df[!, :A])
 println(df[2,3])
 println(df[:, [:C, :A]])
 ```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
-
-
-df = DataFrame(A=rand(4), B='a':'d', C=collect(1:4))
-println(df[!, :A])
-println(df[2,3])
-println(df[:, [:C, :A]])
-```
-:::
 
 ## Modifying DataFrames
 
@@ -96,31 +69,13 @@ println(df[:, [:C, :A]])
 
 ::: {.column width="50%"}
 
-::: fragment
+
 ```{julia}
-#| echo: true
-#| eval: false
-
-
 df = DataFrame(S=String[], N=Float64[])
 println(push!(df, ("A string", 4.4)))
 # println(push!(df, ('C', 4.4)))
 println(push!(df, ('C', 4.4), promote=true))
 ```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
-
-
-df = DataFrame(S=String[], N=Float64[])
-println(push!(df, ("A string", 4.4)))
-# println(push!(df, ('C', 4.4)))
-println(push!(df, ('C', 4.4), promote=true))
-```
-:::
 
 :::
 ::::
@@ -133,31 +88,14 @@ println(push!(df, ('C', 4.4), promote=true))
 
 * A DataFrame may be written to CSV using `CSV.write`.
 
-::: fragment
+
 ```{julia}
-#| echo: true
-#| eval: false
-
-
 using CSV
 df1 = DataFrame(CSV.File("example.csv"))
 df2 = CSV.File("example.csv") |> DataFrame
 df1 == df2
 ```
-:::
 
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
-
-
-using CSV
-df1 = DataFrame(CSV.File("example.csv"))
-df2 = CSV.File("example.csv") |> DataFrame
-df1 == df2
-```
-:::
 
 ## Random Number Generation
 
@@ -167,66 +105,30 @@ df1 == df2
 
 * The default distribution is $U([0,1])$ and default sample number is one. Distributions can be specified as a set.
 
-::: fragment
+
 ```{julia}
-#| echo: true
-#| eval: false
-
-
 using Random
 rn = rand()
 rsamp = rand(3)
 rsampcustom = rand([0,1,4,"A"], 5)
 display([rn, rsamp, rsampcustom])
 ```
-:::
 
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
-
-
-using Random
-rn = rand()
-rsamp = rand(3)
-rsampcustom = rand([0,1,4,"A"], 5)
-display([rn, rsamp, rsampcustom])
-```
-:::
 ## Seeding and Permutation
 
 * A seed is specified with: `Random.seed!(seed_number)`.
 
 * A random permutation is given by the `randperm` function.
 
-::: fragment
+
 ```{julia}
-#| echo: true
-#| eval: false
-
-
 using Random
 Random.seed!(1)
 println(randperm(5))
 Random.seed!(1)
 println(randperm(5))
 ```
-:::
 
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
-
-
-using Random
-Random.seed!(1)
-println(randperm(5))
-Random.seed!(1)
-println(randperm(5))
-```
-:::
 ## Statistics
 
 * Julia has first class support for statistics.
@@ -235,33 +137,14 @@ println(randperm(5))
 
 * Weighted statistics are computed with an optional weights vectors; in R they are their own methods.
 
-::: fragment
+
 ```{julia}
-#| echo: true
-#| eval: false
-
-
 using StatsBase
 x = rand(5)
 w = Weights([2, 1, 4, 4, 4])
 println(mean(x))
 println(mean(x, w))
 ```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
-
-
-using StatsBase
-x = rand(5)
-w = Weights([2, 1, 4, 4, 4])
-println(mean(x))
-println(mean(x, w))
-```
-:::
 
 ## Distributions
 
@@ -271,31 +154,14 @@ println(mean(x, w))
 
 * Distributions can be used in ``rand``.
 
-::: fragment
+
 ```{julia}
-#| echo: true
-#| eval: false
-
-
 using Distributions
 data = rand(100)
 d = fit(Normal, data)
 rand(d, 4)
 ```
-:::
 
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
-
-
-using Distributions
-data = rand(100)
-d = fit(Normal, data)
-rand(d, 4)
-```
-:::
 ## Sampling
 
 * `sample` can be used as alternative to `rand`.
@@ -304,33 +170,14 @@ rand(d, 4)
 
 * An optional keyword `replace=false` (default: true) can specify sampling without replacement.
 
-::: fragment
+
 ```{julia}
-#| echo: true
-#| eval: false
-
-
 using StatsBase
 catdist = [1,4,5,10]
 println(sample(catdist, 7))
 println(sample(catdist, 3, replace=false))
 # println(sample(catdist, 7, replace=false))
 ```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
-
-
-using StatsBase
-catdist = [1,4,5,10]
-println(sample(catdist, 7))
-println(sample(catdist, 3, replace=false))
-# println(sample(catdist, 7, replace=false))
-```
-:::
 
 ## Statistics Ecosystem
 
@@ -357,12 +204,8 @@ println(sample(catdist, 3, replace=false))
 
 ---
 
-::: fragment
+
 ```{julia}
-#| echo: true
-#| eval: false
-
-
 v = collect(0:0.25:pi)
 sin1 = map(sin, v)
 sin2 = map(x -> sin(x), v)
@@ -376,28 +219,7 @@ println(sin1==sin2)
 println(autod_cos)
 println(bad_sin)
 ```
-:::
 
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
-
-
-v = collect(0:0.25:pi)
-sin1 = map(sin, v)
-sin2 = map(x -> sin(x), v)
-autod_cos = map(x -> (cos(x), -sin(x)), v)
-
-bad_data = rand([0,1], length(v))
-bad_sin = map((x,y)->(y==1 ? sin(x) : missing), v, bad_data)
-
-println([sin1', sin2'])
-println(sin1==sin2)
-println(autod_cos)
-println(bad_sin)
-```
-:::
  
 ## Filter
 * The `filter` function behaves similarly to R evaluating a logical condition over an iterable.
@@ -406,12 +228,8 @@ println(bad_sin)
 
 ---
 
-::: fragment
+
 ```{julia}
-#| echo: true
-#| eval: true
-
-
 a = collect(1:10)
 b = filter(iseven, a)
 println(a)
@@ -419,7 +237,6 @@ println(b)
 filter!(isodd, a)
 println(a)
 ```
-:::
 
 
 ## Sum
@@ -430,27 +247,11 @@ println(a)
 
 ---
 
-::: fragment
+
 ```{julia}
-#| echo: true
-#| eval: false
-
-
 m = hcat(collect(1:10), collect(11:20))
 sum(x -> x^2, m, dims=2)
 ```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
-
-
-m = hcat(collect(1:10), collect(11:20))
-sum(x -> x^2, m, dims=2)
-```
-:::
 
 ## Reduce
 
@@ -458,27 +259,10 @@ sum(x -> x^2, m, dims=2)
 
 * Can support a generic binary operation that can be distributed over an iterable.
 
-::: fragment
 ```{julia}
-#| echo: true
-#| eval: false
-
-
 v = 1:2:20
 reduce((x,y)->x*y^2, v)
 ```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
-
-
-v = 1:2:20
-reduce((x,y)->x*y^2, v)
-```
-:::
 
 ## Pseudo-Outer
 
@@ -490,27 +274,11 @@ reduce((x,y)->x*y^2, v)
 
 ---
 
-::: fragment
+
 ```{julia}
-#| echo: true
-#| eval: false
-
-
 f(x, y) = sin(x) * cos(y) + tan(y)^2
 v = collect(1:10)
 f.(v, v')
 ```
-:::
 
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
-
-
-f(x, y) = sin(x) * cos(y) + tan(y)^2
-v = collect(1:10)
-f.(v, v')
-```
-:::
 
