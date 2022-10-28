@@ -32,84 +32,31 @@ format:
 
 ---
 
-::: fragment
-```{julia}
-#| echo: true
-#| eval: false
 
+```{julia}
 using Plots
 pyplot()
 x = collect(0:0.1:10)
 y = sin.(x)
 plot(x, y; st="line", label=false, title="Plot of a sin wave", ylabel="sin", xlabel="x", colour=:blue)
 ```
-:::
 
-::: fragment
+
 ```{julia}
-#| echo: false
-#| eval: true
-
 using Plots
 pyplot()
 x = collect(0:0.1:10)
 y = sin.(x)
 plot(x, y; st="line", label=false, title="Plot of a sin wave", ylabel="sin", xlabel="x", colour=:blue)
 ```
-:::
 
-::: fragment
 ```{julia}
-#| echo: true
-#| eval: false
-
 using Plots
 pyplot()
 x = collect(0:0.1:10)
 y = sin.(x)
 plot(x, y; st="line", label=false, title="Plot of a sin wave", ylabel="sin", xlabel="x", colour=:blue)
 ```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
-
-using Plots
-pyplot()
-x = collect(0:0.1:10)
-y = sin.(x)
-plot(x, y; st="line", label=false, title="Plot of a sin wave", ylabel="sin", xlabel="x", colour=:blue)
-```
-:::
-
-::: fragment
-```{julia}
-#| echo: true
-#| eval: false
-
-using Plots
-pyplot()
-x = collect(0:0.1:10)
-y = sin.(x)
-plot(x, y; st="line", label=false, title="Plot of a sin wave", ylabel="sin", xlabel="x", colour=:blue)
-```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
-
-using Plots
-pyplot()
-x = collect(0:0.1:10)
-y = sin.(x)
-plot(x, y; st="line", label=false, title="Plot of a sin wave", ylabel="sin", xlabel="x", colour=:blue)
-```
-:::
-
 
 ## Plot Objects
 
@@ -121,11 +68,8 @@ plot(x, y; st="line", label=false, title="Plot of a sin wave", ylabel="sin", xla
 
 ---
 
-::: fragment
-```{julia}
-#| echo: true
-#| eval: false
 
+```{julia}
 x = 0:0.01:2pi
 y1 = sin.(x)
 y2 = cos.(x)
@@ -133,21 +77,7 @@ y2 = cos.(x)
 trig_plot = plot(x, y1; title="Trigonometric Plots", xlabel="x", label="sin(x)")
 plot!(trig_plot, x, y2; label="cos(x)")
 ```
-:::
 
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
-
-x = 0:0.01:2pi
-y1 = sin.(x)
-y2 = cos.(x)
-
-trig_plot = plot(x, y1; title="Trigonometric Plots", xlabel="x", label="sin(x)")
-plot!(trig_plot, x, y2; label="cos(x)")
-```
-:::
 
 ## Plot Layouts
 
@@ -159,11 +89,8 @@ plot!(trig_plot, x, y2; label="cos(x)")
 
 ---
 
-::: fragment
-```{julia}
-#| echo: true
-#| eval: false
 
+```{julia}
 p1 = plot(rand(10)); p2 = plot(rand(10)); p3 = plot(rand(10)); p4 = plot(rand(10));
 
 # plot(p1, p2, p3, p4; layout=(2,2))
@@ -171,21 +98,6 @@ p1 = plot(rand(10)); p2 = plot(rand(10)); p3 = plot(rand(10)); p4 = plot(rand(10
 L = @layout [a{0.2h, 0.4w} b; d{0.8h} d]
 plot(p1, p2, p3, p4; layout=L)
 ```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
-
-p1 = plot(rand(10)); p2 = plot(rand(10)); p3 = plot(rand(10)); p4 = plot(rand(10));
-
-# plot(p1, p2, p3, p4; layout=(2,2))
-
-L = @layout [a{0.2h, 0.4w} b; d{0.8h} d]
-plot(p1, p2, p3, p4; layout=L)
-```
-:::
 
 ## StatsPlots
 
@@ -197,29 +109,14 @@ plot(p1, p2, p3, p4; layout=L)
 
 ---
 
-::: fragment
-```{julia}
-#| echo: true
-#| eval: false
 
+```{julia}
 using DataFrames, CSV, StatsPlots
 
 experiment = CSV.File("plotting_data.csv") |> DataFrame
 @df experiment density(:BodyLength, group = (:Planet, :Diet), legend=:topright)
 ```
-:::
 
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
-
-using DataFrames, CSV, StatsPlots
-
-experiment = CSV.File("plotting_data.csv") |> DataFrame
-@df experiment density(:BodyLength, group = (:Planet, :Diet), legend=:topright)
-```
-:::
 
 
 ## Save Plots
@@ -232,26 +129,11 @@ experiment = CSV.File("plotting_data.csv") |> DataFrame
 
 ---
 
-::: fragment
-```{julia}
-#| echo: true
-#| eval: false
 
+```{julia}
 plt = plot(collect(1:10), rand(10); st=:scatter)
 savefig(plt, "my_first_plot.png")
 ```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
-
-plt = plot(collect(1:10), rand(10); st=:scatter)
-savefig(plt, "my_first_plot.png")
-```
-:::
-
 
 ## Animate
 
@@ -263,11 +145,8 @@ savefig(plt, "my_first_plot.png")
 
 ---
 
-::: fragment
-```{julia}
-#| echo: true
-#| eval: false
 
+```{julia}
 x = collect(0:0.05:2pi)
 y = sin.(x)
 anim_obj = @animate for t in 1:length(x)
@@ -275,21 +154,7 @@ anim_obj = @animate for t in 1:length(x)
 end
 gif(anim_obj, "my_first_animation.gif", fps=30)
 ```
-:::
 
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
-
-x = collect(0:0.05:2pi)
-y = sin.(x)
-anim_obj = @animate for t in 1:length(x)
-	plot(x[1:t], y[1:t]; xrange=(0,2pi), legend=false, xlabel="x", ylabel="sin(x)", yticks=false)
-end
-gif(anim_obj, "my_first_animation.gif", fps=30)
-```
-:::
 
 
 ## Performance Computing
@@ -310,11 +175,8 @@ gif(anim_obj, "my_first_animation.gif", fps=30)
 
 ---
 
-::: fragment
-```{julia}
-#| echo: true
-#| eval: false
 
+```{julia}
 L = 10^4
 a1 = rand(L, L); a2 = a1'; v1 = zeros(L); v2 = zeros(L);
 
@@ -328,28 +190,6 @@ end
 
 v1 == v2
 ```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
-
-L = 10^4
-a1 = rand(L, L); a2 = a1'; v1 = zeros(L); v2 = zeros(L);
-
-@time for j = 1:size(a1)[2]
-	v1[j] = sum(a1[:,j])
-end
-
-@time for i = 1:size(a2)[1]
-	v2[i] = sum(a2[i, :])
-end
-
-v1 == v2
-```
-:::
-
 
 ::: {.notes}
 
@@ -368,11 +208,8 @@ v1 == v2
 ---
 
 
-::: fragment
-```{julia}
-#| echo: true
-#| eval: false
 
+```{julia}
 v = rand(10^9); res = 0;
 @time for i = 1:length(v)
 	res += v[i]
@@ -382,23 +219,7 @@ res=0;
 	res += v[i]
 end
 ```
-:::
 
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
-
-v = rand(10^9); res = 0;
-@time for i = 1:length(v)
-	res += v[i]
-end
-res=0;
-@time @inbounds for i = 1:length(v)
-	res += v[i]
-end
-```
-:::
 
 ::: {.notes}
 
@@ -418,11 +239,8 @@ end
 
 ---
 
-::: fragment
-```{julia}
-#| echo: true
-#| eval: false
 
+```{julia}
 v = rand(10^9)
 @time for i = 1:length(v)
 	v[i] += 1
@@ -432,23 +250,6 @@ end
 	v[i] -= 1
 end
 ```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
-
-v = rand(10^9)
-@time for i = 1:length(v)
-	v[i] += 1
-end
-
-@time @simd for i = 1:length(v)
-	v[i] -= 1
-end
-```
-:::
 
 ## Type Mutation
 
@@ -458,25 +259,11 @@ end
 
 * To avoid this Julia can strictly type variables and functions which alleviates the pressure.
 
-::: fragment
-```{julia}
-#| echo: true
-#| eval: false
 
+```{julia}
 a::Array{Float32, 1} = [4.0, 2.0, 1.2] # a strictly typed vector.
 f(x::Array{Float32, 1}) = sum(x) # a strictly typed function.
 ```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
-
-a::Array{Float32, 1} = [4.0, 2.0, 1.2] # a strictly typed vector.
-f(x::Array{Float32, 1}) = sum(x) # a strictly typed function.
-```
-:::
 
 ## High Performance Computing
 
@@ -500,11 +287,8 @@ f(x::Array{Float32, 1}) = sum(x) # a strictly typed function.
 
 ---
 
-::: fragment
-```{julia}
-#| echo: true
-#| eval: false
 
+```{julia}
 using Distributed
 addprocs(4)
 
@@ -516,26 +300,6 @@ end
 	i^2
 end
 ```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
-
-using Distributed
-addprocs(4)
-
-@time for i = 1:10^9
-	i^2
-end
-
-@time @sync @distributed for i = 1:10^9
-	i^2
-end
-```
-:::
-
 
 ## Distributed Reduce
 
@@ -543,27 +307,12 @@ end
 
 * A distributed for block can specify a binary operation to reduce on.
 
-::: fragment
-```{julia}
-#| echo: true
-#| eval: false
 
+```{julia}
 sumodds = @distributed (+) for i = 1:100
 	Int(isodd(i) && i)
 end
 ```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
-
-sumodds = @distributed (+) for i = 1:100
-	Int(isodd(i) && i)
-end
-```
-:::
 
 
 ## Shared Functions
@@ -572,32 +321,14 @@ end
 
 * The `@everywhere` macro is used to specify that a function/package can be accessed from thread.
 
-::: fragment
-```{julia}
-#| echo: true
-#| eval: false
 
+```{julia}
 @everywhere function myfunc(x)
 	return x^2 - y^3 + sin(x * y)
 end
 
 @everywhere using Statistics
 ```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
-
-@everywhere function myfunc(x)
-	return x^2 - y^3 + sin(x * y)
-end
-
-@everywhere using Statistics
-```
-:::
-
 
 ## Shared Data
 
@@ -605,11 +336,8 @@ end
 
 * The `SharedArrays` package allows for memory to be shared between threads through a `SharedArray` object.
 
-::: fragment
-```{julia}
-#| echo: true
-#| eval: false
 
+```{julia}
 @everywhere using SharedArrays
 
 v = SharedArray(zeros(5))
@@ -619,24 +347,6 @@ v = SharedArray(zeros(5))
 end
 println(v) 
 ```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
-
-@everywhere using SharedArrays
-
-v = SharedArray(zeros(5))
-
-@sync @distributed for i = 1:length(v)
-	v[i] = i^2
-end
-println(v) 
-```
-:::
-
 
 ## Race Conditions and Synchronisation
 
@@ -655,23 +365,10 @@ println(v)
 
 * There is a slight performance cost and is best used with complex function calls.
 
-::: fragment
-```{julia}
-#| echo: true
-#| eval: false
 
+```{julia}
 pmap( x -> x^2, 1:5)
 ```
-:::
-
-::: fragment
-```{julia}
-#| echo: false
-#| eval: true
-
-pmap( x -> x^2, 1:5)
-```
-:::
 
 ## GPU Compute
 
@@ -699,31 +396,17 @@ pmap( x -> x^2, 1:5)
 
 ---
 
-::: fragment
-```{julia}
-#| echo: true
-#| eval: false
 
+```{julia}
+#| eval: false
 using CUDA
 a = rand(10^8);
 a_gpu = CuArray(a);
 @time sum(a);
 CUDA.@time CUDA.@sync sum(a_gpu)
 ```
-:::
 
-::: fragment
-```{julia}
-#| echo: false
-#| eval: false
 
-using CUDA
-a = rand(10^8);
-a_gpu = CuArray(a);
-@time sum(a);
-CUDA.@time CUDA.@sync sum(a_gpu)
-```
-:::
 
 ## Kernels
 
