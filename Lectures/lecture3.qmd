@@ -20,71 +20,93 @@ format:
 
 ## DataFrames
 
-* Dataframes are tabular data with named columns (or factors in R).
+* Dataframes are tabular data with named columns.
 
 * They are supported using the `DataFrames` package.
 
-* The names are given in symbols.
+* The names are given in symbols (`:xyz` which is a name, differing
+  from the variable `xyz`).
 
 
-## Using DataFrames
+## Creating DataFrames
 
-* They can be initialised, loaded, or constructed. 
 
 * To initalise a data frame use the `dataframe(colname1=data1, colname2=data2)`
 
+* No recycling -- columns must have matching lengths.
+
 * Any empty data frame can be initialised by empty typed data vectors.
-
-
-```{julia}
-using DataFrames
-df1 = DataFrame(x=rand(5), y=rand(5));
-df2 = DataFrame(x=Float64[], st=String[]);
-```
-
-
-## Accessing DataFrames
-
-* Data indexed as a matrix, by a rows and symbols.
-
-* Entire rows can be indexed as normal with `:` or by `!`.
-
-
-```{julia}
-df = DataFrame(A=rand(4), B='a':'d', C=collect(1:4))
-println(df[!, :A])
-println(df[2,3])
-println(df[:, [:C, :A]])
-```
-
-## Modifying DataFrames
 
 :::: {.columns}
 
 ::: {.column width="50%"}
-* The `push!` function is used to add more data. The function accepts an ordered tuple.
+```{julia}
+using DataFrames
+println(DataFrame(x=[5, 6, 7],
+                   y=[3, 5, 9]))
 
-* The `promote=true` can be used when the symbols datatype does not match the data.
+```
 :::
 
 ::: {.column width="50%"}
+```{julia}
+println(
+DataFrame(x=Float64[],
+          st=String[]))
+```
+:::
+
+::::
+
+## Accessing DataFrames
+
+* Data indexed as a matrix, by rows, cols and symbols.
+
+* Entire rows can be indexed as normal with `:` or by `!`.
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{julia}
+df = DataFrame(A=[5, 6, 7],
+               B='a':'c',
+               C=["cat", "dog", "eel"])
+println(df)
+```
+
+:::
+
+::: {.column width="50%"}
+```{julia}
+println(df[!, :A])
+println(df[2,3])
+println(df[:, [:C, :A]])
+```
+:::
+
+::::
+
+
+## Modifying DataFrames
+
+* The `push!` function is used to add more rows. The function accepts an ordered tuple.
+
+* `promote=true` needed if symbol's datatype does not match the data.
 
 
 ```{julia}
 df = DataFrame(S=String[], N=Float64[])
-println(push!(df, ("A string", 4.4)))
-# println(push!(df, ('C', 4.4)))
+push!(df, ("A string", 4.4))
+# println(push!(df, ('C', 4.4))) # WRONG - C is char
 println(push!(df, ('C', 4.4), promote=true))
 ```
-
-:::
-::::
 
 ## CSV Piping
 
 * A common usecase for datascience is importing CSV data.
 
-* The `DataFrame` function can be wrapped around a CSV file; or the file piped with `|>`.
+* The `DataFrame` function can be wrapped around a CSV file; or the
+  file piped with `|>`. (`| >`)
 
 * A DataFrame may be written to CSV using `CSV.write`.
 
@@ -101,16 +123,16 @@ df1 == df2
 
 * The default random function is `rand(...)` and is highly extensible.
 
-* `rand(distribution, nsamples)` takes nsamples from a distribution.
+* `rand(distribution, n)` takes n samples from a distribution.
 
 * The default distribution is $U([0,1])$ and default sample number is one. Distributions can be specified as a set.
 
 
 ```{julia}
 using Random
-rn = rand()
-rsamp = rand(3)
-rsampcustom = rand([0,1,4,"A"], 5)
+rn = round( rand(), digits=6)
+rsamp = round.( rand(3); digits=4)
+rsampcustom = rand([1,4,"A"], 5)
 display([rn, rsamp, rsampcustom])
 ```
 
@@ -133,33 +155,36 @@ println(randperm(5))
 
 * Julia has first class support for statistics.
 
-* The `StatsBase` package has the standard statistics functions: `mean, var, std, mode, zscore, quantile` etc.
+* The `StatsBase` package has the standard statistics functions:
+  `mean, var, std, mode, zscore, quantile` et c.
 
-* Weighted statistics are computed with an optional weights vectors; in R they are their own methods.
+* Weighted statistics are computed with an optional weights vectors;
+  in R they are their own methods.
 
 
 ```{julia}
 using StatsBase
-x = rand(5)
-w = Weights([2, 1, 4, 4, 4])
-println(mean(x))
-println(mean(x, w))
+x = [20, 0, 2, 4, 4]
+w = Weights([1, 5, 5, 5, 5])
+@show mean(x)
+@show mean(x, w)
+@show median(x);
 ```
 
 ## Distributions
 
 * Julia supports distributions through Distributions package.
 
-* Distribution fitting is provided through ``fit(DistributionType, data)``
-
-* Distributions can be used in ``rand``.
+* Distribution fitting is provided through ``fit(DistributionType,
+  data)``; the result of which can then be sampled from.
 
 
 ```{julia}
 using Distributions
-data = rand(100)
+data = 4*randn(1000) .+ 12
 d = fit(Normal, data)
-rand(d, 4)
+println(d)
+rand(d, 4)  # draw 4 samples
 ```
 
 ## Sampling
@@ -174,29 +199,50 @@ rand(d, 4)
 ```{julia}
 using StatsBase
 catdist = [1,4,5,10]
-println(sample(catdist, 7))
-println(sample(catdist, 3, replace=false))
-# println(sample(catdist, 7, replace=false))
+@show (sample(catdist, 7))
+@show (sample(catdist, 3, replace=false));
+# println(sample(catdist, 7, replace=false))  # WRONG!
+```
+
+ 
+## Interlude -- special values
+
+* `missing` is like `NA` in R:
+  <https://docs.julialang.org/en/v1/manual/missing/>
+  
+  
+* `Inf` and `-Inf` available.
+
+* `NaN` is available as part of IEEE standard, e.g. `var([1])`
+
+<!-- https://github.com/JuliaLang/julia/blob/master/base/mathconstants.jl -->
+
+* Constants like `π` and `ℯ` available.
+
+```{julia}
+@show (ℯ^(im)π ≈ -1)
+@show ( 1//10 + 2//10 == 3//10);
 ```
 
 ## Statistics Ecosystem
 
-* The statistics ecosytem is large and well supported.
+* The statistics ecosytem is large and well-supported.  R is still
+  number 1 for statistics though.
 
 * Useful packages: ``StatsBase, Statistics, Distributions, DataFrames, HypothesisTests``.
 
-* Useful resource: [JuliaStats](https://juliastats.org/)
+* Useful resource: <https://juliastats.org/>
 
 ## Functional Programming
 
-* Functional programming is a style where functions and data are cleanly seperated.
+* Functional programming is a style where functions and data are cleanly separated.
 
 * Object oriented programming is where data and functions/methods are attached to objects.
 
 * Julia lends itself towards functional programming.
 
 ## Map
-* `map` takes a function and applies it to an iterable: vector, range, etc.
+* `map()` takes a function and applies it to an iterable: vector, range, etc.
 
 * The function can be a function name, or an anonymous function.
 
@@ -206,36 +252,32 @@ println(sample(catdist, 3, replace=false))
 
 
 ```{julia}
-v = collect(0:0.25:pi)
+v = [0, π/6, π/4]
 sin1 = map(sin, v)
-sin2 = map(x -> sin(x), v)
 autod_cos = map(x -> (cos(x), -sin(x)), v)
-
-bad_data = rand([0,1], length(v))
-bad_sin = map((x,y)->(y==1 ? sin(x) : missing), v, bad_data)
-
-println([sin1', sin2'])
-println(sin1==sin2)
-println(autod_cos)
+mask = [0 1 0]
+bad_sin = map((x,y)->(y==1 ? sin(x) : missing), v, mask)
+display(autod_cos)
 println(bad_sin)
 ```
 
- 
+
 ## Filter
-* The `filter` function behaves similarly to R evaluating a logical condition over an iterable.
+* `filter` evaluates a logical condition over an iterable.
 
 * `filter!` is an in-place operation; `filter` creates a new copy.
 
----
 
 
 ```{julia}
 a = collect(1:10)
+@show a
+
 b = filter(iseven, a)
-println(a)
-println(b)
+@show b
+
 filter!(isodd, a)
-println(a)
+@show a;
 ```
 
 
@@ -249,7 +291,8 @@ println(a)
 
 
 ```{julia}
-m = hcat(collect(1:10), collect(11:20))
+m = hcat(collect(1:4), collect(5:8))
+display(m)
 sum(x -> x^2, m, dims=2)
 ```
 
@@ -260,25 +303,52 @@ sum(x -> x^2, m, dims=2)
 * Can support a generic binary operation that can be distributed over an iterable.
 
 ```{julia}
-v = 1:2:20
-reduce((x,y)->x*y^2, v)
+v = [7, 9, 4, 8]
+println( reduce( (x,y) -> x < y ? x : y, v))
+println( reduce( (x,y) -> x < y ? x : y, v, init=2))
 ```
 
-## Pseudo-Outer
 
-* R has the `outer` method which allows for outer product construction.
+## Mapreduce
 
-* Julia has no *specific* method but supports it for *all* generic binary functions through broadcasting.
-
-* Broadcasting a column vector to a row vector creates a matrix through linear algebra.
-
----
-
+* Common paradigm: `map` function f onto items, and then `reduce`
+  items using binary operator.
+* Saves on memory allocation compared to do both operations.
 
 ```{julia}
-f(x, y) = sin(x) * cos(y) + tan(y)^2
-v = collect(1:10)
+a = reshape(collect(1:12), (3,4))
+display(a)
+println( mapreduce(isodd, +, a, dims=1) )
+println( mapreduce(isodd, +, a, dims=2) )
+println( mapreduce(isodd, +, a) )
+```
+
+## Inner and Outer product
+
+* Inner product calculated with `dot(x, y)` or `x ⋅ y` 
+
+* Unlike R's `outer()`, Julia has no *specific* method; but
+  broadcasting a column vector to a row vector creates a matrix.
+
+```{julia}
+using LinearAlgebra
+v = [1, 4, 2]
+@show v ⋅ v
+f(x, y) = x+y
+@show (f(v, v))
 f.(v, v')
 ```
+
+
+
+## Summary
+
+1. Data frames
+
+2. Random number generators
+
+3. Statistics
+
+4. Functional programming
 
 
