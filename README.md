@@ -20,7 +20,8 @@ Advanced concepts, packages, workflows.
 
 
 ## Lecture 3
-
+Statistics, functional programming.
+[PDF](Lectures/lecture3.pdf)
 
 ## Lecture 4
 
