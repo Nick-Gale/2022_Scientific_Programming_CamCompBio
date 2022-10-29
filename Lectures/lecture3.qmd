@@ -35,7 +35,7 @@ format:
 
 * No recycling -- columns must have matching lengths.
 
-* Any empty data frame can be initialised by empty typed data vectors.
+* An empty data frame is made from  empty typed-vectors.
 
 :::: {.columns}
 
@@ -199,8 +199,8 @@ rand(d, 4)  # draw 4 samples
 ```{julia}
 using StatsBase
 catdist = [1,4,5,10]
-@show (sample(catdist, 7))
-@show (sample(catdist, 3, replace=false));
+@show sample(catdist, 7)
+@show sample(catdist, 3, replace=false);
 # println(sample(catdist, 7, replace=false))  # WRONG!
 ```
 
@@ -220,8 +220,8 @@ catdist = [1,4,5,10]
 * Constants like `π` and `ℯ` available.
 
 ```{julia}
-@show (ℯ^(im)π ≈ -1)
-@show ( 1//10 + 2//10 == 3//10);
+@show ℯ^(im)π ≈ -1
+@show 1//10 + 2//10 == 3//10;
 ```
 
 ## Statistics Ecosystem
@@ -335,7 +335,7 @@ using LinearAlgebra
 v = [1, 4, 2]
 @show v ⋅ v
 f(x, y) = x+y
-@show (f(v, v))
+@show f(v, v)
 f.(v, v')
 ```
 
