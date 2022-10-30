@@ -42,7 +42,7 @@ format:
 ::: {.column width="50%"}
 ```{julia}
 using DataFrames
-println(DataFrame(x=[5, 6, 7],
+println(DataFrame(x=[0.5, 6, 7],
                    y=[3, 5, 9]))
 
 ```
@@ -323,6 +323,63 @@ println( mapreduce(isodd, +, a, dims=2) )
 println( mapreduce(isodd, +, a) )
 ```
 
+## Dimensions...
+
+* Warning: R and Julia have switched the numerical code for rows and
+  columns.  (Julia is probably more consistent).
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{julia}
+A = [1 2 3; 4 5 6]
+display(A)
+@show sum(A, dims=1)
+@show sum(A, dims=2);
+```
+:::
+
+::: {.column width="50%"}
+```{julia}
+using RCall
+@rput A
+@R_str("apply(A, 1, sum)")
+```
+:::
+
+
+::::
+
+
+<!-- https://www.juliafordatascience.com/calling-r-from-julia -->
+
+
+## eachrow() and eachcol()
+
+* Julia's version of `apply(A, fn, dim)` is to use `eachrow` and
+  `eachcol`.
+  
+```{julia}
+A = reshape(collect(1:6), (2,3))
+@show A
+@show map(sum, eachrow(A))
+@show map(sum, eachcol(A))
+```
+
+## (Advanced) Efficiency notes...
+* Note that `sum.(eachrow(A))` is equivalent, but
+  intermediate array is needed, taking more memory.
+
+[Details](https://discourse.julialang.org/t/generic-way-to-apply-function-to-a-dimension-of-a-matrix/54378/5)
+
+```{julia}
+B = rand(1_000,1_000);
+@time map(sum, eachrow(B));
+@time map(sum, eachrow(B));
+
+@time sum.(eachrow(B));
+@time sum.(eachrow(B));
+```
 ## Inner and Outer product
 
 * Inner product calculated with `dot(x, y)` or `x ⋅ y` 
@@ -333,7 +390,7 @@ println( mapreduce(isodd, +, a) )
 ```{julia}
 using LinearAlgebra
 v = [1, 4, 2]
-@show v ⋅ v
+@show v⋅v
 f(x, y) = x+y
 @show f(v, v)
 f.(v, v')
@@ -352,3 +409,15 @@ f.(v, v')
 4. Functional programming
 
 
+
+## Bonus: RCall
+
+* Julia has a package called **RCall** that provides easy access to R,
+  just press "$" at the REPL.
+  
+* Or you can use macros to pass objects to R, and get them from R, and
+  run calculations in R.
+
+* Likewise, R has a package called **JuliaCall** to embed Julia in R.
+
+* Similar bridges operate to python.  It's good to talk.
