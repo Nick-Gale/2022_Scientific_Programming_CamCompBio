@@ -2,13 +2,21 @@
 title: "Scientific Programming in Julia"
 subtitle: "Plots and High Performance Computing"
 author: "Nicholas Gale and Stephen Eglen"
+engine: jupyter
+execute:
+  echo: true
 format:
-  revealjs:
-    slide-number: true
-    theme: serif
-    chalkboard: true 
-    incremental: true
-    background-image: julia_background.png
+  beamer:
+    keep-tex: true
+    monofont: "JuliaMono"
+    header-includes: |
+      \setkeys{Gin}{width=8cm,height=6cm,keepaspectratio}
+      \makeatletter
+      \setbeamertemplate{footline}
+      {
+      \tikz[overlay]{\node at(12,.25){\thepage};}
+      }
+      \makeatother
 ---
 
 ## Plots
@@ -17,9 +25,12 @@ format:
 
 * Plotting in Julia is relatively immature: it requires a backend.
 
+* Select one of PyPlot, Plotly, GR, ...  (I normally go for GR for speed+features).
+
 * There is a high time-to-first plot time but it is smooth from there.
 
-## Plotting grammar.
+## Plotting grammar
+
 * Plotting follows a predictable grammar through the `plot` API call.
 
 * Plots are arranged in x data, y data formats. Series are delineated with spaces.
@@ -41,22 +52,6 @@ y = sin.(x)
 plot(x, y; st="line", label=false, title="Plot of a sin wave", ylabel="sin", xlabel="x", colour=:blue)
 ```
 
-
-```{julia}
-using Plots
-pyplot()
-x = collect(0:0.1:10)
-y = sin.(x)
-plot(x, y; st="line", label=false, title="Plot of a sin wave", ylabel="sin", xlabel="x", colour=:blue)
-```
-
-```{julia}
-using Plots
-pyplot()
-x = collect(0:0.1:10)
-y = sin.(x)
-plot(x, y; st="line", label=false, title="Plot of a sin wave", ylabel="sin", xlabel="x", colour=:blue)
-```
 
 ## Plot Objects
 
@@ -91,11 +86,10 @@ plot!(trig_plot, x, y2; label="cos(x)")
 
 
 ```{julia}
-p1 = plot(rand(10)); p2 = plot(rand(10)); p3 = plot(rand(10)); p4 = plot(rand(10));
-
-# plot(p1, p2, p3, p4; layout=(2,2))
-
-L = @layout [a{0.2h, 0.4w} b; d{0.8h} d]
+x = 0:0.1:2pi
+p1 = plot(x, sin.(x)); p2 = plot(x, sin.(2x));
+p3 = plot(x, cos.(x)); p4 = plot(x, cos.(2x));
+L = @layout [a{0.2h, 0.4w} b; c d]
 plot(p1, p2, p3, p4; layout=L)
 ```
 
@@ -114,7 +108,8 @@ plot(p1, p2, p3, p4; layout=L)
 using DataFrames, CSV, StatsPlots
 
 experiment = CSV.File("plotting_data.csv") |> DataFrame
-@df experiment density(:BodyLength, group = (:Planet, :Diet), legend=:topright)
+@df experiment density(:BodyLength, group = (:Planet, :Diet),
+                       legend=:topright)
 ```
 
 
@@ -131,7 +126,8 @@ experiment = CSV.File("plotting_data.csv") |> DataFrame
 
 
 ```{julia}
-plt = plot(collect(1:10), rand(10); st=:scatter)
+plt = plot(collect(1:10), rand(10); st=:scatter,
+           markersize=20)
 savefig(plt, "my_first_plot.png")
 ```
 
@@ -150,9 +146,10 @@ savefig(plt, "my_first_plot.png")
 x = collect(0:0.05:2pi)
 y = sin.(x)
 anim_obj = @animate for t in 1:length(x)
-	plot(x[1:t], y[1:t]; xrange=(0,2pi), legend=false, xlabel="x", ylabel="sin(x)", yticks=false)
+	plot(x[1:t], y[1:t]; xrange=(0,2pi), yrange=(-1,+1),
+         legend=false, xlabel="x", ylabel="sin(x)")
 end
-gif(anim_obj, "my_first_animation.gif", fps=30)
+gif(anim_obj, "my_first_animation.gif", fps=30);
 ```
 
 
@@ -176,20 +173,50 @@ gif(anim_obj, "my_first_animation.gif", fps=30)
 ---
 
 
+:::: {.columns}
+
+::: {.column width="50%"}
 ```{julia}
-L = 10^4
-a1 = rand(L, L); a2 = a1'; v1 = zeros(L); v2 = zeros(L);
+using BenchmarkTools
 
-@time for j = 1:size(a1)[2]
-	v1[j] = sum(a1[:,j])
+l = 10^4
+A = rand(l,l);
+
+sum1 = function(A, l)
+    sum = 0.0;
+    for i = 1:l, j=1:l
+        sum = sum + A[i,j]
+    end
+    sum
 end
 
-@time for i = 1:size(a2)[1]
-	v2[i] = sum(a2[i, :])
-end
-
-v1 == v2
+s = sum(A); s1 = sum1(A, l)
+(s ≈ s1) || error("s1 wrong")
+@btime sum1(A, l);
 ```
+:::
+
+::: {.column width="50%"}
+```{julia}
+# .
+# .
+# .
+# .
+# .
+sum2 = function(A, l)
+    sum = 0.0;
+    for j = 1:l, i=1:l
+        sum = sum + A[i,j]
+    end
+    sum
+end
+
+s2 = sum2(A, l)
+(s ≈ s2) || error("s2 wrong")
+@btime sum2(A, l);
+```
+:::
+::::
 
 ::: {.notes}
 
@@ -205,20 +232,23 @@ v1 == v2
 
 * It is activated with the `@inbounds` macro and distributes to all nested loops.
 
----
+* Can also use command-line switch '--check-bounds={yes|no|auto*}'.
+
+<!-- --- -->
 
 
 
-```{julia}
-v = rand(10^9); res = 0;
-@time for i = 1:length(v)
-	res += v[i]
-end
-res=0;
-@time @inbounds for i = 1:length(v)
-	res += v[i]
-end
-```
+<!-- ```{julia} -->
+<!-- v = rand(10^3); -->
+<!-- res = 0; -->
+<!-- @time for i = 1:length(v) -->
+<!-- 	global res += v[i] -->
+<!-- end -->
+<!-- res=0; -->
+<!-- @time @inbounds for i = 1:length(v) -->
+<!-- 	res += v[i] -->
+<!-- end -->
+<!-- ``` -->
 
 
 ::: {.notes}
@@ -237,21 +267,22 @@ end
 
 * Turn it on using the ``@simd` macro. For well organised data you can expect some speed up.
 
----
+* See extended example `timeit.jl` in repository.  On my Macbook pro,
+  it went from 2.3 GFlop/s to 18.1 GFlop/s with @inbounds and @simd in tandem.
 
+<!-- ```{julia} -->
+<!-- #| eval: false -->
+<!-- v = rand(10^9) -->
+<!-- @time for i = 1:length(v) -->
+<!-- 	v[i] += 1 -->
+<!-- end -->
 
-```{julia}
-v = rand(10^9)
-@time for i = 1:length(v)
-	v[i] += 1
-end
+<!-- @time @simd for i = 1:length(v) -->
+<!-- 	v[i] -= 1 -->
+<!-- end -->
+<!-- ``` -->
 
-@time @simd for i = 1:length(v)
-	v[i] -= 1
-end
-```
-
-## Type Mutation
+## Type mutation
 
 * Julia has excellent typing and type inference but abstraction puts demands on the compiler.
 
@@ -323,6 +354,7 @@ end
 
 
 ```{julia}
+using Distributed
 @everywhere function myfunc(x)
 	return x^2 - y^3 + sin(x * y)
 end
@@ -338,6 +370,7 @@ end
 
 
 ```{julia}
+using Distributed
 @everywhere using SharedArrays
 
 v = SharedArray(zeros(5))
@@ -408,14 +441,37 @@ CUDA.@time CUDA.@sync sum(a_gpu)
 
 
 
-## Kernels
+<!-- ## Kernels -->
 
-* These are normally written in the backend before being overloaded into existing functions.
+<!-- * These are normally written in the backend before being overloaded into existing functions. -->
 
-* They use data arranged in Threads, and Blocks, accessing indexes asynchronously by a function (ThreadId, BlockId) -> idx.
+<!-- * They use data arranged in Threads, and Blocks, accessing indexes asynchronously by a function (ThreadId, BlockId) -> idx. -->
 
-* When the threads synchronise the data in memory is modified and the computation moves to the next block.
+<!-- * When the threads synchronise the data in memory is modified and the computation moves to the next block. -->
 
-* Custom kernels may be written and launched with the `@cuda` kernel. 
+<!-- * Custom kernels may be written and launched with the `@cuda` kernel.  -->
 
-* The asynchronous programming style is different to a traditional style and beyond the scope of this course.
+<!-- * The asynchronous programming style is different to a traditional style and beyond the scope of this course. -->
+
+
+## Further reading
+
+* Performance tips: <https://docs.julialang.org/en/v1/manual/performance-tips/>
+* Static arrays can often be faster (for small arrays up to about 100
+  elements): <https://github.com/JuliaArrays/StaticArrays.jl>
+  
+* Floops.jl for more advanced speed ups -- see Alan Edelman's
+  birthday problem video:
+  <https://www.youtube.com/watch?v=dczkYlOM2sg>
+
+* Julia style guide:
+  <https://docs.julialang.org/en/v1/manual/style-guide/>
+  
+  
+## Summary
+
+* Plotting
+
+* Performance
+
+* High-performance computing

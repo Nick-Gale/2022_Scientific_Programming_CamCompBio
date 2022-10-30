@@ -24,6 +24,10 @@ Statistics, functional programming.
 [PDF](Lectures/lecture3.pdf)
 
 ## Lecture 4
+Plotting, performance issues.
+[PDF](Lectures/lecture4.pdf)
+
+## Lecture 4
 
 # Workbooks
 
