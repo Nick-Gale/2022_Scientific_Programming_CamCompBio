@@ -9,3 +9,11 @@ Will need to document this better for 'future self'.
 This was solved by installing JuliaMono font.
 
 
+
+## Installing JuliaMono font
+
+To install the font, first download it from:
+
+<https://juliamono.netlify.app/download/>
+
+and then follow the clear instructions on that page for your operating system.
