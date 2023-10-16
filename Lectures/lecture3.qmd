@@ -366,6 +366,7 @@ A = reshape(collect(1:6), (2,3))
 @show map(sum, eachcol(A))
 ```
 
+<!-- This may no longer be true in Julia 1.9 -->
 <!-- ## (Advanced) Efficiency notes... -->
 <!-- * Note that `sum.(eachrow(A))` is equivalent, but -->
 <!--   intermediate array is needed, taking more memory. -->

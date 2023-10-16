@@ -258,7 +258,7 @@ println(variances)
 
 * Packages are a collection of function and type defintions.
 
-* About 7,400 packages registered (October 2022).
+* About 9,000 packages registered (October 2023).
   <https://julialang.org/packages/> has several methods to navigate the
   ecosystem.
   
@@ -285,9 +285,9 @@ stdv100 = std(vec)
 
 ## Package manager
 
-* Package management in Julia is easing using the Pkg package, or the package environment.
+* Package management in Julia is easiest using the Pkg package, or the package environment.
 
-* To access package press `]` in the REPL. To exit press `:esc` in the enviroment.
+* To access package press `]` in the REPL. To exit press backspace in the enviroment.
 
 * To add/remove/build a package use the `add`/`remove`/`build` keywords in the package manager followed by the package name. 
 
